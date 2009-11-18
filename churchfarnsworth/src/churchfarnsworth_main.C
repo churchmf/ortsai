@@ -21,6 +21,8 @@ public:
 	void OnReceivedView(GameStateModule & gameState);
 };
 
+
+//This seems to be the game loop, and it called every game state, so this is where our AI should be.
 void MyApplication::OnReceivedView(GameStateModule & gameState)
 {
 	// INFO: You can examine the GameChanges class to determine many things
@@ -101,7 +103,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			}
 		}
 
-		// If this unit is currenly not moving
+		// If this unit is currently not moving
 		if(!unit.IsMoving())
 		{
 			unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
