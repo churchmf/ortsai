@@ -6,23 +6,19 @@
  */
 
 #include "Lieutenant.H"
-#include "Application.H"
-#include "Helper.H"
 
-#include "Game.H"
-#include "GameObj.H"
-#include "GameStateModule.H"
-
-Lieutenant::Lieutenant(){
-private Vector<Unit> marines, tanks;
-private sint4 health;
-const sint4 marine = 1;
-const sint4 tank = 2;
-
+Lieutenant::Lieutenant()
+{
+	private Vector<Unit> marines, tanks;
+	private sint4 health;
+	const sint4 marine = 1;
+	const sint4 tank = 2;
 }
 
-Lieutenant::~Lieutenant() {
-
+Lieutenant::~Lieutenant()
+{
+	delete marines;
+	delete tanks;
 }
 
 void Lieutenant::AssignUnit(Unit unit)
@@ -37,7 +33,7 @@ void Lieutenant::AssignUnit(Unit unit)
 	}
 }
 
-bool Lieutenant::RelieveUnit()
+bool Lieutenant::RelieveUnit(Unit unit)
 {
 	return false;
 }
@@ -75,5 +71,21 @@ vec2 Lieutenant::GetLocation()
 
 	location = sumLocation / (marines.size() + tanks.size());
 	return location;
+}
+
+//default, needs updating
+void Lieutenant::DoFormation()
+{
+	location = GetLocation();
+	for (int i = 0; i < marines.size(); ++i)
+	{
+		Unit marine = marines[i];
+		marine.MoveTo(location, marine.GetMaxSpeed());
+	}
+	for (int j = 0; i < tanks.size(); ++j)
+	{
+		Unit tank = tanks[j];
+		tank.MoveTo(location, tank.GetMaxSpeed());
+	}
 }
 
