@@ -91,6 +91,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			DrawDebugCircle(position,range,Color(1,1,1));
 
 			// Choose the first enemy unit we find in range
+			/*
 			for(size_t j(0); j<enemies.size(); ++j)
 			{
 				const Unit & enemy(enemies[j]);
@@ -101,12 +102,24 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 					break;
 				}
 			}
+			*/
+			Unit enemy = enemies[0];
+
+			vec2 ePosition = enemy.GetPosition();
+
+			unit.Attack(enemy);
 		}
 
 		// If this unit is currently not moving
+		/*
 		if(!unit.IsMoving())
 		{
 			unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
+		}
+		*/
+		if (!unit.IsMoving())
+		{
+			unit.MoveTo(ePosition,unit.GetMaxSpeed());
 		}
 	}
 }
