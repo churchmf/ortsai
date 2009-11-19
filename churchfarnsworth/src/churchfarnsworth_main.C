@@ -11,6 +11,8 @@ For instance, in the case of "lab2.template", we need a "src/template_main.C", w
 #include "Application.H"
 #include "Helper.H"
 #include "Lieutenant.H"
+#include "Captain.H"
+#include "General.H"
 
 #include "Game.H"
 #include "GameObj.H"
@@ -82,6 +84,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		}
 	}
 
+	Lieutenant lieut;
+
 	//GAME LOOP
 	for(size_t i(0); i<myUnits.size(); ++i)
 	{
@@ -90,6 +94,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		// If the unit has a weapon, look for targets
 		if(unit.HasWeapon())
 		{
+			lieut.AssignUnit(unit);
+
 			// Cache the unit's position and the range of its weapon
 			const vec2	position(unit.GetPosition());
 			const sint4 range(unit.GetWeaponRange());
@@ -97,7 +103,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			DrawDebugCircle(position,range,Color(1,1,1));
 
 			// Choose the first enemy unit we find in range
-
 			for(size_t j(0); j<enemies.size(); ++j)
 			{
 				const Unit & enemy(enemies[j]);
@@ -108,6 +113,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 					break;
 				}
 			}
+
+			lieut.MoveTo(vec2(maxCoordX, maxCoordY));
 		}
 
 		/*
@@ -117,6 +124,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
 		}
 		*/
+		/*
 		if(!unit.IsMoving())
 		{
 			if (unit.GetType() == marine)
@@ -124,6 +132,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			if (unit.GetType() == tank)
 				unit.MoveTo(vec2(maxCoordX, maxCoordY), unit.GetMaxSpeed());
 		}
+		*/
 	}
 }
 

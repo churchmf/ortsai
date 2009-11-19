@@ -11,6 +11,8 @@
 #include "Game.H"
 #include "GameObj.H"
 #include "GameStateModule.H"
+
+//constant values for marine and tanks used with unit.GetType()
 const sint4 marine = 1;
 const sint4 tank = 2;
 
@@ -96,5 +98,21 @@ void Lieutenant::DoFormation()
 		Unit & tank(tanks[j]);
 		tank.MoveTo(location, tank.GetMaxSpeed());
 	}
+}
+
+//default, needs updating
+void Lieutenant::MoveTo(vec2 target)
+{
+	location = target;
+	for (size_t i(0); i < marines.size(); ++i)
+		{
+			Unit & marine(marines[i]);
+			marine.MoveTo(location, marine.GetMaxSpeed());
+		}
+		for (size_t j(0); j < tanks.size(); ++j)
+		{
+			Unit & tank(tanks[j]);
+			tank.MoveTo(location, tank.GetMaxSpeed());
+		}
 }
 
