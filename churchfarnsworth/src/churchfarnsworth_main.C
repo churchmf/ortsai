@@ -84,6 +84,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		}
 	}
 
+	//test lieutenant
 	Lieutenant lieut;
 
 	//GAME LOOP
@@ -114,6 +115,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 				}
 			}
 
+			//testing move of lieutenant
 			lieut.MoveTo(vec2(maxCoordX, maxCoordY));
 		}
 
