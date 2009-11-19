@@ -58,7 +58,8 @@ sint4 Lieutenant::GetHealth()
 		const Unit & tank(tanks[j]);
 		health += tank.GetHitpoints();
 	}
-	return health;
+	sint4 percent = 100*(health / (marines.size()*80 + tanks.size()*150));
+	return  percent;
 }
 
 bool Lieutenant::IsEngaged()
@@ -114,5 +115,23 @@ void Lieutenant::MoveTo(vec2 target)
 			Unit & tank(tanks[j]);
 			tank.MoveTo(location, tank.GetMaxSpeed());
 		}
+}
+
+void Lieutenant::Loop()
+{
+	/*
+	 *  if (orders):
+		   do order
+		else:
+		  if (engaged):
+			for each unit in squad:
+			  if expected death:
+				pull back
+		  else:
+			target weakest enemy unit in range
+			attack enemy unit
+		update squad status
+	 */
+
 }
 
