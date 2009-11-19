@@ -104,10 +104,12 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			}
 			*/
 			Unit enemy = enemies[0];
+			Unit friendly = myUnit[0];
 
+			vec2 fPosition = friendly.GetPosition();
 			vec2 ePosition = enemy.GetPosition();
 
-			unit.Attack(enemy);
+			//unit.Attack(enemy);
 		}
 
 		// If this unit is currently not moving
@@ -119,7 +121,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		*/
 		if (!unit.IsMoving())
 		{
-			unit.MoveTo(ePosition,unit.GetMaxSpeed());
+
+			unit.MoveTo(fPosition,unit.GetMaxSpeed());
 		}
 	}
 }
