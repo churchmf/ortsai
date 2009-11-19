@@ -89,15 +89,90 @@ vec2 Lieutenant::GetLocation()
 void Lieutenant::DoFormation()
 {
 	location = GetLocation();
+	vec2 initUnitPos = location;
+	vec2 unitPos = initUnitPos;
+
+	//TODO: make this dynamic to what direction you are pointing
+	vec2 ltDirection = vec2(1,0);
+
+	vec2 rowDirection = vec2(-ltDirection.y, ltDirection.x);//direction of the rows
+
+	//if new units added just change these variables
+	sint4 unitDisplace = 0;//variable used to displace the rows evenly
+	//NOTE: this variable is used do determine the distance of the row
+	//		from the LT. so if more units get added, this can just be
+	//		incremented for every for loop and each subsiquent row will
+	//		be 'unitOffset' closer to the LT for the previous row.
+	sint4 marineOffset = 5;//distance between each marine in the row
+	sint4 tankOffset = 10;//distance between the tanks in the row
+	sint4 unitOffset = 10;//space between rows
+	sint4 frontLine = 30;//distance of frontline from LT
+
+	sint4 displace = 1;
+
+
+
 	for (size_t i(0); i < marines.size(); ++i)
 	{
+
 		Unit & marine(marines[i]);
-		marine.MoveTo(location, marine.GetMaxSpeed());
+		//marine.MoveTo(location, marine.GetMaxSpeed());
+		//set first unit
+		if(i == 0)
+		{
+			initUnitPos = vec2((ltDirection.x * frontLine) + location.x, (ltDirection.y * frontLine) + location.y);
+			marine.MoveTo(unitPos, marine.GetMaxSpeed());
+		}
+		else if(i % 2 == 1 && i > 0)
+		{
+			//set the next marine at a distance based on the row direction, offset, and where the previous one is
+			unitPos = vec2((rowDirection.x * marineOffset * displace) + initUnitPos.x, (rowDirection.y * marineOffset * displace) + initUnitPos.y);
+			unitPos.x = unitPos.x - (unitDisplace * unitOffset);
+			unitPos.y = unitPos.y - (unitDisplace * unitOffset);
+			marine.MoveTo(unitPos, marine.GetMaxSpeed());
+		}
+		//set every second unit (ones on negative plane to LT) to negative
+		else if(i % 2 == 0 && i > 0)
+		{
+			//set the next marine at a distance based on the row direction, offset, and where the previous one is
+			unitPos = vec2(((-rowDirection.x) * marineOffset * displace) + initUnitPos.x, ((-rowDirection.y) * marineOffset * displace) + initUnitPos.y);
+			unitPos.x = unitPos.x - (unitDisplace * unitOffset);
+			unitPos.y = unitPos.y - (unitDisplace * unitOffset);
+			marine.MoveTo(unitPos, marine.GetMaxSpeed());
+			displace++;
+		}
 	}
+
+	unitDisplace++;
+	displace = 1;
+
 	for (size_t j(0); j < tanks.size(); ++j)
 	{
 		Unit & tank(tanks[j]);
-		tank.MoveTo(location, tank.GetMaxSpeed());
+		if(j == 0)
+		{
+			initUnitPos = vec2((ltDirection.x * frontLine) - (unitDisplace*unitOffset) + location.x,
+							   (ltDirection.y * frontLine) - (unitDisplace*unitOffset) + location.y);
+			tank.MoveTo(initUnitPos, tank.GetMaxSpeed());
+		}
+		else if(j % 2 == 1 && j > 0)
+		{
+			//set the next marine at a distance based on the row direction, offset, and where the previous one is
+			unitPos = vec2((rowDirection.x * tankOffset * displace) + initUnitPos.x, (rowDirection.y * tankOffset * displace) + initUnitPos.y);
+			unitPos.x = unitPos.x - (unitDisplace * unitOffset);
+			unitPos.y = unitPos.y - (unitDisplace * unitOffset);
+			tank.MoveTo(unitPos, tank.GetMaxSpeed());
+		}
+		//set every second unit (ones on negative plane to LT) to negative
+		else if(j % 2 == 0 && j > 0)
+		{
+			//set the next tank at a distance based on the row direction, offset, and where the previous one is
+			unitPos = vec2(((-rowDirection.x) * tankOffset * displace) + initUnitPos.x, ((-rowDirection.y) * tankOffset * displace) + initUnitPos.y);
+			unitPos.x = unitPos.x - (unitDisplace * unitOffset);
+			unitPos.y = unitPos.y - (unitDisplace * unitOffset);
+			tank.MoveTo(unitPos, tank.GetMaxSpeed());
+			displace++;
+		}
 	}
 }
 
@@ -116,6 +191,7 @@ void Lieutenant::MoveTo(vec2 target)
 			tank.MoveTo(location, tank.GetMaxSpeed());
 		}
 }
+
 
 void Lieutenant::Loop()
 {
