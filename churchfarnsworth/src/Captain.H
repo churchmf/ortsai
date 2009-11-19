@@ -12,6 +12,8 @@ class Captain {
 public:
 	Captain();
 	virtual ~Captain();
+
+	void Loop();	//The Captains game loop, all logic should be done here. Is called once every iteration of the game loop.
 };
 
 #endif /* CAPTAIN_H_ */
