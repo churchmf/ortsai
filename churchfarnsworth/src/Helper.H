@@ -67,6 +67,8 @@ public:
 	sint4			GetSpeed() const;			// Get the current speed of the unit
 	sint4			GetHitpoints() const;		// Get the current hitpoints of the unit
 
+	sint4			GetType() const;			// Get the type of unit (1=marine,2=tank)
+
 	//////////////
 	// Commands //
 	//////////////

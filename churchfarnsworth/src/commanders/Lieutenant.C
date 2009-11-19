@@ -6,12 +6,48 @@
  */
 
 #include "Lieutenant.H"
+#include "Application.H"
+#include "Helper.H"
 
-Lieutenant::Lieutenant() {
-	// TODO Auto-generated constructor stub
+#include "Game.H"
+#include "GameObj.H"
+#include "GameStateModule.H"
+
+private Vector<Unit> marines, tanks;
+private sint4 health;
+
+
+Lieutenant::Lieutenant(){
 
 }
 
 Lieutenant::~Lieutenant() {
-	// TODO Auto-generated destructor stub
+
 }
+
+Lieutenant::AssignUnit()
+{
+
+}
+
+Lieutenant::RelieveUnit()
+{
+
+}
+
+Lieutenant::GetHealth()
+{
+	for
+	return health;
+}
+
+Lieutenant::IsEngaged()
+{
+
+}
+
+Lieutenant::GetLocation()
+{
+
+}
+

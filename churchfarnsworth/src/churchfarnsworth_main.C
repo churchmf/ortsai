@@ -21,8 +21,7 @@ public:
 	void OnReceivedView(GameStateModule & gameState);
 };
 
-
-//This seems to be the game loop, and it called every game state, so this is where our AI should be.
+//Seems to be the game loop, I think we should put out game logic in here - Matt
 void MyApplication::OnReceivedView(GameStateModule & gameState)
 {
 	// INFO: You can examine the GameChanges class to determine many things
@@ -51,6 +50,11 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 	// Iterate through all teams and store the living units
 	const sint4	myClient(game.get_client_player());
 	Vector<Unit> myUnits,enemies;
+
+	//predefined unit types, used with unit.GetType() - Matt
+	const sint4 marine = 1;
+	const sint4 tank = 2;
+
 	for(int team(0); team<game.get_player_num(); ++team)
 	{
 		// Get the units on this team
@@ -91,7 +95,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			DrawDebugCircle(position,range,Color(1,1,1));
 
 			// Choose the first enemy unit we find in range
-			/*
+
 			for(size_t j(0); j<enemies.size(); ++j)
 			{
 				const Unit & enemy(enemies[j]);
@@ -102,27 +106,21 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 					break;
 				}
 			}
-			*/
-			Unit enemy = enemies[0];
-			Unit friendly = myUnit[0];
-
-			vec2 fPosition = friendly.GetPosition();
-			vec2 ePosition = enemy.GetPosition();
-
-			//unit.Attack(enemy);
 		}
 
-		// If this unit is currently not moving
 		/*
+		// If this unit is currenly not moving
 		if(!unit.IsMoving())
 		{
 			unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
 		}
 		*/
-		if (!unit.IsMoving())
+		if(!unit.IsMoving())
 		{
-
-			unit.MoveTo(fPosition,unit.GetMaxSpeed());
+			if (unit.GetType() == marine)
+				unit.MoveTo(vec2(0, 0), unit.GetMaxSpeed());
+			if (unit.GetType() == tank)
+				unit.MoveTo(vec2(maxCoordX, maxCoordY), unit.GetMaxSpeed());
 		}
 	}
 }

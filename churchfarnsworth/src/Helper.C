@@ -91,6 +91,13 @@ sint4 Unit::GetHitpoints() const
 	return CheckObjInt(unit,"hp",0);
 }
 
+sint4 Unit::GetType() const
+{
+	const sint4 unittypediv = 3;
+	//returns 1 for marine and 2 for tank
+	return *unit->sod.radius / unittypediv;
+}
+
 // Actions are specified by calling set_action on a ScriptObj
 // Actions like movement are called on the GameObj itself (which is a subclass of ScriptObj)
 // Actions like attacking are called on a component of the GameObj, in this case, the weapon
