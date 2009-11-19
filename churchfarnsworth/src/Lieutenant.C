@@ -13,11 +13,11 @@
 #include "GameObj.H"
 #include "GameStateModule.H"
 
+Lieutenant::Lieutenant(){
 private Vector<Unit> marines, tanks;
 private sint4 health;
-
-
-Lieutenant::Lieutenant(){
+const sint4 marine = 1;
+const sint4 tank = 2;
 
 }
 
@@ -25,29 +25,55 @@ Lieutenant::~Lieutenant() {
 
 }
 
-Lieutenant::AssignUnit()
+void Lieutenant::AssignUnit(Unit unit)
 {
-
+	if (unit.GetType() == marine)
+	{
+		marines.push_back(unit);
+	}
+	else if (unit.GetType() == tank)
+	{
+		tanks.push_back(unit);
+	}
 }
 
-Lieutenant::RelieveUnit()
+bool Lieutenant::RelieveUnit()
 {
-
+	return false;
 }
 
-Lieutenant::GetHealth()
+sint4 Lieutenant::GetHealth()
 {
-	for
+	health = 0;
+	for (int i = 0; i < marines.size(); ++i)
+	{
+		health += marines[i].GetHitpoints();
+	}
+	for (int j = 0; i < tanks.size(); ++j)
+	{
+		health += tanks[j].GetHitpoints();
+	}
 	return health;
 }
 
-Lieutenant::IsEngaged()
+bool Lieutenant::IsEngaged()
 {
-
+	return false;
 }
 
-Lieutenant::GetLocation()
+vec2 Lieutenant::GetLocation()
 {
+	vec2 sumLocation = new vec2(0,0);
+	for (int i = 0; i < marines.size(); ++i)
+	{
+		sumLocation += marines[i].GetPosition();
+	}
+	for (int j = 0; i < tanks.size(); ++j)
+	{
+		sumLocation += tanks[j].GetPosition();
+	}
 
+	location = sumLocation / (marines.size() + tanks.size());
+	return location;
 }
 
