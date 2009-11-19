@@ -6,19 +6,21 @@
  */
 
 #include "Lieutenant.H"
+Vector<Unit> marines, tanks;
+sint4 health;
+vec2 location;
+const sint4 marine = 1;
+const sint4 tank = 2;
 
 Lieutenant::Lieutenant()
 {
-	private Vector<Unit> marines, tanks;
-	private sint4 health;
-	const sint4 marine = 1;
-	const sint4 tank = 2;
+	health = 0;
+	location = vec2(0,0);
 }
 
 Lieutenant::~Lieutenant()
 {
-	delete marines;
-	delete tanks;
+
 }
 
 void Lieutenant::AssignUnit(Unit unit)
@@ -41,13 +43,15 @@ bool Lieutenant::RelieveUnit(Unit unit)
 sint4 Lieutenant::GetHealth()
 {
 	health = 0;
-	for (int i = 0; i < marines.size(); ++i)
+	for (size_t i(0); i < marines.size(); ++i)
 	{
-		health += marines[i].GetHitpoints();
+		const Unit & marine(marines[i]);
+		health += marine.GetHitpoints();
 	}
-	for (int j = 0; i < tanks.size(); ++j)
+	for (size_t j(0); j < tanks.size(); ++j)
 	{
-		health += tanks[j].GetHitpoints();
+		const Unit & tank(tanks[j]);
+		health += tank.GetHitpoints();
 	}
 	return health;
 }
@@ -59,14 +63,16 @@ bool Lieutenant::IsEngaged()
 
 vec2 Lieutenant::GetLocation()
 {
-	vec2 sumLocation = new vec2(0,0);
-	for (int i = 0; i < marines.size(); ++i)
+	vec2 sumLocation = vec2(0,0);
+	for (size_t i(0); i < marines.size(); ++i)
 	{
-		sumLocation += marines[i].GetPosition();
+		const Unit & marine(marines[i]);
+		sumLocation = sumLocation + marine.GetPosition();
 	}
-	for (int j = 0; i < tanks.size(); ++j)
+	for (size_t j(0); j < tanks.size(); ++j)
 	{
-		sumLocation += tanks[j].GetPosition();
+		const Unit & tank(tanks[j]);
+		sumLocation = sumLocation + tank.GetPosition();
 	}
 
 	location = sumLocation / (marines.size() + tanks.size());
@@ -77,14 +83,14 @@ vec2 Lieutenant::GetLocation()
 void Lieutenant::DoFormation()
 {
 	location = GetLocation();
-	for (int i = 0; i < marines.size(); ++i)
+	for (size_t i(0); i < marines.size(); ++i)
 	{
-		Unit marine = marines[i];
+		const Unit & marine(marines[i]);
 		marine.MoveTo(location, marine.GetMaxSpeed());
 	}
-	for (int j = 0; i < tanks.size(); ++j)
+	for (size_t j(0); j < tanks.size(); ++j)
 	{
-		Unit tank = tanks[j];
+		const Unit & tank(tanks[j]);
 		tank.MoveTo(location, tank.GetMaxSpeed());
 	}
 }
