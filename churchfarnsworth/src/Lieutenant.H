@@ -4,15 +4,11 @@
  *  Created on: Nov 17, 2009
  *      Author: mfchurch
  */
-#include "Application.H"
-#include "Helper.H"
-
-#include "Game.H"
-#include "GameObj.H"
-#include "GameStateModule.H"
-
 #ifndef LIEUTENANT_H_
 #define LIEUTENANT_H_
+
+#include "Helper.H"
+
 
 class Lieutenant {
 public:
@@ -24,6 +20,12 @@ public:
 	bool IsEngaged();				//Returns true if the Squad is in combat
 	vec2 GetLocation();				//Returns a the centeralized location of the squad
 	void DoFormation();				//Does the Squad formation
+	
+private:
+	Vector <Unit> marines, tanks;
+	sint4 health;
+	vec2 location;
+	bool engaged;
 };
 
 #endif /* LIEUTENANT_H_ */

@@ -1,5 +1,5 @@
-#ifndef ORTS_SAMPLE_APPLICATION_H
-#define ORTS_SAMPLE_APPLICAITON_H
+#ifndef APPLICATION_H
+#define APPLICAITON_H
 
 #include "EventHandler.H"
 #include "LoopFunctor.H"

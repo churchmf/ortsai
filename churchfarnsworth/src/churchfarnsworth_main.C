@@ -10,6 +10,7 @@ For instance, in the case of "lab2.template", we need a "src/template_main.C", w
  */
 #include "Application.H"
 #include "Helper.H"
+#include "Lieutenant.H"
 
 #include "Game.H"
 #include "GameObj.H"
@@ -55,6 +56,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 	const sint4 marine = 1;
 	const sint4 tank = 2;
 
+	//AQUIRE AND SORT ALL OBJECTS
 	for(int team(0); team<game.get_player_num(); ++team)
 	{
 		// Get the units on this team
@@ -80,7 +82,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		}
 	}
 
-	// EXAMPLE: Let's have each unit move randomly, and attack nearby enemies
+	//GAME LOOP
 	for(size_t i(0); i<myUnits.size(); ++i)
 	{
 		Unit & unit(myUnits[i]);

@@ -6,14 +6,17 @@
  */
 
 #include "Lieutenant.H"
-Vector<Unit> marines, tanks;
-sint4 health;
-vec2 location;
+
+#include "Application.H"
+#include "Game.H"
+#include "GameObj.H"
+#include "GameStateModule.H"
 const sint4 marine = 1;
 const sint4 tank = 2;
 
 Lieutenant::Lieutenant()
 {
+	engaged = 0;
 	health = 0;
 	location = vec2(0,0);
 }
@@ -58,7 +61,7 @@ sint4 Lieutenant::GetHealth()
 
 bool Lieutenant::IsEngaged()
 {
-	return false;
+	return engaged;
 }
 
 vec2 Lieutenant::GetLocation()
@@ -74,8 +77,8 @@ vec2 Lieutenant::GetLocation()
 		const Unit & tank(tanks[j]);
 		sumLocation = sumLocation + tank.GetPosition();
 	}
-
-	location = sumLocation / (marines.size() + tanks.size());
+	sint4 squadSize = marines.size() + tanks.size();
+	location = vec2(sumLocation.x/squadSize, sumLocation.y/squadSize);
 	return location;
 }
 
@@ -85,12 +88,12 @@ void Lieutenant::DoFormation()
 	location = GetLocation();
 	for (size_t i(0); i < marines.size(); ++i)
 	{
-		const Unit & marine(marines[i]);
+		Unit & marine(marines[i]);
 		marine.MoveTo(location, marine.GetMaxSpeed());
 	}
 	for (size_t j(0); j < tanks.size(); ++j)
 	{
-		const Unit & tank(tanks[j]);
+		Unit & tank(tanks[j]);
 		tank.MoveTo(location, tank.GetMaxSpeed());
 	}
 }
