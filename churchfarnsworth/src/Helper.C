@@ -81,6 +81,11 @@ vec2 Unit::GetPosition() const
 	return position;
 }
 
+sint4 Unit::GetMode() const
+{
+	return *unit->get_int_ptr("mode");
+}
+
 sint4 Unit::GetSpeed() const
 {
 	return CheckPtr(unit->sod.speed,0);
