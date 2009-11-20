@@ -31,7 +31,7 @@ void Captain::CheckAid()
 {
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
-		if (Lieutenants[i].requestsAid())
+		if (Lieutenants[i]->RequestsAid())
 		{
 
 		}
