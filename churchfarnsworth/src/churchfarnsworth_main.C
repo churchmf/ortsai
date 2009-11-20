@@ -27,7 +27,15 @@ class MyApplication : public Application
 {
 public:
 	void OnReceivedView(GameStateModule & gameState);
+	void Initialize();
 };
+
+//Initialization (called before game loop)
+void MyApplication::Initialize(GameStateModule & gameState)
+{
+
+}
+
 
 //Seems to be the game loop, I think we should put out game logic in here - Matt
 void MyApplication::OnReceivedView(GameStateModule & gameState)
@@ -91,6 +99,11 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 
 	//test lieutenant
 	Lieutenant lieut;
+	General gen(maxCoordX, maxCoordY);
+	gen.SetEnemies(enemies);
+	gen.Loop();
+	gen.Print();
+
 	bool draw_flag = true;
 	//GAME LOOP
 	for(size_t i(0); i<myUnits.size(); ++i)

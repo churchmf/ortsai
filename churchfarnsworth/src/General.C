@@ -90,8 +90,8 @@ void General::Loop()
 		Tile* tile = &(grid[xLoc][yLoc]);
 		//std::cout << xLoc << yLoc << std::endl;
 
-		//if (tile.risk > 0)
-		//	tile.risk *= 0.9;
+		if (tile->risk > 0)
+			tile->risk *= 0.9;
 
 		if (tile->risk < 100)
 		{
@@ -108,16 +108,15 @@ void General::Print()
 			{
 				std::cout << "\t";
 				sint4 risk = grid[j][i].risk;
-				if risk > 0
+				if (risk > 0)
 					std::cout << "[" << risk << "]";
 				else
-					std::cout << "[" << "]";
+					std::cout << "[ " << "]";
 			}
 			std::cout << std::endl;
 		}
 	std::cout << std::endl;
 }
-
 
 //General Loop
 /*
