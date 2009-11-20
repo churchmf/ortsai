@@ -158,8 +158,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		}
 	}
 
-	//general.Loop(enemies);
-	//general.Print();
+	general->Loop(enemies);
+	general->Print();
 
 	bool draw_flag = true;
 	//GAME LOOP

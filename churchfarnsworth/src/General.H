@@ -24,7 +24,7 @@ public:
 	{
 		sint4 x;
 		sint4 y;
-		sint4 risk;
+		real8 risk;
 	};
 private:
 	real8 width;			//width of map

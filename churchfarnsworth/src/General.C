@@ -91,12 +91,18 @@ void General::Loop(Vector<Unit> theEnemies)
 		Tile* tile = &(grid[xLoc][yLoc]);
 		//std::cout << xLoc << yLoc << std::endl;
 
-		if (tile->risk > 0)
-			tile->risk *= 0.9;
-
-		if (tile->risk < 100)
+		if (tile->risk < 50)
 		{
 			tile->risk += riskValue;
+		}
+	}
+	for (int i = 0; i < yGrid; ++i)
+	{
+		for (int j = 0; j < xGrid; ++j)
+		{
+			Tile* tile = &(grid[j][i]);
+			if (tile->risk > 0)
+				tile->risk *= 0.8;
 		}
 	}
 }
