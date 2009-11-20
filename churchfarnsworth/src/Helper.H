@@ -44,6 +44,7 @@ class Unit
 	const Game *	game;
 	GameObj *		unit;
 	ScriptObj *		weapon;
+	sint4			mode;
 public:
 					Unit(const Game & game, ScriptObj * object);
 
@@ -67,7 +68,8 @@ public:
 	sint4			GetSpeed() const;			// Get the current speed of the unit
 	sint4			GetHitpoints() const;		// Get the current hitpoints of the unit
 
-	sint4			GetType() const;			// Get the type of unit (1=marine,2=tank)
+	sint4			GetType() const;			// Get the type of the unit (1=marine,2=tank)
+	sint4			GetMode() const;			// Get the mode of the unit (0=weapon, 2=siege)
 
 	//////////////
 	// Commands //
