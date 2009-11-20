@@ -146,7 +146,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		Movement::Module::ptr mm = Movement::MakeModule(gameState, 2);
 		mm->addPathfinder("Default",Movement::MakeTriangulationPathfinder());
 		mm->addPathExecutor("Default",Movement::MakeMultiFollowExecutor());
-		Movement::Context mc(*mm,"Default","Default");
+		//Movement::Context mc(*mm,"Default","Default");
 
 		//mc.moveUnit(someUnit, Movement::MoveToPoint(x,y));
 		/*
