@@ -145,9 +145,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		}
 	}
 
-	//test lieutenant
-	Lieutenant lieut(gameState);
-	General gen(maxCoordX, maxCoordY);
 	general.SetEnemies(enemies);
 	general.Loop(enemies);
 	general.Print();
@@ -161,8 +158,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		// If the unit has a weapon, look for targets
 		if(unit.HasWeapon())
 		{
-			lieut.AssignUnit(unit);
-
 			// Cache the unit's position and the range of its weapon
 			const vec2	position(unit.GetPosition());
 			const sint4 range(unit.GetWeaponRange());
