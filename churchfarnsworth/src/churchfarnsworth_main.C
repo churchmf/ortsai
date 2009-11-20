@@ -39,12 +39,53 @@ void MyApplication::Initialize(GameStateModule & gameState)
 	const Game & game(gameState.get_game());
 	const sint4 maxCoordX(map.get_width()  * game.get_tile_points());
 	const sint4 maxCoordY(map.get_height() * game.get_tile_points());
+
+	Vector<Unit> myUnits,enemies;
+
+	//AQUIRE AND SORT ALL OBJECTS
+	for(int team(0); team<game.get_player_num(); ++team)
+	{
+		// Get the units on this team
+		const Game::ObjCont & units(game.get_objs(team));
+		FORALL(units, it)
+		{
+			// Skip non-game objects (such as graphics objects)
+			if(!(*it)->get_GameObj()) continue;
+
+			// Skip dead units
+			Unit unit(game,*it);
+			if(!unit.IsAlive()) continue;
+
+			// Store unit as our unit or as enemy
+			if(team == myClient)
+			{
+				myUnits.push_back(unit);
+			}
+			else
+			{
+				enemies.push_back(unit);
+			}
+		}
+	}
+
+	for(size_t i(0); i<myUnits.size(); ++i)
+	{
+		Unit & unit(myUnits[i]);
+
+		// If the unit has a weapon, look for targets
+		if(unit.HasWeapon())
+		{
+			Lieutenants[0].AssignUnit(unit);
+		}
+	}
+
 	for (int i=0;i<5;++i)
 	{
-		Lieutenant lieutenant();
-		Lieutenants;
+		Lieutenant lieutenant(gameState);
+		Lieutenants[i].push_back(lieutenant);
 	}
 	general(maxCoordX, maxCoordY);
+	captain();
 }
 
 
