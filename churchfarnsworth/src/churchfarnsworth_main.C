@@ -14,8 +14,7 @@ For instance, in the case of "lab2.template", we need a "src/template_main.C", w
 #include "Captain.H"
 #include "General.H"
 
-#include "../../../orts/trunk/libs/pathfinding/path/src/Path.H"
-#include "../../../orts/trunk/libs/pathfinding/forcefield/src/ForceFieldPE.H"
+#include "Movement.H"
 #include "TerrainBase.H"
 #include "PathfindTask.H"
 #include "Game.H"
@@ -142,14 +141,14 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			}
 
 			//lieut.DoFormation(vec2(1,0));
-			TerrainBase::Goal goal(TerrainBase::Goal::LOCATION, TerrainBase::Goal::TOUCH);
-			PathfindTask::PathfindTask pft(TerrainBase::Goal::LOCATION);
-			ForceFieldPE::ForceFieldPE f();
 
 		}
+		Movement::Module::ptr mm = Movement::MakeModule(gameState, 2);
+		mm->addPathfinder("Default",Movement::MakeTriangulationPathfinder());
+		mm->addPathExecutor("Default",Movement::MakeMultiFollowExecutor());
+		Movement::Context mc(*mm,"Default","Default");
 
-
-
+		//mc.moveUnit(someUnit, Movement::MoveToPoint(x,y));
 		/*
 		if(!unit.IsMoving())
 		{
