@@ -27,7 +27,7 @@ a) In one terminal window, start a server using the script "tournament-2008/game
 or the command "bin/orts -game4 -bp tournament-2008/game4.bp -x 64 -y 48 -fplat 0 -nfog -nplayers 2".
 
 b) In a second terminal window, start a client with the command
-"bin/churchfarnsworth -usegfx -p tournament-2008/ortsg -nfog -refresh 0 -nosound".
+"bin/churchfarnsworth -disp -p tournament-2008/ortsg -nfog -refresh 0 -nosound".
 This will start an AI client with an associated ORTSG window.
 
 c) In a third terminal window, start another client with the command "bin/churchfarnsworth".
