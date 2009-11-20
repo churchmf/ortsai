@@ -27,16 +27,16 @@ void Captain::SetLieutenants(Vector<Lieutenant*> theLieutenants)
 	Lieutenants = theLieutenants;
 }
 
-Lieutenant& Captain::CheckAid()
+vec2 Captain::CheckAid()
 {
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
 		if (Lieutenants[i]->RequestsAid())
 		{
-			return Lieutenants[i];
+			return Lieutenants[i]->GetLocation();
 		}
-
 	}
+	return vec2(-1,-1);
 }
 
 void Captain::Loop(Vector<Lieutenant*> theLieutenants)
