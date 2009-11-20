@@ -32,6 +32,7 @@ public:
 //Initialization (called before game loop)
 void MyApplication::Initialize(GameStateModule & gameState)
 {
+	std::cout << "TEST" << std::endl;
 
 }
 

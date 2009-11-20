@@ -84,7 +84,7 @@ int Application::Run(int argc, char * argv[])
 	}
 
 	// Any user initialization
-	Initialize();
+	Initialize(*gameState);
 
 	// If the user has specified the graphical client, start it
 	if(usegfx)

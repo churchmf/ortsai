@@ -48,7 +48,7 @@ public:
 	~Application();
 
 	virtual void OnReceivedView(GameStateModule & gameState) = 0;
-	virtual void Initialize() = 0;		//Initialize Game Objects and Variables
+	virtual void Initialize(GameStateModule & gameState) = 0;		//Initialize Game Objects and Variables
 
 	int Run(int argc, char * argv[]);
 
