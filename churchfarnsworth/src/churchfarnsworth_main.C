@@ -158,7 +158,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		}
 	}
 
-	general->Loop(enemies);
+	general->Loop(enemies, myUnits);
 	general->Print();
 
 	bool draw_flag = true;
@@ -189,12 +189,12 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			}
 
 
-			Lieutenants[0]->DoFormation(vec2(1,0), gameState);
+			//Lieutenants[0]->DoFormation(vec2(1,0), gameState);
 			// If this unit is currently not moving
-			//if(!unit.IsMoving())
-			//{
-				//unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed(), gameState);
-			//}
+			if(!unit.IsMoving())
+			{
+				unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
+			}
 		}
 
 		//mc.moveUnit(someUnit, Movement::MoveToPoint(x,y));

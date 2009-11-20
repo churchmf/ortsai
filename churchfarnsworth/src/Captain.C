@@ -39,6 +39,12 @@ vec2 Captain::CheckAid()
 	return vec2(-1,-1);
 }
 
+//TODO: we might need to rework strategy now that tanks don't siege
+Lieutenant* Captain::GetFurthestLieut()
+{
+
+}
+
 void Captain::Loop(Vector<Lieutenant*> theLieutenants)
 {
 	SetLieutenants(theLieutenants);
