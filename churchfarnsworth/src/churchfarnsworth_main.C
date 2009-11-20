@@ -87,7 +87,6 @@ void MyApplication::Initialize(GameStateModule & gameState)
 
 		if(unit.HasWeapon())
 		{
-			std::cout << "TEST" << std::endl;
 			Lieutenants[0]->AssignUnit(unit);
 
 		}
@@ -209,7 +208,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		*/
 	}
 
-	std::cout << Lieutenants[0]->GetLocation().x << std::endl;
 	// tester stuff
 	vec2 ltPos = Lieutenants[0]->GetLocation();
 	DrawDebugCircle(ltPos, 100, Color(1,1,0));
