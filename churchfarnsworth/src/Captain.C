@@ -7,11 +7,54 @@
 
 #include "Captain.H"
 
-Captain::Captain() {
-	// TODO Auto-generated constructor stub
+#include "Application.H"
+#include "Game.H"
+#include "GameObj.H"
+#include "GameStateModule.H"
+
+Captain::Captain()
+{
 
 }
 
-Captain::~Captain() {
-	// TODO Auto-generated destructor stub
+Captain::~Captain()
+{
+
+}
+
+void Captain::SetLieutenants(Vector<Lieutenant*> theLieutenants)
+{
+	Lieutenants = theLieutenants;
+}
+
+void Captain::CheckAid()
+{
+	for(size_t i(0); i<Lieutenants.size(); ++i)
+	{
+		if (Lieutenants[i].requestsAid())
+		{
+
+		}
+
+	}
+}
+
+void Captain::Loop(Vector<Lieutenant*> theLieutenants)
+{
+	SetLieutenants(theLieutenants);
+	/*
+	choose Lieutenant furthest from Enemy location
+	if (squad healthy and not engaged):
+	  check for nearest aid request
+	  if (aid request):
+	    choose safe deployment location towards endangered squad
+	  else:
+	    choose safe deployment location towards nearest enemy location
+	else:
+	  if (winning):
+	    continue fighting
+	  else:
+	    fallback
+	    request aid
+	*/
 }

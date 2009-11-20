@@ -19,6 +19,7 @@ public:
 	bool RelieveUnit(Unit unit);	//Remove a Unit from the control of the Lieutenant, returns true if removed
 	sint4 GetHealth();				//Returns the percentage of total Squad health
 	bool IsEngaged();				//Returns true if the Squad is in combat
+	bool RequestsAid();				//Returns true if the Squad requests aid
 	vec2 GetLocation();				//Returns a the centeralized location of the squad
 	void DoFormation(vec2);			//Does the Squad formation
 	void MoveTo(vec2);				//Moves the Squad to target location
@@ -29,6 +30,7 @@ private:
 	sint4 health;
 	vec2 location;
 	bool engaged;
+	bool requestsAid;
 	Movement::Context *mc;
 };
 

@@ -193,7 +193,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			{
 				unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
 			}
-
 		}
 
 		//mc.moveUnit(someUnit, Movement::MoveToPoint(x,y));
@@ -212,8 +211,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 	vec2 ltPos = Lieutenants[0]->GetLocation();
 	DrawDebugCircle(ltPos, 100, Color(1,1,0));
 	draw_flag = false;
-
-
 }
 
 int main(int argc, char * argv[])

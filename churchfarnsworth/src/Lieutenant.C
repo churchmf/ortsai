@@ -20,6 +20,7 @@ const sint4 tank = 2;
 Lieutenant::Lieutenant(GameStateModule& gameState)
 {
 	engaged = 0;
+	requestsAid = 0;
 	health = 0;
 	location = vec2(0,0);
 
@@ -72,6 +73,11 @@ sint4 Lieutenant::GetHealth()
 bool Lieutenant::IsEngaged()
 {
 	return engaged;
+}
+
+bool Lieutenant::RequestsAid()
+{
+	return requestsAid;
 }
 
 vec2 Lieutenant::GetLocation()

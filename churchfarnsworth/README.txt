@@ -9,12 +9,7 @@ Evan Farnsworth
 Check out the Team Wiki at http://code.google.com/p/orts3cf/w/list
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-Hey Evan,
 This is all based off the tutorial in CMPUT396 Newsgroup Lab 2.
-Right now, it is a direct copy of labs2.template/template_main.C (our churchfarnsworth_main.C)
-This is where we will be editing the AI, most of the other classes are just helper classes needed to run the program
-
 
 How to run application:
 
