@@ -15,7 +15,7 @@ public:
 	General(sint4 mapWidth, sint4 mapHeight);
 	virtual ~General();
 	void CreateGrid();		//Initializes the risk grid
-	void Loop();			//The General's game loop, all logic should be done here. Is called once every iteration of the game loop.
+	void Loop(Vector<Unit> theEnemies);			//The General's game loop, all logic should be done here. Is called once every iteration of the game loop.
 	void SetEnemies(Vector<Unit> theEnemies);	//Set the list of enemies
 	void Print();			//Prints a debugging view of the risk grid
 
