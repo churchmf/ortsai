@@ -27,13 +27,13 @@ void Captain::SetLieutenants(Vector<Lieutenant*> theLieutenants)
 	Lieutenants = theLieutenants;
 }
 
-void Captain::CheckAid()
+Lieutenant& Captain::CheckAid()
 {
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
 		if (Lieutenants[i]->RequestsAid())
 		{
-
+			return Lieutenants[i];
 		}
 
 	}
