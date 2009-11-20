@@ -188,11 +188,13 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 				}
 			}
 
+
+			Lieutenants[0]->DoFormation(vec2(1,0), gameState);
 			// If this unit is currently not moving
-			if(!unit.IsMoving())
-			{
-				unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
-			}
+			//if(!unit.IsMoving())
+			//{
+				//unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed(), gameState);
+			//}
 		}
 
 		//mc.moveUnit(someUnit, Movement::MoveToPoint(x,y));
