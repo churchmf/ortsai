@@ -28,9 +28,9 @@ public:
 	void OnReceivedView(GameStateModule & gameState);
 	void Initialize(GameStateModule & gameState);
 private:
-	Vector<Lieutenant> Lieutenants;
-	//General* general;
-	//Captain captain;
+	Vector<Lieutenant*> Lieutenants;
+	General* general;
+	Captain* captain;
 };
 
 //Initialization (called before game loop)
@@ -43,6 +43,7 @@ void MyApplication::Initialize(GameStateModule & gameState)
 
 	const sint4	myClient(game.get_client_player());
 	Vector<Unit> myUnits,enemies;
+
 
 	//AQUIRE AND SORT ALL OBJECTS
 	for(int team(0); team<game.get_player_num(); ++team)
@@ -70,23 +71,32 @@ void MyApplication::Initialize(GameStateModule & gameState)
 		}
 	}
 
-	for(size_t i(0); i<myUnits.size(); ++i)
-	{
-		Unit & unit(myUnits[i]);
+	//Lieutenants = Vector<Lieutenant>(5);
+	Lieutenants.resize(5);
 
-		// If the unit has a weapon, look for targets
-		if(unit.HasWeapon())
-		{
-			Lieutenants[0].AssignUnit(unit);
-		}
-	}
-
+	std::cout << "CREATE LIEUTS" << std::endl;
 	for (int i=0;i<5;++i)
 	{
-		Lieutenant lieutenant(gameState);
+		Lieutenant* lieutenant = new Lieutenant(gameState);
 		Lieutenants.push_back(lieutenant);
 	}
-	//general(maxCoordX, maxCoordY);
+
+	std::cout << "ADD UNITS" << std::endl;
+	std::cout << myUnits.size() << std::endl;
+	for(size_t i(0); i< myUnits.size(); ++i)
+	{
+
+		std::cout << "ADD UNITS" << std::endl;
+		Unit & unit(myUnits[i]);
+
+		if(unit.HasWeapon())
+		{
+			std::cout << "TEST" << std::endl;
+			Lieutenants[0]->AssignUnit(unit);
+
+		}
+	}
+	general = new General(maxCoordX, maxCoordY);
 	//captain();
 }
 
@@ -94,6 +104,12 @@ void MyApplication::Initialize(GameStateModule & gameState)
 //Seems to be the game loop, I think we should put out game logic in here - Matt
 void MyApplication::OnReceivedView(GameStateModule & gameState)
 {
+	static bool firstFrame = true;
+	if(firstFrame)
+	{
+		Initialize(gameState);
+		firstFrame = false;
+	}
 	// INFO: You can examine the GameChanges class to determine many things
 	// about what has changed between the last view and the current one
 	// See GameStateModule::get_changes(),
@@ -177,15 +193,11 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 				}
 			}
 
-			//testing move of lieutenant
-			//lieut.MoveTo(vec2(maxCoordX, maxCoordY));
 			// If this unit is currently not moving
 			if(!unit.IsMoving())
 			{
 				unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
 			}
-
-			//lieut.DoFormation(vec2(1,0));
 
 		}
 
@@ -201,10 +213,12 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		*/
 	}
 
+	std::cout << Lieutenants[0]->GetLocation().x << std::endl;
 	// tester stuff
-	vec2 ltPos = Lieutenants[0].GetLocation();
+	vec2 ltPos = Lieutenants[0]->GetLocation();
 	DrawDebugCircle(ltPos, 100, Color(1,1,0));
 	draw_flag = false;
+
 
 }
 
