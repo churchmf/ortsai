@@ -14,9 +14,14 @@ For instance, in the case of "lab2.template", we need a "src/template_main.C", w
 #include "Captain.H"
 #include "General.H"
 
+#include "../../../orts/trunk/libs/pathfinding/path/src/Path.H"
+#include "../../../orts/trunk/libs/pathfinding/forcefield/src/ForceFieldPE.H"
+#include "TerrainBase.H"
+#include "PathfindTask.H"
 #include "Game.H"
 #include "GameObj.H"
 #include "GameStateModule.H"
+using namespace std;
 
 class MyApplication : public Application
 {
@@ -86,7 +91,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 
 	//test lieutenant
 	Lieutenant lieut;
-
+	bool draw_flag = true;
 	//GAME LOOP
 	for(size_t i(0); i<myUnits.size(); ++i)
 	{
@@ -101,7 +106,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			const vec2	position(unit.GetPosition());
 			const sint4 range(unit.GetWeaponRange());
 			const sint4 rangeSq(range*range);
-			DrawDebugCircle(position,range,Color(1,1,1));
+			//DrawDebugCircle(position,range,Color(1,1,1));
 
 			// Choose the first enemy unit we find in range
 			for(size_t j(0); j<enemies.size(); ++j)
@@ -116,16 +121,22 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			}
 
 			//testing move of lieutenant
-			lieut.MoveTo(vec2(maxCoordX, maxCoordY));
+			//lieut.MoveTo(vec2(maxCoordX, maxCoordY));
+			// If this unit is currently not moving
+			if(!unit.IsMoving())
+			{
+				unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
+			}
+
+			//lieut.DoFormation(vec2(1,0));
+			TerrainBase::Goal goal(TerrainBase::Goal::LOCATION, TerrainBase::Goal::TOUCH);
+			PathfindTask::PathfindTask pft(TerrainBase::Goal::LOCATION);
+			ForceFieldPE::ForceFieldPE f();
+
 		}
 
-		/*
-		// If this unit is currenly not moving
-		if(!unit.IsMoving())
-		{
-			unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
-		}
-		*/
+
+
 		/*
 		if(!unit.IsMoving())
 		{
@@ -136,6 +147,12 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		}
 		*/
 	}
+
+	// tester stuff
+	vec2 ltPos = lieut.GetLocation();
+	DrawDebugCircle(ltPos, 100, Color(1,1,0));
+	draw_flag = false;
+
 }
 
 int main(int argc, char * argv[])
