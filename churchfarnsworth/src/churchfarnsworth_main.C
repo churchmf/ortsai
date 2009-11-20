@@ -27,13 +27,24 @@ class MyApplication : public Application
 public:
 	void OnReceivedView(GameStateModule & gameState);
 	void Initialize(GameStateModule & gameState);
+private:
+	Vector<Lieutenant> Lieutenants;
+	General general;
+	Captain captain;
 };
 
 //Initialization (called before game loop)
 void MyApplication::Initialize(GameStateModule & gameState)
 {
-	std::cout << "TEST" << std::endl;
-
+	const Game & game(gameState.get_game());
+	const sint4 maxCoordX(map.get_width()  * game.get_tile_points());
+	const sint4 maxCoordY(map.get_height() * game.get_tile_points());
+	for (int i=0;i<5;++i)
+	{
+		Lieutenant lieutenant();
+		Lieutenants;
+	}
+	general(maxCoordX, maxCoordY);
 }
 
 
@@ -67,10 +78,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 	const sint4	myClient(game.get_client_player());
 	Vector<Unit> myUnits,enemies;
 
-	//predefined unit types, used with unit.GetType() - Matt
-	const sint4 marine = 1;
-	const sint4 tank = 2;
-
 	//AQUIRE AND SORT ALL OBJECTS
 	for(int team(0); team<game.get_player_num(); ++team)
 	{
@@ -100,9 +107,9 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 	//test lieutenant
 	Lieutenant lieut(gameState);
 	General gen(maxCoordX, maxCoordY);
-	gen.SetEnemies(enemies);
-	gen.Loop();
-	gen.Print();
+	general.SetEnemies(enemies);
+	general.Loop(enemies);
+	general.Print();
 
 	bool draw_flag = true;
 	//GAME LOOP
