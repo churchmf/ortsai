@@ -19,7 +19,7 @@ public:
 	sint4 GetHealth();				//Returns the percentage of total Squad health
 	bool IsEngaged();				//Returns true if the Squad is in combat
 	vec2 GetLocation();				//Returns a the centeralized location of the squad
-	void DoFormation();				//Does the Squad formation
+	void DoFormation(vec2);			//Does the Squad formation
 	void MoveTo(vec2);				//Moves the Squad to target location
 	void Loop();					//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
 
