@@ -86,14 +86,15 @@ vec2 Lieutenant::GetLocation()
 }
 
 //default, needs updating
-void Lieutenant::DoFormation()
+//NOT OPTIMAL pattern
+void Lieutenant::DoFormation(vec2 dir)
 {
 	location = GetLocation();
 	vec2 initUnitPos = location;
 	vec2 unitPos = initUnitPos;
 
 	//TODO: make this dynamic to what direction you are pointing
-	vec2 ltDirection = vec2(1,0);
+	vec2 ltDirection = dir;
 
 	vec2 rowDirection = vec2(-ltDirection.y, ltDirection.x);//direction of the rows
 
@@ -103,10 +104,10 @@ void Lieutenant::DoFormation()
 	//		from the LT. so if more units get added, this can just be
 	//		incremented for every for loop and each subsiquent row will
 	//		be 'unitOffset' closer to the LT for the previous row.
-	sint4 marineOffset = 5;//distance between each marine in the row
-	sint4 tankOffset = 10;//distance between the tanks in the row
-	sint4 unitOffset = 10;//space between rows
-	sint4 frontLine = 30;//distance of frontline from LT
+	sint4 marineOffset = 12;//distance between each marine in the row
+	sint4 tankOffset = 20;//distance between the tanks in the row
+	sint4 unitOffset = 40;//space between rows
+	sint4 frontLine = 50;//distance of frontline from LT
 
 	sint4 displace = 1;
 
