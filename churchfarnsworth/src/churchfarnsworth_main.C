@@ -201,7 +201,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 	}
 
 	// tester stuff
-	vec2 ltPos = lieut.GetLocation();
+	vec2 ltPos = Lieutenants[0].GetLocation();
 	DrawDebugCircle(ltPos, 100, Color(1,1,0));
 	draw_flag = false;
 
