@@ -62,29 +62,35 @@ void General::Loop(Vector<Unit> theEnemies)
 		sint4 type = enemy.GetType();
 		vec2 location = enemy.GetPosition();
 
+		//enemy health %
+		real8 hp = enemy.GetHitpoints();
+		real8 maxHp = enemy.GetMaxHitpoints();
+		real8 health = (hp/maxHp);
+
+
 		//std::cout << location.x << location.y << std::endl;
-		sint4 riskValue = 0;
+		real8 riskValue = 0;
 
 		if (type == marine)
 		{
-			riskValue = 1;
+			riskValue = 2*health;
 		}
 		else if (type == tank)
 		{
 			//if tank is sieged
 			if (enemy.GetMode() == 2)
 			{
-				riskValue = 5;
+				riskValue = 8*health;
 			}
 			else
 			{
-				riskValue = 3;
+				riskValue = 4*health;
 			}
 		}
 		//convert to appropriate grid tile
 		real8 x = location.x;
 		real8 y = location.y;
-		//std::cout << a/b << (sint8)location.y/height << std::endl;
+		//std::cout << (hp/maxHp) << std::endl;
 		sint4 xLoc = xGrid * (x/width);
 		sint4 yLoc = yGrid * (y/height);
 
