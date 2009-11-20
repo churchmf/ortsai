@@ -38,7 +38,8 @@ class Application : public EventHandler
 	Vector<DebugLine>	debugLines;
 	Vector<DebugCircle>	debugCircles;
 
-	void OnUpdate();
+	void OnUpdate();				// Game Update Loop, called
+
 protected:
 	void DrawDebugLine(const vec2 & start, const vec2 & end, const Color & color);
 	void DrawDebugCircle(const vec2 & center, sint4 radius, const Color & color);
@@ -47,6 +48,7 @@ public:
 	~Application();
 
 	virtual void OnReceivedView(GameStateModule & gameState) = 0;
+	virtual void Initialize() = 0;		//Initialize Game Objects and Variables
 
 	int Run(int argc, char * argv[]);
 

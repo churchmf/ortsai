@@ -83,6 +83,9 @@ int Application::Run(int argc, char * argv[])
 		debugDisplay->display();
 	}
 
+	// Any user initialization
+	Initialize();
+
 	// If the user has specified the graphical client, start it
 	if(usegfx)
 	{
@@ -105,6 +108,8 @@ int Application::Run(int argc, char * argv[])
 		{
 			OnUpdate();
 		}
+
+		//do cleanup
 	}
 	return 0;
 }
