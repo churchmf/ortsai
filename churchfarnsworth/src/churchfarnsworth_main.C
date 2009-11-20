@@ -29,17 +29,19 @@ public:
 	void Initialize(GameStateModule & gameState);
 private:
 	Vector<Lieutenant> Lieutenants;
-	General general;
-	Captain captain;
+	//General* general;
+	//Captain captain;
 };
 
 //Initialization (called before game loop)
 void MyApplication::Initialize(GameStateModule & gameState)
 {
 	const Game & game(gameState.get_game());
+	const Map<GameTile> & map(game.get_map());
 	const sint4 maxCoordX(map.get_width()  * game.get_tile_points());
 	const sint4 maxCoordY(map.get_height() * game.get_tile_points());
 
+	const sint4	myClient(game.get_client_player());
 	Vector<Unit> myUnits,enemies;
 
 	//AQUIRE AND SORT ALL OBJECTS
@@ -82,10 +84,10 @@ void MyApplication::Initialize(GameStateModule & gameState)
 	for (int i=0;i<5;++i)
 	{
 		Lieutenant lieutenant(gameState);
-		Lieutenants[i].push_back(lieutenant);
+		Lieutenants.push_back(lieutenant);
 	}
-	general(maxCoordX, maxCoordY);
-	captain();
+	//general(maxCoordX, maxCoordY);
+	//captain();
 }
 
 
@@ -145,9 +147,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 		}
 	}
 
-	general.SetEnemies(enemies);
-	general.Loop(enemies);
-	general.Print();
+	//general.Loop(enemies);
+	//general.Print();
 
 	bool draw_flag = true;
 	//GAME LOOP
