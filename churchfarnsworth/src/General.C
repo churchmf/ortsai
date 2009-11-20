@@ -102,13 +102,16 @@ void General::Loop()
 
 void General::Print()
 {
-	for (int i = 0; i < xGrid; ++i)
+	for (int i = 0; i < yGrid; ++i)
 		{
-			for (int j = 0; j < yGrid; ++j)
+			for (int j = 0; j < xGrid; ++j)
 			{
 				std::cout << "\t";
-				sint4 risk = grid[i][j].risk;
-				std::cout << "[" << risk << "]";
+				sint4 risk = grid[j][i].risk;
+				if risk > 0
+					std::cout << "[" << risk << "]";
+				else
+					std::cout << "[" << "]";
 			}
 			std::cout << std::endl;
 		}
