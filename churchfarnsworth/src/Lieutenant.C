@@ -6,21 +6,28 @@
  */
 
 #include "Lieutenant.H"
-
+#include "Movement.H"
 #include "Application.H"
 #include "Game.H"
 #include "GameObj.H"
 #include "GameStateModule.H"
+#include "ST_ForceField.H"
 
 //constant values for marine and tanks used with unit.GetType()
 const sint4 marine = 1;
 const sint4 tank = 2;
 
-Lieutenant::Lieutenant()
+Lieutenant::Lieutenant(GameStateModule& gameState)
 {
 	engaged = 0;
 	health = 0;
 	location = vec2(0,0);
+
+	std::string def("Default");
+	Movement::Module::ptr mm = Movement::MakeModule(gameState, 2);
+	mm->addPathfinder(def,Movement::MakeTriangulationPathfinder());
+	mm->addPathExecutor(def,Movement::MakeMultiFollowExecutor());
+	mc = new Movement::Context(*mm,def,def);
 }
 
 Lieutenant::~Lieutenant()

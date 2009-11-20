@@ -10,6 +10,7 @@
 #include "Game.H"
 #include "GUI.H"
 #include "DrawOnTerrain2D.H"
+#include "ST_ForceField.H"
 
 // Constants
 static const char *	VERSION	= "Orts Sample Application";
@@ -43,6 +44,7 @@ int Application::Run(int argc, char * argv[])
 	GameStateModule::Options::add();	// Used for network synchronisation
 	GUI::add_options();					// Used for 2D debug display
 	GfxModule::Options::add();			// Used for ORTSG
+	SimpleTerrain::ST_ForceField::add_options();
 
 	// Process command line options
 	if(Options::process(argc, argv, std::cerr, VERSION)) return -20;

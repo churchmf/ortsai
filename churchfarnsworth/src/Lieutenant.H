@@ -8,11 +8,12 @@
 #define LIEUTENANT_H_
 
 #include "Helper.H"
+#include "Movement.H"
 
 
 class Lieutenant {
 public:
-	Lieutenant();
+	Lieutenant(GameStateModule&);
 	virtual ~Lieutenant();
 	void AssignUnit(Unit unit);		//Assign a Unit to the control of the Lieutenant
 	bool RelieveUnit(Unit unit);	//Remove a Unit from the control of the Lieutenant, returns true if removed
@@ -28,6 +29,7 @@ private:
 	sint4 health;
 	vec2 location;
 	bool engaged;
+	Movement::Context *mc;
 };
 
 #endif /* LIEUTENANT_H_ */
