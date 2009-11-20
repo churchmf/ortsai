@@ -98,7 +98,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 	}
 
 	//test lieutenant
-	Lieutenant lieut;
+	Lieutenant lieut(gameState);
 	General gen(maxCoordX, maxCoordY);
 	gen.SetEnemies(enemies);
 	gen.Loop();
@@ -144,10 +144,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			//lieut.DoFormation(vec2(1,0));
 
 		}
-		Movement::Module::ptr mm = Movement::MakeModule(gameState, 2);
-		mm->addPathfinder("Default",Movement::MakeTriangulationPathfinder());
-		mm->addPathExecutor("Default",Movement::MakeMultiFollowExecutor());
-		//Movement::Context mc(*mm,"Default","Default");
 
 		//mc.moveUnit(someUnit, Movement::MoveToPoint(x,y));
 		/*
