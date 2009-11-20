@@ -52,8 +52,9 @@ void General::SetEnemies(Vector<Unit> theEnemies)
 	enemies = theEnemies;
 }
 
-void General::Loop()
+void General::Loop(Vector<Unit> theEnemies)
 {
+	SetEnemies(theEnemies);
 
 	for(size_t i(0); i<enemies.size(); ++i)
 	{
