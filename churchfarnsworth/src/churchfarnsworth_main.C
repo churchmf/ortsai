@@ -26,7 +26,7 @@ class MyApplication : public Application
 {
 public:
 	void OnReceivedView(GameStateModule & gameState);
-	void Initialize();
+	void Initialize(GameStateModule & gameState);
 };
 
 //Initialization (called before game loop)
