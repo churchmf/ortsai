@@ -72,7 +72,6 @@ void MyApplication::Initialize(GameStateModule & gameState)
 	}
 
 	//Lieutenants = Vector<Lieutenant>(5);
-	Lieutenants.resize(5);
 
 	std::cout << "CREATE LIEUTS" << std::endl;
 	for (int i=0;i<5;++i)
@@ -81,12 +80,9 @@ void MyApplication::Initialize(GameStateModule & gameState)
 		Lieutenants.push_back(lieutenant);
 	}
 
-	std::cout << "ADD UNITS" << std::endl;
-	std::cout << myUnits.size() << std::endl;
+	std::cout << "ALLOCATE UNITS" << std::endl;
 	for(size_t i(0); i< myUnits.size(); ++i)
 	{
-
-		std::cout << "ADD UNITS" << std::endl;
 		Unit & unit(myUnits[i]);
 
 		if(unit.HasWeapon())
