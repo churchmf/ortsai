@@ -20,6 +20,9 @@ General::General(sint4 mapWidth, sint4 mapHeight)
 {
 	width = mapWidth;
 	height = mapHeight;
+	//default 10x10 risk grid
+	xGrid = 10;
+	yGrid = 10;
 
 	CreateGrid();
 }
@@ -31,11 +34,11 @@ General::~General()
 
 void General::CreateGrid()
 {
-	grid = new Tile*[width];
-	for (int i = 0; i < width; ++i)
+	grid = new Tile*[xGrid];
+	for (int i = 0; i < xGrid; ++i)
 	{
-		grid[i] = new Tile[height];
-		for (int j = 0; j < height; ++j)
+		grid[i] = new Tile[yGrid];
+		for (int j = 0; j < yGrid; ++j)
 		{
 			grid[i][j].x = i;
 			grid[i][j].y = j;
@@ -51,19 +54,14 @@ void General::SetEnemies(Vector<Unit> theEnemies)
 
 void General::Loop()
 {
-	for (int i = 0; i < width; ++i)
-	{
-		for (int j = 0; j < height; ++j)
-		{
-			grid[i][j].risk = 0;
-		}
-	}
 
 	for(size_t i(0); i<enemies.size(); ++i)
 	{
 		Unit & enemy(enemies[i]);
 		sint4 type = enemy.GetType();
 		vec2 location = enemy.GetPosition();
+
+		//std::cout << location.x << location.y << std::endl;
 		sint4 riskValue = 0;
 
 		if (type == marine)
@@ -82,24 +80,35 @@ void General::Loop()
 				riskValue = 3;
 			}
 		}
-		Tile tile = grid[location.x][location.y];
-		if (tile.risk > 0)
-			tile.risk *= 0.9;
+		//convert to appropriate grid tile
+		real8 x = location.x;
+		real8 y = location.y;
+		//std::cout << a/b << (sint8)location.y/height << std::endl;
+		sint4 xLoc = xGrid * (x/width);
+		sint4 yLoc = yGrid * (y/height);
 
-		if (tile.risk < 50)
-			tile.risk += riskValue;
+		Tile* tile = &(grid[xLoc][yLoc]);
+		//std::cout << xLoc << yLoc << std::endl;
+
+		//if (tile.risk > 0)
+		//	tile.risk *= 0.9;
+
+		if (tile->risk < 100)
+		{
+			tile->risk += riskValue;
+		}
 	}
 }
 
 void General::Print()
 {
-	for (int i = 0; i < width; ++i)
+	for (int i = 0; i < xGrid; ++i)
 		{
-			for (int j = 0; j < height; ++j)
+			for (int j = 0; j < yGrid; ++j)
 			{
 				std::cout << "\t";
 				sint4 risk = grid[i][j].risk;
-				std::cout << "[" << risk << "]" << std::endl;
+				std::cout << "[" << risk << "]";
 			}
 			std::cout << std::endl;
 		}
