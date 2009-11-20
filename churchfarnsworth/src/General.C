@@ -110,7 +110,7 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 		real8 maxHp = friendly.GetMaxHitpoints();
 		real8 health = (hp/maxHp);
 
-		std::cout << location.x << location.y << std::endl;
+		//std::cout << location.x << location.y << std::endl;
 		real8 riskValue = 0;
 
 		if (type == marine)
