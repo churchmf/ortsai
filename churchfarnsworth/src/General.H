@@ -27,6 +27,7 @@ public:
 	void Print();													//Prints a debugging view of the risk grid
 	bool isLocationSafe(vec2 location);								//Returns true if risk value is less than safe value
 	Tile* ConvertToGridTile(vec2 location);							//Converts the given location on the map to the appropriate tile in the grid
+	vec2 GetClosestTarget(vec2 location);							//Returns location of the closest cluster of enemies to the target location
 
 private:
 	real8 width;			//width of map

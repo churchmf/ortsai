@@ -176,21 +176,45 @@ bool General::isLocationSafe(vec2 location)
 	}
 }
 
+//needs to be finished
+vec2 General::GetClosestTarget(vec2 location)
+{
+	Tile* tile = ConvertToGridTile(location);
+	sint4 xLoc = tile->x;
+	sint4 yLoc = tile->y;
+
+	for (int i = yLoc-1; i < yLoc+1; ++i)
+	{
+		for (int j = xLoc-1; j < xLoc+1; ++j)
+		{
+			sint4 x = (i/xGrid)*width;
+			sint4 y = (j/yGrid)*height;
+			//vec2 tileLoc = vec2(x,y);
+
+			if (grid[i][j].risk > safeValue)
+			{
+				//float diff = location.GetDistanceTo(tileLoc);
+				return vec2(x*width,y*height);
+			}
+		}
+	}
+}
+
 void General::Print()
 {
 	for (int i = 0; i < yGrid; ++i)
+	{
+		for (int j = 0; j < xGrid; ++j)
 		{
-			for (int j = 0; j < xGrid; ++j)
-			{
-				std::cout << "\t";
-				sint4 risk = grid[j][i].risk;
-				if (risk != 0)
-					std::cout << "[" << risk << "]";
-				else
-					std::cout << "[ " << "]";
-			}
-			std::cout << std::endl;
+			std::cout << "\t";
+			sint4 risk = grid[j][i].risk;
+			if (risk != 0)
+				std::cout << "[" << risk << "]";
+			else
+				std::cout << "[ " << "]";
 		}
+		std::cout << std::endl;
+	}
 	std::cout << std::endl;
 }
 
