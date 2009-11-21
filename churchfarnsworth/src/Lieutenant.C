@@ -195,15 +195,15 @@ void Lieutenant::MoveTo(vec2 target)
 {
 	location = target;
 	for (size_t i(0); i < marines.size(); ++i)
-		{
-			Unit & marine(marines[i]);
-			marine.MoveTo(location, marine.GetMaxSpeed());
-		}
-		for (size_t j(0); j < tanks.size(); ++j)
-		{
-			Unit & tank(tanks[j]);
-			tank.MoveTo(location, tank.GetMaxSpeed());
-		}
+	{
+		Unit & marine(marines[i]);
+		marine.MoveTo(location, marine.GetMaxSpeed());
+	}
+	for (size_t j(0); j < tanks.size(); ++j)
+	{
+		Unit & tank(tanks[j]);
+		tank.MoveTo(location, tank.GetMaxSpeed());
+	}
 }
 
 
