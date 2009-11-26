@@ -14,6 +14,10 @@ class General {
 public:
 	struct Tile
 	{
+		Tile() {}
+		Tile(sint4 x, sint4 y) : x(x), y(y) {}
+		float GetLength() const { return sqrtf(static_cast<float>(x*x+y*y)); }
+		float GetDistanceTo(const Tile & t) const { return (Tile(x-t.x,y-t.y)).GetLength(); }
 		sint4 x;
 		sint4 y;
 		real8 risk;
@@ -27,7 +31,9 @@ public:
 	void Print();													//Prints a debugging view of the risk grid
 	bool isLocationSafe(vec2 location);								//Returns true if risk value is less than safe value
 	Tile* ConvertToGridTile(vec2 location);							//Converts the given location on the map to the appropriate tile in the grid
-	vec2 GetClosestTarget(vec2 location);							//Returns location of the closest cluster of enemies to the target location
+	vec2 ConvertToLocation(Tile& tile);								//Converts the given tile to the center location of the tile on the map
+	vec2 GetClosestTarget(vec2 location);							//Returns tile location of nearest cluster of enemies from the location
+	vec2 GetFallBackLocation(vec2 location);						//Returns tile location of nearest safe Tile from the location
 
 private:
 	real8 width;			//width of map
