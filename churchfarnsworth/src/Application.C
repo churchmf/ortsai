@@ -11,6 +11,7 @@
 #include "GUI.H"
 #include "DrawOnTerrain2D.H"
 #include "ST_ForceField.H"
+#include "Movement.H"
 
 // Constants
 static const char *	VERSION	= "Orts Sample Application";
@@ -69,6 +70,12 @@ int Application::Run(int argc, char * argv[])
 	SDLinit::network_init();
 	gameState = new GameStateModule(GameStateModule::Options());
 	gameState->add_handler(this);
+
+	mm = Movement::MakeModule(*gameState, 110);
+	mm->addPathfinder("Default", Movement::MakeSimpleTerrainPathfinder());
+	mm->addPathExecutor("Default", Movement::MakeMultiFollowExecutor());
+	mc = new Movement::Context(*mm,"Default","Default");
+
 	if(!gameState->connect())
 	{
 		ERR("connection problems");
@@ -204,7 +211,7 @@ bool Application::handle_event(const Event & e)
 		if(e.get_what() == GameStateModule::VIEW_MSG)
 		{
 			// Send actions
-			OnReceivedView(*gameState);
+			OnReceivedView(*gameState, *mm, *mc);
 			gameState->send_actions();
 
 			// Compute graphics and frame statistics

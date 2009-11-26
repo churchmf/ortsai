@@ -4,6 +4,7 @@
 #include "EventHandler.H"
 #include "LoopFunctor.H"
 #include "Helper.H"
+#include "Movement.H"
 
 class Application;
 class GameStateModule;
@@ -27,6 +28,8 @@ class Application : public EventHandler
 	struct DebugCircle { vec2 p; sint4 r; Color c; };
 
 	GameStateModule *	gameState;
+	Movement::Module::ptr	mm;
+	Movement::Context *		mc;
 	GUI *				debugDisplay;
 	GfxModule *			graphicsClient;
 
@@ -47,7 +50,7 @@ public:
 	Application();
 	~Application();
 
-	virtual void OnReceivedView(GameStateModule & gameState) = 0;
+	virtual void OnReceivedView(GameStateModule & gameState, Movement::Module&, Movement::Context&) = 0;
 
 	int Run(int argc, char * argv[]);
 

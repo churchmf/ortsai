@@ -20,12 +20,13 @@ For instance, in the case of "lab2.template", we need a "src/template_main.C", w
 #include "Game.H"
 #include "GameObj.H"
 #include "GameStateModule.H"
+#include "GameChanges.H"
 using namespace std;
 
 class MyApplication : public Application
 {
 public:
-	void OnReceivedView(GameStateModule & gameState);
+	void OnReceivedView(GameStateModule & gameState,Movement::Module& mm, Movement::Context& mc);
 	void Initialize(GameStateModule & gameState);
 private:
 	Vector<Lieutenant*> Lieutenants;
@@ -97,7 +98,7 @@ void MyApplication::Initialize(GameStateModule & gameState)
 
 
 //Seems to be the game loop, I think we should put out game logic in here - Matt
-void MyApplication::OnReceivedView(GameStateModule & gameState)
+void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module& mm, Movement::Context& mc)
 {
 	static bool firstFrame = true;
 	if(firstFrame)
@@ -163,6 +164,23 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 
 	bool draw_flag = true;
 	//GAME LOOP
+
+	const sint4 me(gameState.get_game().get_client_player());
+	FORALL(gameState.get_changes().new_objs, it)
+	{
+		// If we have found a unit that belongs to us
+		GameObj * gob((*it)->get_GameObj());
+		if(gob && *(gob->sod.owner) == me)
+		{
+			// And if it is a mobile unit
+			if(gob->bp_name() == "marine" || gob->bp_name() == "tank")
+			{
+				// Tell them to move to a specific spot
+				mc.moveUnit(gob, Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
+			}
+		}
+	}
+
 	for(size_t i(0); i<myUnits.size(); ++i)
 	{
 		Unit & unit(myUnits[i]);
@@ -193,7 +211,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState)
 			// If this unit is currently not moving
 			if(!unit.IsMoving())
 			{
-				unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
+				//unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
 			}
 		}
 
