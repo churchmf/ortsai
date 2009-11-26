@@ -93,8 +93,8 @@ void MyApplication::Initialize(GameStateModule & gameState)
 		}
 	}
 	general = new General(maxCoordX, maxCoordY);
-	captain = new Captain(*general);
-	captain->SetLieutenants(Lieutenants);
+	//captain = new Captain(*general);
+	//captain->SetLieutenants(Lieutenants);
 }
 
 
@@ -160,8 +160,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 		}
 	}
 
-	general->Loop(enemies, myUnits);
-	general->Print();
+	//general->Loop(enemies, myUnits);
+	//general->Print();
 
 	bool draw_flag = true;
 	//GAME LOOP
@@ -174,11 +174,11 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 		if(gob && *(gob->sod.owner) == me)
 		{
 			// And if it is a mobile unit
-			if(gob->bp_name() == "marine" || gob->bp_name() == "tank")
-			{
+			//if(gob->bp_name() == "marine" || gob->bp_name() == "tank")
+			//{
 				// Tell them to move to a specific spot
 				mc.moveUnit(gob, Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
-			}
+			//}
 		}
 	}
 
