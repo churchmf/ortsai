@@ -30,10 +30,13 @@ public:
 	void SetUnits(Vector<Unit> theEnemies, Vector<Unit> theUnits);	//Set the list of enemies and friendly units
 	void Print();													//Prints a debugging view of the risk grid
 	bool isLocationSafe(vec2 location);								//Returns true if risk value is less than safe value
-	Tile* ConvertToGridTile(vec2 location);							//Converts the given location on the map to the appropriate tile in the grid
-	vec2 ConvertToLocation(Tile& tile);								//Converts the given tile to the center location of the tile on the map
+
 	vec2 GetClosestTarget(vec2 location);							//Returns tile location of nearest cluster of enemies from the location
 	vec2 GetFallBackLocation(vec2 location);						//Returns tile location of nearest safe Tile from the location
+
+	Tile* ConvertToGridTile(vec2 location);							//Converts the given location on the map to the appropriate tile in the grid
+	vec2 ConvertToLocation(Tile& tile);								//Converts the given tile to the center location of the tile on the map
+
 
 private:
 	real8 width;			//width of map

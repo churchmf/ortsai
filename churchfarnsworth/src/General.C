@@ -220,7 +220,7 @@ vec2 General::GetFallBackLocation(vec2 location)
 vec2 General::GetClosestTarget(vec2 location)
 {
 	Tile* currentTile = ConvertToGridTile(location);
-	float minDist = 10;
+	float minDist = xGrid;
 	Tile* closestTarget = currentTile;
 
 	for (int i = 0; i < yGrid; ++i)
