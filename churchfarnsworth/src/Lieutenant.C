@@ -97,10 +97,16 @@ void Lieutenant::UpdateEngaged()
 	}
 }
 
-bool Lieutenant::RequestsAid()
+bool Lieutenant::NeedsAid()
 {
 	return requestsAid;
 }
+
+void Lieutenant::SetAid(bool aid)
+{
+	requestsAid = aid;
+}
+
 
 vec2 Lieutenant::GetLocation()
 {
