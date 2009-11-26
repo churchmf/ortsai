@@ -20,7 +20,7 @@ public:
 	sint4 GetHealth();				//Returns the percentage of total Squad health
 	bool IsEngaged();				//Returns true if the Squad is in combat
 	void UpdateEngaged();			//Updates the engagement Status of the squad
-	bool RequestsAid();				//Returns true if the Squad requests aid
+	bool NeedsAid();				//Returns true if the Squad requests aid
 	void SetAid(bool aid);			//Sets the Squad Aid status
 	vec2 GetLocation();				//Returns a the centralized location of the squad
 	void DoFormation(vec2);			//Does the Squad formation
