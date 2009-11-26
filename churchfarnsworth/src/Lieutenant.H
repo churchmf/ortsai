@@ -19,8 +19,9 @@ public:
 	bool RelieveUnit(Unit unit);	//Remove a Unit from the control of the Lieutenant, returns true if removed
 	sint4 GetHealth();				//Returns the percentage of total Squad health
 	bool IsEngaged();				//Returns true if the Squad is in combat
+	void UpdateEngaged();			//Updates the engagement Status of the squad
 	bool RequestsAid();				//Returns true if the Squad requests aid
-	vec2 GetLocation();				//Returns a the centeralized location of the squad
+	vec2 GetLocation();				//Returns a the centralized location of the squad
 	void DoFormation(vec2);			//Does the Squad formation
 	void MoveTo(vec2);				//Moves the Squad to target location
 	void Loop();					//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
