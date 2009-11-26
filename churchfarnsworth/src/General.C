@@ -16,6 +16,9 @@
 const sint4 marine = 1;
 const sint4 tank = 2;
 
+real8 TILEWIDTH = 0;
+real8 TILEHEIGHT = 0;
+
 General::General(sint4 mapWidth, sint4 mapHeight)
 {
 	width = mapWidth;
@@ -23,7 +26,10 @@ General::General(sint4 mapWidth, sint4 mapHeight)
 	//default 10x10 risk grid
 	xGrid = 10;
 	yGrid = 10;
-	safeValue = 3;
+	safeValue = 10;
+
+	TILEWIDTH = width/xGrid;
+	TILEHEIGHT = height/yGrid;
 
 	CreateGrid();
 }
@@ -92,7 +98,7 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 		}
 		Tile* tile = ConvertToGridTile(location);
 
-		if (tile->risk < 50 || tile->rish >-50)
+		if (tile->risk < 50)
 		{
 			tile->risk += riskValue;
 		}
@@ -115,18 +121,18 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 
 		if (type == marine)
 		{
-			riskValue = -2*health;
+			riskValue = -1*health;
 		}
 		else if (type == tank)
 		{
-			//if tank is sieged
+			//if tank is in siege mode
 			if (friendly.GetMode() == 2)
 			{
-				riskValue = -8*health;
+				riskValue = -5*health;
 			}
 			else
 			{
-				riskValue = -4*health;
+				riskValue = -3*health;
 			}
 		}
 		Tile* tile = ConvertToGridTile(location);
@@ -153,51 +159,89 @@ General::Tile* General::ConvertToGridTile(vec2 location)
 	//convert to appropriate grid tile
 	real8 x = location.x;
 	real8 y = location.y;
-	//std::cout << (hp/maxHp) << std::endl;
+
 	sint4 xLoc = xGrid * (x/width);
 	sint4 yLoc = yGrid * (y/height);
 
 	Tile* tile = &(grid[xLoc][yLoc]);
-	//std::cout << xLoc << yLoc << std::endl;
 	return tile;
+}
+
+vec2 General::ConvertToLocation(Tile& tile)
+{
+	//convert to appropriate location (center of tile)
+	real8 x = ((real8)tile.x/(real8)xGrid)*width;
+	real8 y = ((real8)tile.y/(real8)yGrid)*height;
+
+	std::cout << x << "," << y << std::endl;
+
+	vec2 location = vec2(x + (TILEWIDTH/2),y + (TILEHEIGHT/2));
+	return location;
 }
 
 bool General::isLocationSafe(vec2 location)
 {
 	Tile* tile = ConvertToGridTile(location);
 
-	if (tile->risk < safeValue)
+	if (tile->risk <= safeValue)
 	{
 		return true;
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
-//needs to be finished
-vec2 General::GetClosestTarget(vec2 location)
+vec2 General::GetFallBackLocation(vec2 location)
 {
-	Tile* tile = ConvertToGridTile(location);
-	sint4 xLoc = tile->x;
-	sint4 yLoc = tile->y;
+	Tile* currentTile = ConvertToGridTile(location);
+	float minDist = 3;
+	Tile* fallBack = currentTile;
 
-	for (int i = yLoc-1; i < yLoc+1; ++i)
+	for (int i = 0; i < yGrid; ++i)
 	{
-		for (int j = xLoc-1; j < xLoc+1; ++j)
+		for (int j = 0; j < xGrid; ++j)
 		{
-			sint4 x = (i/xGrid)*width;
-			sint4 y = (j/yGrid)*height;
-			//vec2 tileLoc = vec2(x,y);
-
-			if (grid[i][j].risk > safeValue)
+			Tile* tile = &(grid[j][i]);
+			if (tile->risk <= safeValue)
 			{
-				//float diff = location.GetDistanceTo(tileLoc);
-				return vec2(x*width,y*height);
+				float dist = tile->GetDistanceTo(*currentTile);
+				if (dist < minDist)
+				{
+					minDist = dist;
+					fallBack = tile;
+				}
 			}
 		}
 	}
+	vec2 safeLocation = vec2(ConvertToLocation(*fallBack));
+	//std::cout << safeLocation.x << "," << safeLocation.y << std::endl;
+	return safeLocation;
+}
+
+vec2 General::GetClosestTarget(vec2 location)
+{
+	Tile* currentTile = ConvertToGridTile(location);
+	float minDist = 10;
+	Tile* closestTarget = currentTile;
+
+	for (int i = 0; i < yGrid; ++i)
+	{
+		for (int j = 0; j < xGrid; ++j)
+		{
+			Tile* tile = &(grid[j][i]);
+			if (tile->risk > safeValue)
+			{
+				float dist = tile->GetDistanceTo(*currentTile);
+				if (dist < minDist)
+				{
+					minDist = dist;
+					closestTarget = tile;
+				}
+			}
+		}
+	}
+	vec2 target = vec2(ConvertToLocation(*closestTarget));
+	//std::cout << target.x << "," << target.y << std::endl;
+	return target;
 }
 
 void General::Print()
@@ -217,25 +261,3 @@ void General::Print()
 	}
 	std::cout << std::endl;
 }
-
-//General Loop
-/*
- * for each tile in grid:
-  if tile contains marine:
-    if friendly:
-      tile.risk -= 1
-    else:
-      tile.risk += 1
-  if tile contains tank:
-    if friendly:
-      if deployed:
-        tile.risk -= 5
-      else:
-        tile.risk -= 3
-    else:
-      if deployed:
-        tile.risk += 5
-      else:
-        tile.risk += 3
-depreciate tile value
- */
