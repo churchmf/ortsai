@@ -103,6 +103,12 @@ sint4 Unit::GetType() const
 	return *unit->sod.radius / unittypediv;
 }
 
+bool Unit::InCombat() const
+{
+	uint4 dmg = *unit->dir_dmg;
+	return dmg!=0;
+}
+
 // Actions are specified by calling set_action on a ScriptObj
 // Actions like movement are called on the GameObj itself (which is a subclass of ScriptObj)
 // Actions like attacking are called on a component of the GameObj, in this case, the weapon
