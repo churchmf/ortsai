@@ -76,23 +76,23 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 
 		if (type == marine)
 		{
-			riskValue = 2*health;
+			riskValue = 1*health;
 		}
 		else if (type == tank)
 		{
 			//if tank is sieged
 			if (enemy.GetMode() == 2)
 			{
-				riskValue = 8*health;
+				riskValue = 5*health;
 			}
 			else
 			{
-				riskValue = 4*health;
+				riskValue = 3*health;
 			}
 		}
 		Tile* tile = ConvertToGridTile(location);
 
-		if (tile->risk < 50)
+		if (tile->risk < 50 || tile->rish >-50)
 		{
 			tile->risk += riskValue;
 		}
