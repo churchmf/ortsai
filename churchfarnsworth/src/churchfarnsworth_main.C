@@ -93,7 +93,8 @@ void MyApplication::Initialize(GameStateModule & gameState)
 		}
 	}
 	general = new General(maxCoordX, maxCoordY);
-	//captain();
+	captain = new Captain(*general);
+	captain->SetLieutenants(Lieutenants);
 }
 
 

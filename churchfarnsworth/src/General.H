@@ -23,6 +23,8 @@ public:
 		real8 risk;
 	};
 
+	//General* operator = (General&) const { return *this; }
+
 	General(sint4 mapWidth, sint4 mapHeight);
 	virtual ~General();
 	void CreateGrid();												//Initializes the risk grid
@@ -45,7 +47,7 @@ private:
 	sint4 yGrid;			//ySize of grid
 	Vector<Unit> enemies;	//List of enemies
 	Vector<Unit> myUnits;	//List of the friendly Units
-	real8 safeValue;		//cut off value to determine if a risk value is safe
+	real8 SAFE_VALUE;		//cut off value to determine if a risk value is safe
 
 	Tile ** grid;
 };

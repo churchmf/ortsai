@@ -105,7 +105,7 @@ sint4 Unit::GetType() const
 
 bool Unit::InCombat() const
 {
-	uint4 dmg = *unit->dir_dmg;
+	uint4 dmg = unit->dir_dmg;
 	return dmg!=0;
 }
 

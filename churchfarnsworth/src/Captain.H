@@ -10,18 +10,21 @@
 
 #include "Helper.H"
 #include "Lieutenant.H"
+#include "General.H"
 
 class Captain {
 public:
-	Captain();
+	Captain(General& theGeneral);
 	virtual ~Captain();
 
 	void Loop(Vector<Lieutenant*> theLieutenants);				//The Captains game loop, all logic should be done here. Is called once every iteration of the game loop.
 	void SetLieutenants(Vector<Lieutenant*> theLieutenants);	//Sets the Lieutenants for the Captain to command
 	vec2 CheckAid();											//Checks for Lieutenant AidRequests, and returns the first Lieutenant's position with a request
-	Lieutenant* GetFurthestLieut();								//Returns the Lieutenant furthest from the Enemy lines
 private:
-	Vector<Lieutenant*> Lieutenants;	//Represents the Lieutenants under the Captains Command
+	Vector<Lieutenant*> Lieutenants;							//Represents the Lieutenants under the Captains Command
+
+	sint4 HEALTHY_VALUE;										//Value to represent if a squad is healthy or not
+	General* general;											//Represents the Captain's General
 };
 
 #endif /* CAPTAIN_H_ */

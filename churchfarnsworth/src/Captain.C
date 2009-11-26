@@ -12,8 +12,10 @@
 #include "GameObj.H"
 #include "GameStateModule.H"
 
-Captain::Captain()
+Captain::Captain(General& theGeneral)
 {
+	*general = theGeneral;
+	HEALTHY_VALUE = 30;
 
 }
 
@@ -39,14 +41,27 @@ vec2 Captain::CheckAid()
 	return vec2(-1,-1);
 }
 
-//TODO: we might need to rework strategy now that tanks don't siege
-Lieutenant* Captain::GetFurthestLieut()
-{
-}
-
 void Captain::Loop(Vector<Lieutenant*> theLieutenants)
 {
 	SetLieutenants(theLieutenants);
+
+	for(size_t i(0); i<Lieutenants.size(); ++i)
+	{
+		Lieutenant* lieutenant(Lieutenants[i]);
+		if(!lieutenant->IsEngaged() && lieutenant->GetHealth() >= HEALTHY_VALUE)
+		{
+
+		}
+		else
+		{
+			if(true) //winning
+				continue;
+			else
+			{
+				//GetFallBackLocation();
+			}
+		}
+	}
 	/*
 	choose Lieutenant furthest from Enemy location
 	if (squad healthy and not engaged):

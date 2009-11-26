@@ -26,7 +26,7 @@ General::General(sint4 mapWidth, sint4 mapHeight)
 	//default 10x10 risk grid
 	xGrid = 10;
 	yGrid = 10;
-	safeValue = 10;
+	SAFE_VALUE = 10;
 
 	TILEWIDTH = width/xGrid;
 	TILEHEIGHT = height/yGrid;
@@ -183,7 +183,7 @@ bool General::isLocationSafe(vec2 location)
 {
 	Tile* tile = ConvertToGridTile(location);
 
-	if (tile->risk <= safeValue)
+	if (tile->risk <= SAFE_VALUE)
 	{
 		return true;
 	}
@@ -201,7 +201,7 @@ vec2 General::GetFallBackLocation(vec2 location)
 		for (int j = 0; j < xGrid; ++j)
 		{
 			Tile* tile = &(grid[j][i]);
-			if (tile->risk <= safeValue)
+			if (tile->risk <= SAFE_VALUE)
 			{
 				float dist = tile->GetDistanceTo(*currentTile);
 				if (dist < minDist)
@@ -228,7 +228,7 @@ vec2 General::GetClosestTarget(vec2 location)
 		for (int j = 0; j < xGrid; ++j)
 		{
 			Tile* tile = &(grid[j][i]);
-			if (tile->risk > safeValue)
+			if (tile->risk > SAFE_VALUE)
 			{
 				float dist = tile->GetDistanceTo(*currentTile);
 				if (dist < minDist)
