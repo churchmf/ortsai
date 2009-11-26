@@ -80,7 +80,7 @@ void Lieutenant::UpdateEngaged()
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		const Unit & marine(marines[i]);
-		if (marine->InCombat())
+		if (marine.InCombat())
 		{
 			engaged = true;
 			return;
@@ -89,7 +89,7 @@ void Lieutenant::UpdateEngaged()
 	for (size_t j(0); j < tanks.size(); ++j)
 	{
 		const Unit & tank(tanks[j]);
-		if (tank->InCombat())
+		if (tank.InCombat())
 		{
 			engaged = true;
 			return;
