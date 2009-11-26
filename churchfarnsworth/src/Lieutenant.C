@@ -75,6 +75,28 @@ bool Lieutenant::IsEngaged()
 	return engaged;
 }
 
+void Lieutenant::UpdateEngaged()
+{
+	for (size_t i(0); i < marines.size(); ++i)
+	{
+		const Unit & marine(marines[i]);
+		if (marine->InCombat())
+		{
+			engaged = true;
+			return;
+		}
+	}
+	for (size_t j(0); j < tanks.size(); ++j)
+	{
+		const Unit & tank(tanks[j]);
+		if (tank->InCombat())
+		{
+			engaged = true;
+			return;
+		}
+	}
+}
+
 bool Lieutenant::RequestsAid()
 {
 	return requestsAid;
@@ -205,7 +227,6 @@ void Lieutenant::MoveTo(vec2 target)
 		tank.MoveTo(location, tank.GetMaxSpeed());
 	}
 }
-
 
 void Lieutenant::Loop()
 {
