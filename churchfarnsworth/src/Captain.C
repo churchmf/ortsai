@@ -33,7 +33,7 @@ vec2 Captain::CheckAid()
 {
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
-		if (Lieutenants[i]->RequestsAid())
+		if (Lieutenants[i]->NeedsAid())
 		{
 			return Lieutenants[i]->GetLocation();
 		}
@@ -48,17 +48,35 @@ void Captain::Loop(Vector<Lieutenant*> theLieutenants)
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
 		Lieutenant* lieutenant(Lieutenants[i]);
+		//if (squad healthy and not engaged):
 		if(!lieutenant->IsEngaged() && lieutenant->GetHealth() >= HEALTHY_VALUE)
 		{
-
+			//Sets the current lieutenants aidRequest to false since it is safe and healthy
+			if (lieutenant->NeedsAid())
+				lieutenant->SetAid(false);
+			//check for aid requests
+			vec2 aidLocation = CheckAid();
+			if (true) //TODO
+			{
+				//choose safe deployment location towards endangered squad
+				//lieutenant->MoveTo(aidLocation)
+			}
+			else
+			{
+				//choose safe deployment location towards nearest enemy location
+			}
 		}
 		else
 		{
-			if(true) //winning
+			//if winning
+			if(true) //TODO
 				continue;
 			else
 			{
-				//GetFallBackLocation();
+				//fallback and request for aid
+				lieutenant->SetAid(true);
+				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetLocation());
+				//lieutenant->MoveTo(retreatLocation)
 			}
 		}
 	}
