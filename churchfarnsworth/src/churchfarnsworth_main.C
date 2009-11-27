@@ -27,8 +27,8 @@ using namespace std;
 ////////////    CONSTANTS AND GAME VARIABLES      ///////////
 /////////////////////////////////////////////////////////////
 //constant values for marine and tanks used with unit.GetType()
-const sint4 marine = 1;
-const sint4 tank = 2;
+const sint4 MARINE = 1;
+const sint4 TANK = 2;
 
 //maximum number of marines and tanks per lieutenant squad
 const sint4 MAX_MARINES = 10;
@@ -103,14 +103,14 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 
 		if(unit.HasWeapon())
 		{
-			if(unit.GetType() == marine)
+			if(unit.GetType() == MARINE)
 			{
 				if (Lieutenants[m]->MarineSize() >= MAX_MARINES
 				&& m < Lieutenants.size())
 					m++;
 				Lieutenants[m]->AssignUnit(unit);
 			}
-			if(unit.GetType() == tank)
+			if(unit.GetType() == TANK)
 			{
 				if (Lieutenants[t]->TankSize() >= MAX_TANKS
 				&& t < Lieutenants.size())
@@ -130,7 +130,8 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 	//SETUP LIEUTENANT FORMATIONS
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
-		Lieutenants[i]->Loop(mc);
+		Lieutenants[i]->Loop(mc,enemies);
+		//Lieutenants[i]->MoveTo(vec2(20,maxCoordY/(i+1)));
 		Lieutenants[i]->DoFormation(vec2(1,0));
 	}
 }
@@ -196,7 +197,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
 		Lieutenant* lieutenant(Lieutenants[i]);
-		lieutenant->Loop(mc);
+		lieutenant->Loop(mc,enemies);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -204,6 +205,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	/////////////////////////////////////////////////////////////
 
 	bool draw_flag = true;
+	/*
 	for(size_t i(0); i<myUnits.size(); ++i)
 	{
 		Unit & unit(myUnits[i]);
@@ -230,6 +232,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 			}
 		}
 	}
+	*/
 
 	// Lieutenant debugging circle
 	for(size_t i(0); i< Lieutenants.size(); ++i)
