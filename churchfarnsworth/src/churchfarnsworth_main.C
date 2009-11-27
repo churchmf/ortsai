@@ -177,7 +177,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 			//if(gob->bp_name() == "marine" || gob->bp_name() == "tank")
 			//{
 				// Tell them to move to a specific spot
-				mc.moveUnit(gob, Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
+
+		mc.moveUnit(gob, Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
 			//}
 		}
 	}
@@ -207,7 +208,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 				}
 			}
 
-
 			//Lieutenants[0]->DoFormation(vec2(1,0), gameState);
 			// If this unit is currently not moving
 			if(!unit.IsMoving())
@@ -215,17 +215,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 				//unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
 			}
 		}
-
-		//mc.moveUnit(someUnit, Movement::MoveToPoint(x,y));
-		/*
-		if(!unit.IsMoving())
-		{
-			if (unit.GetType() == marine)
-				unit.MoveTo(vec2(0, 0), unit.GetMaxSpeed());
-			if (unit.GetType() == tank)
-				unit.MoveTo(vec2(maxCoordX, maxCoordY), unit.GetMaxSpeed());
-		}
-		*/
 	}
 
 	// tester stuff
