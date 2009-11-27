@@ -19,7 +19,8 @@ public:
 
 	void Loop(Vector<Lieutenant*> theLieutenants);				//The Captains game loop, all logic should be done here. Is called once every iteration of the game loop.
 	void SetLieutenants(Vector<Lieutenant*> theLieutenants);	//Sets the Lieutenants for the Captain to command
-	vec2 CheckAid();											//Checks for Lieutenant AidRequests, and returns the first Lieutenant's position with a request
+	vec2 ProvideAid();											//Returns the first Lieutenant's position with a request
+	bool existsAidRequest();									//Checks for an aid requests
 private:
 	Vector<Lieutenant*> Lieutenants;							//Represents the Lieutenants under the Captains Command
 

@@ -29,7 +29,19 @@ void Captain::SetLieutenants(Vector<Lieutenant*> theLieutenants)
 	Lieutenants = theLieutenants;
 }
 
-vec2 Captain::CheckAid()
+bool Captain::existsAidRequest()
+{
+	for(size_t i(0); i<Lieutenants.size(); ++i)
+	{
+		if (Lieutenants[i]->NeedsAid())
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+vec2 Captain::ProvideAid()
 {
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
@@ -49,16 +61,16 @@ void Captain::Loop(Vector<Lieutenant*> theLieutenants)
 	{
 		Lieutenant* lieutenant(Lieutenants[i]);
 		//if (squad healthy and not engaged):
-		if(!lieutenant->IsEngaged() && lieutenant->GetHealth() >= HEALTHY_VALUE)
+		if(lieutenant->GetHealth() >= HEALTHY_VALUE && !lieutenant->IsEngaged())
 		{
 			//Sets the current lieutenants aidRequest to false since it is safe and healthy
 			if (lieutenant->NeedsAid())
 				lieutenant->SetAid(false);
 			//check for aid requests
-			vec2 aidLocation = CheckAid();
-			if (true) //TODO
+			if (existsAidRequest())
 			{
 				//choose safe deployment location towards endangered squad
+				vec2 aidLocation = ProvideAid();
 				//lieutenant->MoveTo(aidLocation)
 			}
 			else
