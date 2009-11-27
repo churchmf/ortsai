@@ -11,16 +11,15 @@
 #include "GUI.H"
 #include "DrawOnTerrain2D.H"
 #include "ST_ForceField.H"
-#include "Movement.H"
 
 // Constants
-static const char *	VERSION	= "Orts Sample Application";
+static char *		VERSION		= "Orts Sample Application";
 static const sint4	GFX_X		= 900;
 static const sint4	GFX_Y		= 740;
 
-Application::Application() :
-	gameState(0), debugDisplay(0), graphicsClient(0),
-	just_drew(false), quit(false), error(false), refresh(false)
+Application::Application() : 
+	gameState(0), debugDisplay(0), graphicsClient(0), moveContext(0),
+	justDrew(false), quit(false), error(false), refresh(false)
 {
 	// If running on Unix/Linux, ignore signals
 	signals_shut_down(true);
@@ -28,6 +27,8 @@ Application::Application() :
 
 Application::~Application()
 {
+	if(moveContext) delete moveContext;
+	moveModule.reset();
 	if(graphicsClient) delete graphicsClient;
 	if(debugDisplay) delete debugDisplay;
 	if(gameState) delete gameState;
@@ -41,11 +42,11 @@ int Application::Run(int argc, char * argv[])
 	opt.put("-usegfx",	"Use ORTSG graphical client");
 
 	// Populate options used by our modules
-	Game::Options::add();				// Used for core game data (units, map)
-	GameStateModule::Options::add();	// Used for network synchronisation
-	GUI::add_options();					// Used for 2D debug display
-	GfxModule::Options::add();			// Used for ORTSG
-	SimpleTerrain::ST_ForceField::add_options();
+	Game::Options::add();							// Used for core game data (units, map)
+	GameStateModule::Options::add();				// Used for network synchronisation
+	GUI::add_options();								// Used for 2D debug display
+	GfxModule::Options::add();						// Used for ORTSG
+	SimpleTerrain::ST_ForceField::add_options();	// Used for path executing
 
 	// Process command line options
 	if(Options::process(argc, argv, std::cerr, VERSION)) return -20;
@@ -66,23 +67,25 @@ int Application::Run(int argc, char * argv[])
 		graphicsClient = new GfxModule;
 	}
 
-	// Connect to server
+	// Create game state module
 	SDLinit::network_init();
 	gameState = new GameStateModule(GameStateModule::Options());
 	gameState->add_handler(this);
 
-	mm = Movement::MakeModule(*gameState, 110);
-	mm->addPathfinder("Default", Movement::MakeSimpleTerrainPathfinder());
-	mm->addPathExecutor("Default", Movement::MakeMultiFollowExecutor());
-	mc = new Movement::Context(*mm,"Default","Default");
+	// Create movement module
+	moveModule = Movement::MakeModule(*gameState, 110);
+	moveModule->addPathfinder("Default", Movement::MakeSimpleTerrainPathfinder());
+	moveModule->addPathExecutor("Default", Movement::MakeMultiFollowExecutor());
+	moveContext = new Movement::Context(*moveModule,"Default","Default");
 
+	// Connect to server
 	if(!gameState->connect())
 	{
 		ERR("connection problems");
 	}
 
 	// If the user has specified a 2D debug display, open it
-	bool disp;
+	bool disp; 
 	Options::get("-disp", disp);
 	if(disp)
 	{
@@ -98,9 +101,9 @@ int Application::Run(int argc, char * argv[])
 		// Initialise the graphical client
 		glutInit(&argc, argv);
 		graphicsClient->init(
-			gameState->get_game(),
-			gameState->get_changes(),
-			gameState->get_action_changes(),
+			gameState->get_game(), 
+			gameState->get_changes(), 
+			gameState->get_action_changes(), 
 			GfxModule::Options());
 
 		// Pass control to GLUT
@@ -114,8 +117,6 @@ int Application::Run(int argc, char * argv[])
 		{
 			OnUpdate();
 		}
-
-		//do cleanup
 	}
 	return 0;
 }
@@ -142,8 +143,47 @@ void Application::DrawDebugCircle(const vec2 & center, sint4 radius, const Color
 	debugCircles.push_back(circle);
 }
 
+void Application::HandleChanges()
+{
+	// Handle new objects
+	const GameChanges & changes(GetGameChanges());
+    FORALL(changes.new_objs, it) 
+	{
+		// Skip over objects that are not game objects
+		if(!(*it)->get_GameObj()) continue;
+
+		// Create and store a new unit
+		Unit::ptr unit(new Unit(*this,*it));
+		units.push_back(unit);
+		OnNewUnit(unit);
+	}
+
+	// Handle dead objects
+	FORALL(changes.dead_objs, it)
+	{
+		// Skip over objects that are not game objects
+		const GameObj * deadObj((*it)->get_GameObj());
+		if(!deadObj) continue;
+
+		// Look for the dead unit
+		for(std::vector<Unit::ptr>::iterator it(units.begin()), end(units.end()); it!=end; ++it)
+		{
+			// If we have found it
+			Unit::ptr & unit(*it);
+			if(unit->GetGameObjPtr() == deadObj)
+			{
+				OnUnitDeath(unit);
+
+				std::swap(unit,units.back());
+				units.pop_back();
+				break;
+			}
+		}
+	}
+}
+
 // Main loop, called by GLUT
-void Application::OnUpdate()
+void Application::OnUpdate() 
 {
 	if(quit)
 	{
@@ -165,10 +205,10 @@ void Application::OnUpdate()
 		if(refresh)
 		{
 			// If we just drew (in response to receiving a view)
-			if(just_drew)
+			if(justDrew)
 			{
 				// Do not render this update
-				just_drew = false;
+				justDrew = false;
 			}
 			else
 			{
@@ -185,33 +225,58 @@ void Application::OnUpdate()
 	}
 }
 
+GameStateModule & Application::GetGameState()
+{
+	assert(gameState);
+	return *gameState;
+}
+
+const GameChanges & Application::GetGameChanges()
+{
+	assert(gameState);
+	return gameState->get_changes();
+}
+
+Game & Application::GetGame()
+{
+	assert(gameState);
+	return gameState->get_game();
+}
+
+Movement::Context &	Application::GetMoveContext()
+{
+	assert(moveContext);
+	return *moveContext;
+}
+
 bool Application::handle_event(const Event & e)
 {
 	if(quit) return false;
 
 	// Only handle events from the GameStateModule
-	if(e.get_who() == GameStateModule::FROM)
+	if(e.get_who() == GameStateModule::FROM) 
 	{
 		// Handle STOP_MSG and FINISHED_MSG (the game is over)
 		if(e.get_what() == GameStateModule::STOP_MSG ||
-		   e.get_what() == GameStateModule::FINISHED_MSG)
+		   e.get_what() == GameStateModule::FINISHED_MSG) 
 		{
-			quit = true;
+			quit = true; 
 			return true;
 		}
 
 		// Handle READ_ERROR_MSG (error occurred receiving data)
-		if(e.get_what() == GameStateModule::READ_ERROR_MSG)
+		if(e.get_what() == GameStateModule::READ_ERROR_MSG) 
 		{
-			quit = error = true;
+			quit = error = true; 
 			return true;
 		}
 
 		// Handle VIEW_MSG (a new view has been received)
-		if(e.get_what() == GameStateModule::VIEW_MSG)
+		if(e.get_what() == GameStateModule::VIEW_MSG) 
 		{
 			// Send actions
-			OnReceivedView(*gameState, *mm, *mc);
+			HandleChanges();
+			OnReceivedView();
 			gameState->send_actions();
 
 			// Compute graphics and frame statistics
@@ -226,7 +291,7 @@ bool Application::handle_event(const Event & e)
 				std::cout << "[frame " << vf << "]" << std::endl;
 			}
 
-			if(vf != af || sa || ma > 1)
+			if(vf != af || sa || ma > 1) 
 			{
 				std::cout << "frame " << vf;
 				if(af < 0)
@@ -249,20 +314,20 @@ bool Application::handle_event(const Event & e)
 			}
 
 			// Render graphics if necessary
-			if(graphicsClient)
+			if(graphicsClient) 
 			{
 				graphicsClient->process_changes();
 
 				// Do not draw if we are far behind
-				if(abs(vf-af) < 10)
+				if(abs(vf-af) < 10) 
 				{
 					graphicsClient->draw();
-					just_drew = true;
+					justDrew = true;
 				}
 			}
 
 			// Handle debug display
-			if(debugDisplay)
+			if(debugDisplay) 
 			{
 				debugDisplay->event();
 				if(debugDisplay->quit)
