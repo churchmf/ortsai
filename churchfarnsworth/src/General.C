@@ -47,6 +47,7 @@ General::General(sint4 mapWidth, sint4 mapHeight)
 
 General::~General()
 {
+	delete [] grid;
 	delete grid;
 }
 
