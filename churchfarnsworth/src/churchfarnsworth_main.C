@@ -23,6 +23,9 @@ For instance, in the case of "lab2.template", we need a "src/template_main.C", w
 #include "GameChanges.H"
 using namespace std;
 
+//////////////////////////////////////////////////////////////
+////////////    CONSTANTS AND GAME VARIABLES      ///////////
+/////////////////////////////////////////////////////////////
 //constant values for marine and tanks used with unit.GetType()
 const sint4 marine = 1;
 const sint4 tank = 2;
@@ -30,6 +33,9 @@ const sint4 tank = 2;
 //maximum number of marines and tanks per lieutenant squad
 const sint4 MAX_MARINES = 10;
 const sint4 MAX_TANKS = 4;
+//////////////////////////////////////////////////////////////
+//////////    END CONSTANTS AND GAME VARIABLES      /////////
+/////////////////////////////////////////////////////////////
 
 class MyApplication : public Application
 {
@@ -37,13 +43,13 @@ public:
 	void OnReceivedView(GameStateModule & gameState, Movement::Context& mc);
 	void Initialize(GameStateModule & gameState,  Movement::Context& mc);
 private:
-	Vector<Lieutenant*> Lieutenants;
-	General* general;
-	Captain* captain;
+	Vector<Lieutenant*> Lieutenants;		//Represents a Vector of Lieutenants
+	General* general;						//Represents a General
+	Captain* captain;						//Represents a Captain
 
 };
 
-//Initialization (called before game loop)
+//INITIALIZATION (called in first frame of main game loop)
 void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& mc)
 {
 	const Game & game(gameState.get_game());
@@ -81,8 +87,6 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 		}
 	}
 
-	//Lieutenants = Vector<Lieutenant>(5);
-
 	std::cout << "CREATE LIEUTS" << std::endl;
 	for (int i=0;i<5;++i)
 	{
@@ -115,10 +119,15 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 			}
 		}
 	}
+
+	//INITIALIZE GENERAL
 	general = new General(maxCoordX, maxCoordY);
+
+	//INITIALIZE CAPTAIN
 	captain = new Captain(*general);
 	captain->SetLieutenants(Lieutenants);
-	//Setup Initial Lieutenant Formations
+
+	//SETUP LIEUTENANT FORMATIONS
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
 		Lieutenants[i]->Loop(mc);
@@ -127,29 +136,25 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 }
 
 
-//Seems to be the game loop, I think we should put out game logic in here - Matt
+//MAIN GAME LOOP
 void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Context& mc)
 {
+	//////////////////////////////////////////////////////////////
+	///////////////////   INITIALIZATION      ///////////////////
+	/////////////////////////////////////////////////////////////
 	static bool firstFrame = true;
 	if(firstFrame)
 	{
 		Initialize(gameState, mc);
 		firstFrame = false;
 	}
-	// INFO: You can examine the GameChanges class to determine many things
-	// about what has changed between the last view and the current one
-	// See GameStateModule::get_changes(),
-	// GameChanges::new_tile_indexes, GameChanges::new_boundaries,
-	// GameChanges::new_objs, GameChanges::changed_objs,
-	// GameChanges::vanished_objs, and GameChanges::dead_objs
+	//////////////////////////////////////////////////////////////
+	/////////////////   END INITIALIZATION      /////////////////
+	/////////////////////////////////////////////////////////////
 
 	// INFO: You can examine the Game class to determine everything about
 	// the state of the game according to the current view
 	const Game & game(gameState.get_game());
-
-	// INFO: Clients are referenced by integer IDs, starting from zero
-	// You can get your own client's ID with Game::get_client_player()
-	// Game::get_player_num() will return the number of players in the game
 
 	// Iterate through all teams and store the living units
 	const sint4	myClient(game.get_client_player());
@@ -199,8 +204,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	/////////////////////////////////////////////////////////////
 
 	bool draw_flag = true;
-	//GAME LOOP
-
 	for(size_t i(0); i<myUnits.size(); ++i)
 	{
 		Unit & unit(myUnits[i]);

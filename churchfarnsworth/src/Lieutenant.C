@@ -42,9 +42,18 @@ void Lieutenant::AssignUnit(Unit unit)
 	}
 }
 
-bool Lieutenant::RelieveUnit(Unit unit)
+void Lieutenant::RelieveUnit(sint4 type, uint4 index)
 {
-	return false;
+	if (type == marine)
+	{
+		if (index < marines.size())
+			marines.erase(marines.begin()+(index-1));
+	}
+	else if (type == tank)
+	{
+		if (index < tanks.size())
+			tanks.erase(tanks.begin()+(index-1));
+	}
 }
 
 sint4 Lieutenant::GetHealth()
