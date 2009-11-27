@@ -23,7 +23,7 @@ public:
 	bool NeedsAid();				//Returns true if the Squad requests aid
 	void SetAid(bool aid);			//Sets the Squad Aid status
 	vec2 GetLocation();				//Returns a the centralized location of the squad
-	void DoFormation(vec2);			//Does the Squad formation
+	void DoFormation(vec2, Movement::Context*);			//Does the Squad formation
 	void MoveTo(vec2);				//Moves the Squad to target location
 	void Loop();					//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
 

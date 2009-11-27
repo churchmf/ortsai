@@ -2,6 +2,7 @@
 #define ORTS_SAMPLE_HELPER_H
 
 #include "Global.H"	// For types
+#include "Movement.H"
 
 //////////////////////////////////////////////////////////
 // Helper struct to easily manipulate positions/offsets //
@@ -39,10 +40,12 @@ class Game;
 class GameObj;
 class ScriptObj;
 
+#include "GameObj.H"
+
 class Unit
 {
 	const Game *	game;
-	GameObj *		unit;
+	GameObj::Ptr	unit;
 	ScriptObj *		weapon;
 	sint4			mode;
 public:
@@ -77,9 +80,13 @@ public:
 	//////////////
 
 	void MoveTo(const vec2 & location,	// Location to move to
-				sint4 speed);			// Speed at which to move
+				sint4 speed, Movement::Context*);			// Speed at which to move
 
 	void Attack(const Unit & target);	// Unit to attack
+
+
+
+	GameObj::Ptr GetGameObj() { return unit; }
 };
 
 #endif

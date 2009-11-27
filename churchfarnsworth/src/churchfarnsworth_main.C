@@ -178,7 +178,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 			//{
 				// Tell them to move to a specific spot
 
-		mc.moveUnit(gob, Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
+		//mc.moveUnit(gob, Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
 			//}
 		}
 	}
@@ -213,6 +213,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 			if(!unit.IsMoving())
 			{
 				//unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
+				mc.moveUnit(unit.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
 			}
 		}
 	}

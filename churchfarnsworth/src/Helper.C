@@ -2,6 +2,7 @@
 
 #include "Game.H"
 #include "GameObj.H"
+#include "Movement.H"
 
 // GameObj::sod contains pointers to commonly accessed data fields
 // GameObj is a subclass of ScriptObj
@@ -113,7 +114,7 @@ bool Unit::InCombat() const
 // Actions like movement are called on the GameObj itself (which is a subclass of ScriptObj)
 // Actions like attacking are called on a component of the GameObj, in this case, the weapon
 
-void Unit::MoveTo(const vec2 & location, sint4 speed)
+void Unit::MoveTo(const vec2 & location, sint4 speed, Movement::Context* mc)
 {
 	Vector<sint4> args;
 	args.push_back(location.x);
