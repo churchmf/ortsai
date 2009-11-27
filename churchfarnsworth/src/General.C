@@ -18,10 +18,6 @@
 const sint4 MARINE = 1;
 const sint4 TANK = 2;
 
-//maximum number of marines and tanks per lieutenant squad
-const sint4 MAX_MARINES = 10;
-const sint4 MAX_TANKS = 4;
-
 //default 10x10 risk grid
 const sint4 xGrid = 10;
 const sint4 yGrid = 10;
