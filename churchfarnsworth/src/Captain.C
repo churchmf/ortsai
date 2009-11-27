@@ -92,19 +92,4 @@ void Captain::Loop(Vector<Lieutenant*> theLieutenants)
 			}
 		}
 	}
-	/*
-	choose Lieutenant furthest from Enemy location
-	if (squad healthy and not engaged):
-	  check for nearest aid request
-	  if (aid request):
-	    choose safe deployment location towards endangered squad
-	  else:
-	    choose safe deployment location towards nearest enemy location
-	else:
-	  if (winning):
-	    continue fighting
-	  else:
-	    fallback
-	    request aid
-	*/
 }
