@@ -14,17 +14,21 @@ class Lieutenant {
 public:
 	Lieutenant();
 	virtual ~Lieutenant();
-	void AssignUnit(Unit unit);				//Assign a Unit to the control of the Lieutenant
-	void RelieveUnit(sint4 type, uint4 index);	//Remove a Unit from the control of the Lieutenant
-	sint4 GetHealth();						//Returns the percentage of total Squad health
-	bool IsEngaged();						//Returns true if the Squad is in combat
-	void UpdateEngaged();					//Updates the engagement Status of the squad
-	bool NeedsAid();						//Returns true if the Squad requests aid
-	void SetAid(bool aid);					//Sets the Squad Aid status
-	vec2 GetLocation();						//Returns a the centralized location of the squad
-	void DoFormation(vec2);					//Does the Squad formation
-	void MoveTo(vec2);						//Moves the Squad to target location
-	void Loop(Movement::Context&);			//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
+	void AssignUnit(Unit unit);										//Assign a Unit to the control of the Lieutenant
+	void RelieveUnit(sint4 type, uint4 index);						//Remove a Unit from the control of the Lieutenant
+	sint4 GetHealth();												//Returns the percentage of total Squad health
+	bool IsEngaged();												//Returns true if the Squad is in combat
+	void UpdateEngaged();											//Updates the engagement Status of the squad
+	void CasualtyCheck();											//Updates the Lieutenant's squad by removing dead units
+	bool NeedsAid();												//Returns true if the Squad requests aid
+	void SetAid(bool aid);											//Sets the Squad Aid status
+	vec2 GetLocation();												//Returns a the centralized location of the squad
+	void DoFormation(vec2);											//Does the Squad formation
+	void MoveTo(vec2);												//Moves the Squad to target location
+	void Loop(Movement::Context&, Vector<Unit> enemies);			//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
+	Unit AquireWeakestTarget(Vector<Unit> enemies);					//Orders the Lieutenant to Find the weakest possible enemy
+	void AttackTarget(Unit& target);								//Orders the Lieutenant's Units to Attack the given Target
+	void FireAtWill(Vector<Unit> enemies);							//Orders the Lieutenant's Units to Fire at will
 
 	sint4 MarineSize(){return marines.size();}	//Returns the number of Marines under the Lieutenants command
 	sint4 TankSize(){return tanks.size();} 		//Returns the number of Tanks under the Lieutenants command

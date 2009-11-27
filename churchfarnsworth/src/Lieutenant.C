@@ -13,9 +13,22 @@
 #include "GameStateModule.H"
 #include "ST_ForceField.H"
 
+//////////////////////////////////////////////////////////////
+////////////    CONSTANTS AND GAME VARIABLES      ///////////
+/////////////////////////////////////////////////////////////
 //constant values for marine and tanks used with unit.GetType()
-const sint4 marine = 1;
-const sint4 tank = 2;
+const sint4 MARINE = 1;
+const sint4 TANK = 2;
+
+//maximum number of marines and tanks per lieutenant squad
+const sint4 MAX_MARINES = 10;
+const sint4 MAX_TANKS = 4;
+
+const sint4 MAX_RANGE = 112;
+
+//////////////////////////////////////////////////////////////
+//////////    END CONSTANTS AND GAME VARIABLES      /////////
+/////////////////////////////////////////////////////////////
 
 Lieutenant::Lieutenant()
 {
@@ -32,11 +45,11 @@ Lieutenant::~Lieutenant()
 
 void Lieutenant::AssignUnit(Unit unit)
 {
-	if (unit.GetType() == marine)
+	if (unit.GetType() == MARINE)
 	{
 		marines.push_back(unit);
 	}
-	else if (unit.GetType() == tank)
+	else if (unit.GetType() == TANK)
 	{
 		tanks.push_back(unit);
 	}
@@ -44,12 +57,12 @@ void Lieutenant::AssignUnit(Unit unit)
 
 void Lieutenant::RelieveUnit(sint4 type, uint4 index)
 {
-	if (type == marine)
+	if (type == MARINE)
 	{
 		if (index < marines.size())
 			marines.erase(marines.begin()+(index-1));
 	}
-	else if (type == tank)
+	else if (type == TANK)
 	{
 		if (index < tanks.size())
 			tanks.erase(tanks.begin()+(index-1));
@@ -69,7 +82,7 @@ sint4 Lieutenant::GetHealth()
 		const Unit & tank(tanks[j]);
 		health += tank.GetHitpoints();
 	}
-	sint4 percent = 100*(health / (marines.size()*80 + tanks.size()*150));
+	sint4 percent = 100*(health / (MAX_MARINES*80 + MAX_TANKS*150));
 	return  percent;
 }
 
@@ -110,6 +123,25 @@ void Lieutenant::SetAid(bool aid)
 	requestsAid = aid;
 }
 
+void Lieutenant::CasualtyCheck()
+{
+	for (size_t i(0); i < marines.size(); ++i)
+	{
+		const Unit & marine(marines[i]);
+		if (!marine.IsAlive())
+		{
+			RelieveUnit(MARINE, i);
+		}
+	}
+	for (size_t j(0); j < tanks.size(); ++j)
+	{
+		const Unit & tank(tanks[j]);
+		if (!tank.IsAlive())
+		{
+			RelieveUnit(TANK, j);
+		}
+	}
+}
 
 vec2 Lieutenant::GetLocation()
 {
@@ -239,9 +271,98 @@ void Lieutenant::MoveTo(vec2 target)
 	}
 }
 
-void Lieutenant::Loop(Movement::Context& MC)
+void Lieutenant::FireAtWill(Vector<Unit> enemies)
+{
+	for(size_t i(0); i<marines.size(); ++i)
+	{
+		Unit & marine(marines[i]);
+
+		// Cache the unit's position and the range of its weapon
+		const vec2	position(marine.GetPosition());
+		const sint4 range(marine.GetWeaponRange());
+		const sint4 rangeSq(range*range);
+
+		// Choose the first enemy unit we find in range
+		for(size_t j(0); j<enemies.size(); ++j)
+		{
+			const Unit & enemy(enemies[j]);
+			if(position.GetDistanceSqTo(enemy.GetPosition()) <= rangeSq)
+			{
+				marine.Attack(enemy);
+				break;
+			}
+		}
+	}
+	for(size_t i(0); i<tanks.size(); ++i)
+	{
+		Unit & tank(tanks[i]);
+
+		// Cache the unit's position and the range of its weapon
+		const vec2	position(tank.GetPosition());
+		const sint4 range(tank.GetWeaponRange());
+		const sint4 rangeSq(range*range);
+
+		// Choose the first enemy unit we find in range
+		for(size_t j(0); j<enemies.size(); ++j)
+		{
+			const Unit & enemy(enemies[j]);
+			if(position.GetDistanceSqTo(enemy.GetPosition()) <= rangeSq)
+			{
+				tank.Attack(enemy);
+				break;
+			}
+		}
+	}
+}
+
+Unit Lieutenant::AquireWeakestTarget(Vector<Unit> enemies)
+{
+	// Cache the unit's position and the range of its weapon
+	const vec2	position(GetLocation());
+	const sint4 range(MAX_RANGE);
+	const sint4 rangeSq(range*range);
+
+	sint4 weakestHP = 150;	//tanks maxhealth
+	Unit& target = enemies[0];
+
+	for(size_t j(0); j<enemies.size(); ++j)
+	{
+		const Unit & enemy(enemies[j]);
+		if(position.GetDistanceSqTo(enemy.GetPosition()) <= rangeSq)
+		{
+			sint4 hp = enemy.GetHitpoints();
+			if (hp < weakestHP && hp > 0)
+			{
+				weakestHP = hp;
+				target = enemy;
+			}
+		}
+	}
+	return target;
+}
+
+void Lieutenant::AttackTarget(Unit& target)
+{
+	for (size_t i(0); i < marines.size(); ++i)
+	{
+		Unit & marine(marines[i]);
+		marine.Attack(target);
+	}
+	for (size_t j(0); j < tanks.size(); ++j)
+	{
+		Unit & tank(tanks[j]);
+		tank.Attack(target);
+	}
+}
+
+void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 {
 	mc = &MC;
+	UpdateEngaged();
+	if (IsEngaged())
+	{
+		CasualtyCheck();
+	}
 	/*
 	 *  if (orders):
 		   do order
