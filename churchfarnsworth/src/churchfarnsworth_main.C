@@ -118,6 +118,7 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 	general = new General(maxCoordX, maxCoordY);
 	captain = new Captain(*general);
 	captain->SetLieutenants(Lieutenants);
+	//Setup Initial Lieutenant Formations
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
 		Lieutenants[i]->Loop(mc);
@@ -180,13 +181,22 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 		}
 	}
 
+	//////////////////////////////////////////////////////////////
+	//////////////////    COMMANDER LOOPS      //////////////////
+	/////////////////////////////////////////////////////////////
+
 	general->Loop(enemies, myUnits);
 	general->Print();
+
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
 		Lieutenant* lieutenant(Lieutenants[i]);
 		lieutenant->Loop(mc);
 	}
+
+	//////////////////////////////////////////////////////////////
+	////////////////     END COMMANDER LOOPS      ///////////////
+	/////////////////////////////////////////////////////////////
 
 	bool draw_flag = true;
 	//GAME LOOP
