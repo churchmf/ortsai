@@ -17,13 +17,12 @@
 const sint4 marine = 1;
 const sint4 tank = 2;
 
-Lieutenant::Lieutenant(GameStateModule& gameState)
+Lieutenant::Lieutenant()
 {
 	engaged = 0;
 	requestsAid = 0;
 	health = 0;
 	location = vec2(0,0);
-
 }
 
 Lieutenant::~Lieutenant()
@@ -151,7 +150,6 @@ void Lieutenant::DoFormation(vec2 dir)
 
 	for (size_t i(0); i < marines.size(); ++i)
 	{
-
 		Unit & marine(marines[i]);
 		//marine.MoveTo(location, marine.GetMaxSpeed());
 		//set first unit
@@ -182,7 +180,6 @@ void Lieutenant::DoFormation(vec2 dir)
 			displace++;
 		}
 	}
-
 
 	unitDisplace++;
 	displace = 1;

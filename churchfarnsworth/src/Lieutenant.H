@@ -14,7 +14,7 @@
 
 class Lieutenant {
 public:
-	Lieutenant(GameStateModule&);
+	Lieutenant();
 	virtual ~Lieutenant();
 	void AssignUnit(Unit unit);		//Assign a Unit to the control of the Lieutenant
 	bool RelieveUnit(Unit unit);	//Remove a Unit from the control of the Lieutenant, returns true if removed
@@ -26,7 +26,10 @@ public:
 	vec2 GetLocation();				//Returns a the centralized location of the squad
 	void DoFormation(vec2);			//Does the Squad formation
 	void MoveTo(vec2);				//Moves the Squad to target location
-	void Loop(Movement::Context&);					//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
+	void Loop(Movement::Context&);	//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
+
+	sint4 MarineSize(){return marines.size();}	//Returns the number of Marines under the Lieutenants command
+	sint4 TankSize(){return tanks.size();} 		//Returns the number of Tanks under the Lieutenants command
 
 private:
 	Vector <Unit> marines, tanks;

@@ -23,10 +23,18 @@ For instance, in the case of "lab2.template", we need a "src/template_main.C", w
 #include "GameChanges.H"
 using namespace std;
 
+//constant values for marine and tanks used with unit.GetType()
+const sint4 marine = 1;
+const sint4 tank = 2;
+
+//maximum number of marines and tanks per lieutenant squad
+const sint4 MAX_MARINES = 10;
+const sint4 MAX_TANKS = 4;
+
 class MyApplication : public Application
 {
 public:
-	void OnReceivedView(GameStateModule & gameState,Movement::Module& mm, Movement::Context& mc);
+	void OnReceivedView(GameStateModule & gameState, Movement::Context& mc);
 	void Initialize(GameStateModule & gameState,  Movement::Context& mc);
 private:
 	Vector<Lieutenant*> Lieutenants;
@@ -78,30 +86,48 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 	std::cout << "CREATE LIEUTS" << std::endl;
 	for (int i=0;i<5;++i)
 	{
-		Lieutenant* lieutenant = new Lieutenant(gameState);
+		Lieutenant* lieutenant = new Lieutenant();
 		Lieutenants.push_back(lieutenant);
 	}
 
 	std::cout << "ALLOCATE UNITS" << std::endl;
+	uint4 m = 0;
+	uint4 t = 0;
 	for(size_t i(0); i< myUnits.size(); ++i)
 	{
 		Unit & unit(myUnits[i]);
 
 		if(unit.HasWeapon())
 		{
-			Lieutenants[0]->AssignUnit(unit);
+			if(unit.GetType() == marine)
+			{
+				if (Lieutenants[m]->MarineSize() >= MAX_MARINES
+				&& m < Lieutenants.size())
+					m++;
+				Lieutenants[m]->AssignUnit(unit);
+			}
+			if(unit.GetType() == tank)
+			{
+				if (Lieutenants[t]->TankSize() >= MAX_TANKS
+				&& t < Lieutenants.size())
+					t++;
+				Lieutenants[t]->AssignUnit(unit);
+			}
 		}
 	}
 	general = new General(maxCoordX, maxCoordY);
-	//captain = new Captain(*general);
-	//captain->SetLieutenants(Lieutenants);
-	Lieutenants[0]->Loop(mc);
-	Lieutenants[0]->DoFormation(vec2(1,0));
+	captain = new Captain(*general);
+	captain->SetLieutenants(Lieutenants);
+	for(size_t i(0); i< Lieutenants.size(); ++i)
+	{
+		Lieutenants[i]->Loop(mc);
+		Lieutenants[i]->DoFormation(vec2(1,0));
+	}
 }
 
 
 //Seems to be the game loop, I think we should put out game logic in here - Matt
-void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module& mm, Movement::Context& mc)
+void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Context& mc)
 {
 	static bool firstFrame = true;
 	if(firstFrame)
@@ -119,14 +145,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 	// INFO: You can examine the Game class to determine everything about
 	// the state of the game according to the current view
 	const Game & game(gameState.get_game());
-
-	// INFO: You can examine the Map<GameTile> class to determine the
-	// topography of the game map. The map is composed of GameTiles, which
-	// determine the type and traversability of the terrain. For now, we
-	// will determine the maximum coordinates of a point on the map
-	const Map<GameTile> & map(game.get_map());
-	const sint4 maxCoordX(map.get_width()  * game.get_tile_points());
-	const sint4 maxCoordY(map.get_height() * game.get_tile_points());
 
 	// INFO: Clients are referenced by integer IDs, starting from zero
 	// You can get your own client's ID with Game::get_client_player()
@@ -162,8 +180,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 		}
 	}
 
-	//general->Loop(enemies, myUnits);
-	//general->Print();
+	general->Loop(enemies, myUnits);
+	general->Print();
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
 		Lieutenant* lieutenant(Lieutenants[i]);
@@ -172,23 +190,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 
 	bool draw_flag = true;
 	//GAME LOOP
-
-	const sint4 me(gameState.get_game().get_client_player());
-	FORALL(gameState.get_changes().new_objs, it)
-	{
-		// If we have found a unit that belongs to us
-		GameObj * gob((*it)->get_GameObj());
-		if(gob && *(gob->sod.owner) == me)
-		{
-			// And if it is a mobile unit
-			//if(gob->bp_name() == "marine" || gob->bp_name() == "tank")
-			//{
-				// Tell them to move to a specific spot
-
-		//mc.moveUnit(unit.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
-			//}
-		}
-	}
 
 	for(size_t i(0); i<myUnits.size(); ++i)
 	{
@@ -214,20 +215,15 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 					break;
 				}
 			}
-
-
-			// If this unit is currently not moving
-			if(!unit.IsMoving())
-			{
-				//mc.moveUnit(unit.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
-				//unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
-			}
 		}
 	}
 
-	// tester stuff
-	vec2 ltPos = Lieutenants[0]->GetLocation();
-	DrawDebugCircle(ltPos, 100, Color(1,1,0));
+	// Lieutenant debugging circle
+	for(size_t i(0); i< Lieutenants.size(); ++i)
+	{
+		vec2 ltPos = Lieutenants[i]->GetLocation();
+		DrawDebugCircle(ltPos, 100, Color(1,1,0));
+	}
 	draw_flag = false;
 }
 

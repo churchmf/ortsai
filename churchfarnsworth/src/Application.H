@@ -51,7 +51,7 @@ public:
 	Application();
 	~Application();
 
-	virtual void OnReceivedView(GameStateModule & gameState, Movement::Module&, Movement::Context&) = 0;
+	virtual void OnReceivedView(GameStateModule & gameState, Movement::Context&) = 0;
 
 	int Run(int argc, char * argv[]);
 

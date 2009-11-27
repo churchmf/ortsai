@@ -212,7 +212,7 @@ bool Application::handle_event(const Event & e)
 		if(e.get_what() == GameStateModule::VIEW_MSG)
 		{
 			// Send actions
-			OnReceivedView(*gameState, *mm, *mc);
+			OnReceivedView(*gameState, *mc);
 			gameState->send_actions();
 
 			// Compute graphics and frame statistics
