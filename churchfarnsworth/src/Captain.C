@@ -81,7 +81,7 @@ void Captain::Loop(Vector<Lieutenant*> theLieutenants)
 		else
 		{
 			//if winning
-			if(true) //TODO
+			if(!general->isOutNumbered(lieutenant->GetLocation()))
 				continue;
 			else
 			{
