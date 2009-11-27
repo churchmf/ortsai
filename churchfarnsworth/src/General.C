@@ -11,21 +11,32 @@
 #include "Game.H"
 #include "GameObj.H"
 #include "GameStateModule.H"
-
+//////////////////////////////////////////////////////////////
+////////////    CONSTANTS AND GAME VARIABLES      ///////////
+/////////////////////////////////////////////////////////////
 //constant values for marine and tanks used with unit.GetType()
-const sint4 marine = 1;
-const sint4 tank = 2;
+const sint4 MARINE = 1;
+const sint4 TANK = 2;
 
+//maximum number of marines and tanks per lieutenant squad
+const sint4 MAX_MARINES = 10;
+const sint4 MAX_TANKS = 4;
+
+//default 10x10 risk grid
+const sint4 xGrid = 10;
+const sint4 yGrid = 10;
+
+//width and height of each tile in the grid
 real8 TILEWIDTH = 0;
 real8 TILEHEIGHT = 0;
+//////////////////////////////////////////////////////////////
+//////////    END CONSTANTS AND GAME VARIABLES      /////////
+/////////////////////////////////////////////////////////////
 
 General::General(sint4 mapWidth, sint4 mapHeight)
 {
 	width = mapWidth;
 	height = mapHeight;
-	//default 10x10 risk grid
-	xGrid = 10;
-	yGrid = 10;
 	SAFE_VALUE = 10;
 
 	TILEWIDTH = width/xGrid;
@@ -76,17 +87,15 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 		real8 maxHp = enemy.GetMaxHitpoints();
 		real8 health = (hp/maxHp);
 
-
-		//std::cout << location.x << location.y << std::endl;
 		real8 riskValue = 0;
 
-		if (type == marine)
+		if (type == MARINE)
 		{
-			riskValue = 1*health;
+			riskValue = health;
 		}
-		else if (type == tank)
+		else if (type == TANK)
 		{
-			//if tank is sieged
+			//if tank is in siege mode
 			if (enemy.GetMode() == 2)
 			{
 				riskValue = 5*health;
@@ -116,14 +125,13 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 		real8 maxHp = friendly.GetMaxHitpoints();
 		real8 health = (hp/maxHp);
 
-		//std::cout << location.x << location.y << std::endl;
 		real8 riskValue = 0;
 
-		if (type == marine)
+		if (type == MARINE)
 		{
-			riskValue = -1*health;
+			riskValue = -health;
 		}
-		else if (type == tank)
+		else if (type == TANK)
 		{
 			//if tank is in siege mode
 			if (friendly.GetMode() == 2)
@@ -213,7 +221,6 @@ vec2 General::GetFallBackLocation(vec2 location)
 		}
 	}
 	vec2 safeLocation = vec2(ConvertToLocation(*fallBack));
-	//std::cout << safeLocation.x << "," << safeLocation.y << std::endl;
 	return safeLocation;
 }
 
@@ -267,7 +274,6 @@ vec2 General::GetClosestTarget(vec2 location)
 		}
 	}
 	vec2 target = vec2(ConvertToLocation(*closestTarget));
-	//std::cout << target.x << "," << target.y << std::endl;
 	return target;
 }
 

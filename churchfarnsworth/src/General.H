@@ -44,8 +44,6 @@ public:
 private:
 	real8 width;			//width of map
 	real8 height;			//height of map
-	sint4 xGrid;			//xSize of grid
-	sint4 yGrid;			//ySize of grid
 	Vector<Unit> enemies;	//List of enemies
 	Vector<Unit> myUnits;	//List of the friendly Units
 	real8 SAFE_VALUE;		//cut off value to determine if a risk value is safe
