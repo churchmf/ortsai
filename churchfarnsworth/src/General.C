@@ -26,9 +26,15 @@ const sint4 MAX_TANKS = 4;
 const sint4 xGrid = 10;
 const sint4 yGrid = 10;
 
-//width and height of each tile in the grid
-real8 TILEWIDTH = 0;
-real8 TILEHEIGHT = 0;
+//cut off value to determine if a risk value is safe
+const sint4 SAFE_VALUE = 10;
+
+//deals with grid values
+const sint4 MARINE_RISK = 1;
+const sint4 TANK_RISK = 3;
+const sint4 TANK_SIEGE_RISK = 5;
+const sint4 MAX_RISK = 50;
+const real8 RISK_DEPRECIATION = 0.8;
 //////////////////////////////////////////////////////////////
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
@@ -37,7 +43,6 @@ General::General(sint4 mapWidth, sint4 mapHeight)
 {
 	width = mapWidth;
 	height = mapHeight;
-	SAFE_VALUE = 10;
 
 	TILEWIDTH = width/xGrid;
 	TILEHEIGHT = height/yGrid;
@@ -92,23 +97,23 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 
 		if (type == MARINE)
 		{
-			riskValue = health;
+			riskValue = MARINE_RISK*health;
 		}
 		else if (type == TANK)
 		{
 			//if tank is in siege mode
 			if (enemy.GetMode() == 2)
 			{
-				riskValue = 5*health;
+				riskValue = TANK_SIEGE_RISK*health;
 			}
 			else
 			{
-				riskValue = 3*health;
+				riskValue = TANK_RISK*health;
 			}
 		}
 		Tile* tile = ConvertToGridTile(location);
 
-		if (tile->risk < 50)
+		if (tile->risk < MAX_RISK)
 		{
 			tile->risk += riskValue;
 		}
@@ -130,23 +135,23 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 
 		if (type == MARINE)
 		{
-			riskValue = -health;
+			riskValue = -MARINE_RISK*health;
 		}
 		else if (type == TANK)
 		{
 			//if tank is in siege mode
 			if (friendly.GetMode() == 2)
 			{
-				riskValue = -5*health;
+				riskValue = -TANK_SIEGE_RISK*health;
 			}
 			else
 			{
-				riskValue = -3*health;
+				riskValue = -TANK_RISK*health;
 			}
 		}
 		Tile* tile = ConvertToGridTile(location);
 
-		if (tile->risk > -50)
+		if (tile->risk > -MAX_RISK)
 		{
 			tile->risk += riskValue;
 		}
@@ -158,7 +163,7 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 		{
 			Tile* tile = &(grid[j][i]);
 			if (tile->risk != 0)
-				tile->risk *= 0.8;
+				tile->risk *= RISK_DEPRECIATION;
 		}
 	}
 }

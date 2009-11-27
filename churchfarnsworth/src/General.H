@@ -46,7 +46,10 @@ private:
 	real8 height;			//height of map
 	Vector<Unit> enemies;	//List of enemies
 	Vector<Unit> myUnits;	//List of the friendly Units
-	real8 SAFE_VALUE;		//cut off value to determine if a risk value is safe
+
+	//width and height of each tile in the grid(initialized in constructor)
+	real8 TILEWIDTH;
+	real8 TILEHEIGHT;
 
 	Tile ** grid;
 };
