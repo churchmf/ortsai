@@ -290,6 +290,7 @@ bool Application::handle_event(const Event & e)
 
 				debugLines.clear();
 				debugCircles.clear();
+
 			}
 
 			return true;
