@@ -40,7 +40,6 @@ Lieutenant::Lieutenant()
 
 Lieutenant::~Lieutenant()
 {
-
 }
 
 void Lieutenant::AssignUnit(Unit unit)
@@ -363,6 +362,8 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 	{
 		CasualtyCheck();
 	}
+	FireAtWill(enemies);
+
 	/*
 	 *  if (orders):
 		   do order
