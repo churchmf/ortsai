@@ -81,6 +81,7 @@ public:
 				sint4 speed);			// Speed at which to move
 
 	void Attack(const Unit & target);	// Unit to attack
+	GameObj* GetGameObj() {return unit;}
 };
 
 #endif

@@ -26,7 +26,7 @@ public:
 	vec2 GetLocation();				//Returns a the centralized location of the squad
 	void DoFormation(vec2);			//Does the Squad formation
 	void MoveTo(vec2);				//Moves the Squad to target location
-	void Loop();					//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
+	void Loop(Movement::Context&);					//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
 
 private:
 	Vector <Unit> marines, tanks;

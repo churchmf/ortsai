@@ -27,7 +27,7 @@ class MyApplication : public Application
 {
 public:
 	void OnReceivedView(GameStateModule & gameState,Movement::Module& mm, Movement::Context& mc);
-	void Initialize(GameStateModule & gameState);
+	void Initialize(GameStateModule & gameState,  Movement::Context& mc);
 private:
 	Vector<Lieutenant*> Lieutenants;
 	General* general;
@@ -36,7 +36,7 @@ private:
 };
 
 //Initialization (called before game loop)
-void MyApplication::Initialize(GameStateModule & gameState)
+void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& mc)
 {
 	const Game & game(gameState.get_game());
 	const Map<GameTile> & map(game.get_map());
@@ -96,6 +96,8 @@ void MyApplication::Initialize(GameStateModule & gameState)
 	general = new General(maxCoordX, maxCoordY);
 	//captain = new Captain(*general);
 	//captain->SetLieutenants(Lieutenants);
+	Lieutenants[0]->Loop(mc);
+	Lieutenants[0]->DoFormation(vec2(1,0));
 }
 
 
@@ -105,7 +107,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 	static bool firstFrame = true;
 	if(firstFrame)
 	{
-		Initialize(gameState);
+		Initialize(gameState, mc);
 		firstFrame = false;
 	}
 	// INFO: You can examine the GameChanges class to determine many things
@@ -163,6 +165,11 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 
 	//general->Loop(enemies, myUnits);
 	//general->Print();
+	for(size_t i(0); i< Lieutenants.size(); ++i)
+	{
+		Lieutenant* lieutenant(Lieutenants[i]);
+		lieutenant->Loop(mc);
+	}
 
 	bool draw_flag = true;
 	//GAME LOOP
@@ -179,7 +186,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 			//{
 				// Tell them to move to a specific spot
 
-		mc.moveUnit(gob, Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
+		//mc.moveUnit(unit.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
 			//}
 		}
 	}
@@ -209,10 +216,11 @@ void MyApplication::OnReceivedView(GameStateModule & gameState,Movement::Module&
 				}
 			}
 
-			//Lieutenants[0]->DoFormation(vec2(1,0), gameState);
+
 			// If this unit is currently not moving
 			if(!unit.IsMoving())
 			{
+				//mc.moveUnit(unit.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(rand()%maxCoordX, rand()%maxCoordY)));
 				//unit.MoveTo(vec2(rand()%maxCoordX, rand()%maxCoordY), unit.GetMaxSpeed());
 			}
 		}
