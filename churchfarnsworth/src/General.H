@@ -32,6 +32,7 @@ public:
 	void SetUnits(Vector<Unit> theEnemies, Vector<Unit> theUnits);	//Set the list of enemies and friendly units
 	void Print();													//Prints a debugging view of the risk grid
 	bool isLocationSafe(vec2 location);								//Returns true if risk value is less than safe value
+	bool isOutNumbered(vec2 location);								//Returns true if the given location is potentially OutNumbered
 
 	vec2 GetClosestTarget(vec2 location);							//Returns tile location of nearest cluster of enemies from the location
 	vec2 GetFallBackLocation(vec2 location);						//Returns tile location of nearest safe Tile from the location

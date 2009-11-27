@@ -217,6 +217,33 @@ vec2 General::GetFallBackLocation(vec2 location)
 	return safeLocation;
 }
 
+bool General::isOutNumbered(vec2 location)
+{
+	Tile* centerTile = ConvertToGridTile(location);
+	real8 friendly = centerTile->risk;
+	real8 enemy = 0;
+
+	//quick check in local tile
+	if (friendly < 0)
+		return true;
+
+	//check in surrounding tiles
+	for(int i = -1; i < 2; ++i)
+	{
+		for (int j = -1; j < 2; ++j)
+		{
+			Tile* tile = &(grid[centerTile->x+j][centerTile->y+i]);
+			if (tile != 0)
+				enemy += tile->risk;
+		}
+	}
+
+	//if the surrounding risk values are higher than your current tile * some error buffer
+	if (enemy > friendly*1.2)
+		return true;
+	return false;
+}
+
 vec2 General::GetClosestTarget(vec2 location)
 {
 	Tile* currentTile = ConvertToGridTile(location);
