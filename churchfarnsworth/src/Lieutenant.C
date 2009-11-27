@@ -160,7 +160,6 @@ void Lieutenant::DoFormation(vec2 dir)
 			initUnitPos = vec2((ltDirection.x * frontLine) + location.x, (ltDirection.y * frontLine) + location.y);
 			mc->moveUnit(marine.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(unitPos.x, unitPos.y)));
 
-			//marine.MoveTo(unitPos, marine.GetMaxSpeed());
 		}
 		else if(i % 2 == 1 && i > 0)
 		{
@@ -170,7 +169,6 @@ void Lieutenant::DoFormation(vec2 dir)
 			unitPos.y = unitPos.y - (unitDisplace * unitOffset);
 			mc->moveUnit(marine.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(unitPos.x, unitPos.y)));
 
-			//marine.MoveTo(unitPos, marine.GetMaxSpeed());
 		}
 		//set every second unit (ones on negative plane to LT) to negative
 		else if(i % 2 == 0 && i > 0)
@@ -181,7 +179,6 @@ void Lieutenant::DoFormation(vec2 dir)
 			unitPos.y = unitPos.y - (unitDisplace * unitOffset);
 			mc->moveUnit(marine.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(unitPos.x, unitPos.y)));
 
-			//marine.MoveTo(unitPos, marine.GetMaxSpeed());
 			displace++;
 		}
 	}
@@ -198,8 +195,6 @@ void Lieutenant::DoFormation(vec2 dir)
 			initUnitPos = vec2((ltDirection.x * frontLine) - (unitDisplace*unitOffset) + location.x,
 							   (ltDirection.y * frontLine) - (unitDisplace*unitOffset) + location.y);
 			mc->moveUnit(tank.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(unitPos.x, unitPos.y)));
-
-			//tank.MoveTo(initUnitPos, tank.GetMaxSpeed());
 		}
 		else if(j % 2 == 1 && j > 0)
 		{
@@ -208,7 +203,6 @@ void Lieutenant::DoFormation(vec2 dir)
 			unitPos.x = unitPos.x - (unitDisplace * unitOffset);
 			unitPos.y = unitPos.y - (unitDisplace * unitOffset);
 			mc->moveUnit(tank.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(unitPos.x, unitPos.y)));
-			//tank.MoveTo(unitPos, tank.GetMaxSpeed());
 		}
 		//set every second unit (ones on negative plane to LT) to negative
 		else if(j % 2 == 0 && j > 0)
@@ -218,7 +212,6 @@ void Lieutenant::DoFormation(vec2 dir)
 			unitPos.x = unitPos.x - (unitDisplace * unitOffset);
 			unitPos.y = unitPos.y - (unitDisplace * unitOffset);
 			mc->moveUnit(tank.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(unitPos.x, unitPos.y)));
-			//tank.MoveTo(unitPos, tank.GetMaxSpeed());
 			displace++;
 		}
 	}
@@ -231,12 +224,12 @@ void Lieutenant::MoveTo(vec2 target)
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		Unit & marine(marines[i]);
-		marine.MoveTo(location, marine.GetMaxSpeed());
+		mc->moveUnit(marine.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(location.x,location.y)));
 	}
 	for (size_t j(0); j < tanks.size(); ++j)
 	{
 		Unit & tank(tanks[j]);
-		tank.MoveTo(location, tank.GetMaxSpeed());
+		mc->moveUnit(tank.GetGameObj(), Movement::TouchPoint(Movement::Vec2D(location.x,location.y)));;
 	}
 }
 

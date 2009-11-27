@@ -90,7 +90,6 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 		if(unit.HasWeapon())
 		{
 			Lieutenants[0]->AssignUnit(unit);
-
 		}
 	}
 	general = new General(maxCoordX, maxCoordY);
