@@ -26,7 +26,7 @@ General::General(sint4 mapWidth, sint4 mapHeight)
 	//default 10x10 risk grid
 	xGrid = 10;
 	yGrid = 10;
-	SAFE_VALUE = 5;
+	SAFE_VALUE = 10;
 
 	TILEWIDTH = width/xGrid;
 	TILEHEIGHT = height/yGrid;
