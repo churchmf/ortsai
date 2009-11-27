@@ -12,11 +12,27 @@
 #include "GameObj.H"
 #include "GameStateModule.H"
 
+//////////////////////////////////////////////////////////////
+////////////    CONSTANTS AND GAME VARIABLES      ///////////
+/////////////////////////////////////////////////////////////
+//constant values for marine and tanks used with unit.GetType()
+const sint4 MARINE = 1;
+const sint4 TANK = 2;
+
+//maximum number of marines and tanks per lieutenant squad
+const sint4 MAX_MARINES = 10;
+const sint4 MAX_TANKS = 4;
+
+//Value to represent if a squad is healthy or not
+const sint4 HEALTHY_VALUE = 30;
+//////////////////////////////////////////////////////////////
+//////////    END CONSTANTS AND GAME VARIABLES      /////////
+/////////////////////////////////////////////////////////////
+
+
 Captain::Captain(General& theGeneral)
 {
 	general = &theGeneral;
-	HEALTHY_VALUE = 30;
-
 }
 
 Captain::~Captain()

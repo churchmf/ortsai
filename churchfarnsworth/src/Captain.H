@@ -24,7 +24,6 @@ public:
 private:
 	Vector<Lieutenant*> Lieutenants;							//Represents the Lieutenants under the Captains Command
 
-	sint4 HEALTHY_VALUE;										//Value to represent if a squad is healthy or not
 	General* general;											//Represents the Captain's General
 };
 

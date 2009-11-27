@@ -204,36 +204,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	////////////////     END COMMANDER LOOPS      ///////////////
 	/////////////////////////////////////////////////////////////
 
+
 	bool draw_flag = true;
-	/*
-	for(size_t i(0); i<myUnits.size(); ++i)
-	{
-		Unit & unit(myUnits[i]);
-
-		// If the unit has a weapon, look for targets
-		if(unit.HasWeapon())
-		{
-			// Cache the unit's position and the range of its weapon
-			const vec2	position(unit.GetPosition());
-			const sint4 range(unit.GetWeaponRange());
-			const sint4 rangeSq(range*range);
-			//DrawDebugCircle(position,range,Color(1,1,1));
-
-			// Choose the first enemy unit we find in range
-			for(size_t j(0); j<enemies.size(); ++j)
-			{
-				const Unit & enemy(enemies[j]);
-				if(position.GetDistanceSqTo(enemy.GetPosition()) <= rangeSq)
-				{
-					unit.Attack(enemy);
-					DrawDebugLine(position,enemy.GetPosition(),Color(1,1,1));
-					break;
-				}
-			}
-		}
-	}
-	*/
-
 	// Lieutenant debugging circle
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
