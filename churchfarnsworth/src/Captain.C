@@ -14,7 +14,7 @@
 
 Captain::Captain(General& theGeneral)
 {
-	*general = theGeneral;
+	general = &theGeneral;
 	HEALTHY_VALUE = 30;
 
 }
