@@ -26,7 +26,7 @@ General::General(sint4 mapWidth, sint4 mapHeight)
 	//default 10x10 risk grid
 	xGrid = 10;
 	yGrid = 10;
-	SAFE_VALUE = 10;
+	SAFE_VALUE = 5;
 
 	TILEWIDTH = width/xGrid;
 	TILEHEIGHT = height/yGrid;
@@ -220,11 +220,11 @@ vec2 General::GetFallBackLocation(vec2 location)
 bool General::isOutNumbered(vec2 location)
 {
 	Tile* centerTile = ConvertToGridTile(location);
-	real8 friendly = centerTile->risk;
-	real8 enemy = 0;
+	real8 currentTile = centerTile->risk;
+	real8 surroundingTiles = 0;
 
 	//quick check in local tile
-	if (friendly < 0)
+	if (currentTile > SAFE_VALUE)
 		return true;
 
 	//check in surrounding tiles
@@ -234,12 +234,12 @@ bool General::isOutNumbered(vec2 location)
 		{
 			Tile* tile = &(grid[centerTile->x+j][centerTile->y+i]);
 			if (tile != 0)
-				enemy += tile->risk;
+				surroundingTiles += tile->risk;
 		}
 	}
 
-	//if the surrounding risk values are higher than your current tile * some error buffer
-	if (enemy > friendly*1.2)
+	//if the surrounding risk values are higher than your current tile
+	if (surroundingTiles > abs(currentTile))
 		return true;
 	return false;
 }
