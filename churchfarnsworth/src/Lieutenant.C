@@ -44,7 +44,6 @@ Lieutenant::Lieutenant()
 	engaged = 0;
 	requestsAid = 0;
 	health = 0;
-	location = vec2(0,0);
 	INIT_FLAG = false;
 }
 
@@ -152,9 +151,7 @@ void Lieutenant::CasualtyCheck()
 	}
 }
 
-//TODO: Change. DO NOT USE AVERAGE LOCATION
-//RETURNING GOAL JUST FOR TESTING
-vec2 Lieutenant::GetLocation()
+vec2 Lieutenant::GetCurrentPosition()
 {
 	vec2 sumLocation = vec2(0,0);
 	for (size_t i(0); i < marines.size(); ++i)
@@ -168,14 +165,8 @@ vec2 Lieutenant::GetLocation()
 		sumLocation = sumLocation + tank.GetPosition();
 	}
 	sint4 squadSize = marines.size() + tanks.size();
-	vec2 location = vec2(sumLocation.x/squadSize, sumLocation.y/squadSize);
-
-	return goal;
-}
-
-vec2 Lieutenant::GetPosition()
-{
-	return location;
+	vec2 position = vec2(sumLocation.x/squadSize, sumLocation.y/squadSize);
+	return position;
 }
 
 void Lieutenant::SetGoal(vec2 g)
@@ -332,18 +323,18 @@ void Lieutenant::DoFormation(vec2 dir)
 //default, needs updating
 void Lieutenant::MoveTo(vec2 target)
 {
-	location = target;
+	goal = target;
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		Unit & marine(marines[i]);
-		marines[i].SetGoal(Movement::Vec2D(location.x, location.y));
+		marines[i].SetGoal(Movement::Vec2D(goal.x, goal.y));
 		marines[i].SetTask(mc->moveUnit(marine.GetGameObj(),  marines[i].GetGoal()));
 	}
 	for (size_t j(0); j < tanks.size(); ++j)
 	{
 		Unit & tank(tanks[j]);
 
-		tanks[j].SetGoal(Movement::Vec2D(location.x, location.y));
+		tanks[j].SetGoal(Movement::Vec2D(goal.x, goal.y));
 		tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(),  tanks[j].GetGoal()));
 	}
 }
@@ -395,7 +386,7 @@ void Lieutenant::FireAtWill(Vector<Unit> enemies)
 Unit Lieutenant::AquireWeakestTarget(Vector<Unit> enemies)
 {
 	// Cache the unit's position and the range of its weapon
-	const vec2	position(GetLocation());
+	const vec2	position(GetCurrentPosition());
 	const sint4 range(MAX_RANGE);
 	const sint4 rangeSq(range*range);
 

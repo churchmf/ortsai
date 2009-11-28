@@ -63,7 +63,7 @@ vec2 Captain::ProvideAid()
 	{
 		if (Lieutenants[i]->NeedsAid())
 		{
-			return Lieutenants[i]->GetLocation();
+			return Lieutenants[i]->GetCurrentPosition();
 		}
 	}
 	return vec2(-1,-1);
@@ -97,13 +97,13 @@ void Captain::Loop(Vector<Lieutenant*> theLieutenants)
 		else
 		{
 			//if winning
-			if(!general->isOutNumbered(lieutenant->GetLocation()))
+			if(!general->isOutNumbered(lieutenant->GetCurrentPosition()))
 				continue;
 			else
 			{
 				//fallback and request for aid
 				lieutenant->SetAid(true);
-				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetLocation());
+				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
 				//lieutenant->MoveTo(retreatLocation)
 			}
 		}

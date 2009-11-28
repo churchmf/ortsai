@@ -22,8 +22,7 @@ public:
 	void CasualtyCheck();											//Updates the Lieutenant's squad by removing dead units
 	bool NeedsAid();												//Returns true if the Squad requests aid
 	void SetAid(bool aid);											//Sets the Squad Aid status
-	vec2 GetPosition();												//gets lt position
-	vec2 GetLocation();												//Returns a the centralized location of the squad
+	vec2 GetCurrentPosition();										//gets lt position
 	void DoFormation(vec2);											//Does the Squad formation
 	void MoveTo(vec2);												//Moves the Squad to target location
 	void Loop(Movement::Context&, Vector<Unit> enemies);			//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
@@ -40,7 +39,6 @@ public:
 private:
 	Vector <Unit> marines, tanks;
 	sint4 health;
-	vec2 location;
 	vec2 goal;
 	bool engaged;
 	bool requestsAid;
