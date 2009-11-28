@@ -86,7 +86,6 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 			}
 		}
 	}
-
 	std::cout << "CREATE LIEUTS" << std::endl;
 	for (int i=0;i<5;++i)
 	{
@@ -120,19 +119,53 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 		}
 	}
 
+	/*for(size_t i(0); i< myUnits.size(); ++i)
+	{
+		Unit & unit(myUnits[i]);
+		if(unit.HasWeapon())
+			Lieutenants[0]->AssignUnit(unit);
+	}
+
+	Lieutenants[0]->Loop(mc,enemies);
+	Lieutenants[0]->SetGoal(vec2(100, 350));
+	Lieutenants[0]->DoFormation(vec2(1,0));*/
 	//INITIALIZE GENERAL
-	general = new General(maxCoordX, maxCoordY);
+	//general = new General(maxCoordX, maxCoordY);
 
 	//INITIALIZE CAPTAIN
-	captain = new Captain(*general);
-	captain->SetLieutenants(Lieutenants);
+	//captain = new Captain(*general);
+	//captain->SetLieutenants(Lieutenants);
 
 	//SETUP LIEUTENANT FORMATIONS
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
-		Lieutenants[i]->Loop(mc,enemies);
 		//Lieutenants[i]->MoveTo(vec2(20,maxCoordY/(i+1)));
-		Lieutenants[i]->DoFormation(vec2(1,0));
+		Lieutenants[i]->Loop(mc,enemies);
+
+		//TODO*********CHANGE INITIAL SETUP TO DYNAMIC, CAPTAIN INPUT************
+		switch(i)
+		{
+		case 0:
+			Lieutenants[i]->SetGoal(vec2(100, 350));
+			Lieutenants[i]->DoFormation(vec2(1,0));
+			break;
+		case 1:
+			Lieutenants[i]->SetGoal(vec2(600, 200));
+			Lieutenants[i]->DoFormation(vec2(0,-1));
+			break;
+		case 2:
+			Lieutenants[i]->SetGoal(vec2(500, 350));
+			Lieutenants[i]->DoFormation(vec2(1,0));
+			break;
+		case 3:
+			Lieutenants[i]->SetGoal(vec2(700, 450));
+			Lieutenants[i]->DoFormation(vec2(0,-1));
+			break;
+		case 4:
+			Lieutenants[i]->SetGoal(vec2(50, 500));
+			Lieutenants[i]->DoFormation(vec2(1,0));
+			break;
+		}
 	}
 }
 
@@ -191,13 +224,13 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	//////////////////    COMMANDER LOOPS      //////////////////
 	/////////////////////////////////////////////////////////////
 
-	general->Loop(enemies, myUnits);
-	general->Print();
+	//general->Loop(enemies, myUnits);
+	//general->Print();
 
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
-		Lieutenant* lieutenant(Lieutenants[i]);
-		lieutenant->Loop(mc,enemies);
+		//Lieutenant* lieutenant(Lieutenants[i]);
+		Lieutenants[i]->Loop(mc,enemies);
 	}
 
 	//////////////////////////////////////////////////////////////

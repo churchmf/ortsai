@@ -2,6 +2,7 @@
 
 #include "Game.H"
 #include "GameObj.H"
+#include "Movement.H"
 
 // GameObj::sod contains pointers to commonly accessed data fields
 // GameObj is a subclass of ScriptObj
@@ -130,3 +131,27 @@ void Unit::Attack(const Unit & target)
 	args.push_back(game->get_cplayer_info().get_id(target.unit));
 	weapon->set_action("attack", args);
 }
+
+void Unit::SetTask(Movement::Task::ptr p)
+{
+	task = p;
+}
+Movement::Task::ptr Unit::GetTask()
+{
+	return task;
+}
+
+void Unit::SetGoal(Movement::Vec2D g)
+{
+	goal = g;
+}
+Movement::Goal::const_ptr Unit::GetGoal()
+{
+	return Movement::TouchPoint(goal);
+}
+Movement::Vec2D Unit::GetVector()
+{
+	return goal;
+}
+
+

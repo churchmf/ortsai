@@ -29,6 +29,9 @@ public:
 	Unit AquireWeakestTarget(Vector<Unit> enemies);					//Orders the Lieutenant to Find the weakest possible enemy
 	void AttackTarget(Unit& target);								//Orders the Lieutenant's Units to Attack the given Target
 	void FireAtWill(Vector<Unit> enemies);							//Orders the Lieutenant's Units to Fire at will
+	void SetGoal(vec2 g);											//sets goal position of the lt.
+	vec2 GetGoal();													//get the goal location of the lt.
+	void CheckFormation();											//checks to see if the units of the LT. are in their correct position
 
 	sint4 MarineSize(){return marines.size();}	//Returns the number of Marines under the Lieutenants command
 	sint4 TankSize(){return tanks.size();} 		//Returns the number of Tanks under the Lieutenants command
@@ -37,8 +40,10 @@ private:
 	Vector <Unit> marines, tanks;
 	sint4 health;
 	vec2 location;
+	vec2 goal;
 	bool engaged;
 	bool requestsAid;
+	bool INIT_FLAG;		//flag used to test if the Lt.'s variables have been initialized
 	Movement::Context *mc;
 };
 

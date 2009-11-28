@@ -2,6 +2,7 @@
 #define ORTS_SAMPLE_HELPER_H
 
 #include "Global.H"	// For types
+#include "Movement.H"
 
 //////////////////////////////////////////////////////////
 // Helper struct to easily manipulate positions/offsets //
@@ -46,6 +47,9 @@ class Unit
 	GameObj *		unit;
 	ScriptObj *		weapon;
 	sint4			mode;
+	Movement::Task::ptr task;
+	Movement::Vec2D goal;
+
 public:
 					Unit(const Game & game, ScriptObj * object);
 
@@ -72,6 +76,13 @@ public:
 	bool			InCombat() const;			// Is the unit in combat?
 	sint4			GetType() const;			// Get the type of the unit (1=marine,2=tank)
 	sint4			GetMode() const;			// Get the mode of the unit (0=weapon, 2=siege)
+
+	void			SetTask(Movement::Task::ptr);
+	Movement::Task::ptr GetTask();
+
+	void 			SetGoal(Movement::Vec2D g);
+	Movement::Goal::const_ptr GetGoal();
+	Movement::Vec2D GetVector();
 
 	//////////////
 	// Commands //
