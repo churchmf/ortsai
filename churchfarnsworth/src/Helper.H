@@ -10,12 +10,15 @@
 struct vec2
 {
 	sint4 x,y;
+	real8 rX, rY;
 
 	vec2() {}
 	vec2(sint4 x, sint4 y) : x(x), y(y) {}
+	vec2(real8 x, real8 y) : rX(x), rY(y){}
 
 	vec2 operator + (const vec2 & v) const { return vec2(x+v.x,y+v.y); }
 	vec2 operator - (const vec2 & v) const { return vec2(x-v.x,y-v.y); }
+
 
 	float GetLength() const { return sqrtf(static_cast<float>(x*x+y*y)); }
 	sint4 GetLengthSq() const { return x*x+y*y; }

@@ -21,6 +21,8 @@ For instance, in the case of "lab2.template", we need a "src/template_main.C", w
 #include "GameObj.H"
 #include "GameStateModule.H"
 #include "GameChanges.H"
+
+#include <algorithm>
 using namespace std;
 
 //////////////////////////////////////////////////////////////
@@ -37,11 +39,24 @@ const sint4 MAX_TANKS = 4;
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
 
+
 class MyApplication : public Application
 {
 public:
 	void OnReceivedView(GameStateModule & gameState, Movement::Context& mc);
 	void Initialize(GameStateModule & gameState,  Movement::Context& mc);
+
+	struct UnitCompare
+	{
+	  bool operator() (Unit i,Unit j) { return (i.GetPosition().y < j.GetPosition().y);}
+	} compUnits;
+
+
+	struct LtCompare
+	{
+	  bool operator() (Lieutenant i,Lieutenant j) { return (i.GetGoal().y < j.GetGoal().y);}
+	} compLieuts;
+
 private:
 	Vector<Lieutenant*> Lieutenants;		//Represents a Vector of Lieutenants
 	General* general;						//Represents a General
@@ -93,6 +108,10 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 		Lieutenants.push_back(lieutenant);
 	}
 
+	//sort units by y positions
+	sort(myUnits.begin(), myUnits.end(), compUnits);
+
+
 	std::cout << "ALLOCATE UNITS" << std::endl;
 	uint4 m = 0;
 	uint4 t = 0;
@@ -119,16 +138,6 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 		}
 	}
 
-	/*for(size_t i(0); i< myUnits.size(); ++i)
-	{
-		Unit & unit(myUnits[i]);
-		if(unit.HasWeapon())
-			Lieutenants[0]->AssignUnit(unit);
-	}
-
-	Lieutenants[0]->Loop(mc,enemies);
-	Lieutenants[0]->SetGoal(vec2(100, 350));
-	Lieutenants[0]->DoFormation(vec2(1,0));*/
 	//INITIALIZE GENERAL
 	//general = new General(maxCoordX, maxCoordY);
 
@@ -146,27 +155,28 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 		switch(i)
 		{
 		case 0:
-			Lieutenants[i]->SetGoal(vec2(100, 350));
-			Lieutenants[i]->DoFormation(vec2(1,0));
+			Lieutenants[i]->SetGoal(vec2(130, 100));
+			Lieutenants[i]->DoFormation(vec2(1, 0));
 			break;
 		case 1:
-			Lieutenants[i]->SetGoal(vec2(600, 200));
-			Lieutenants[i]->DoFormation(vec2(0,-1));
+			Lieutenants[i]->SetGoal(vec2(80, 220));
+			Lieutenants[i]->DoFormation(vec2(1,0));
 			break;
 		case 2:
-			Lieutenants[i]->SetGoal(vec2(500, 350));
+			Lieutenants[i]->SetGoal(vec2(80, 390));
 			Lieutenants[i]->DoFormation(vec2(1,0));
 			break;
 		case 3:
-			Lieutenants[i]->SetGoal(vec2(700, 450));
-			Lieutenants[i]->DoFormation(vec2(0,-1));
+			Lieutenants[i]->SetGoal(vec2(80, 560));
+			Lieutenants[i]->DoFormation(vec2(1,0));
 			break;
 		case 4:
-			Lieutenants[i]->SetGoal(vec2(50, 500));
+			Lieutenants[i]->SetGoal(vec2(130, 670));
 			Lieutenants[i]->DoFormation(vec2(1,0));
 			break;
 		}
 	}
+
 }
 
 
@@ -243,7 +253,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
 		vec2 ltPos = Lieutenants[i]->GetLocation();
-		DrawDebugCircle(ltPos, 100, Color(1,1,0));
+		DrawDebugCircle(ltPos, 112, Color(1,1,0));
 	}
 	draw_flag = false;
 }
