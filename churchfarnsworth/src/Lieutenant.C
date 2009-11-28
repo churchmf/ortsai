@@ -67,13 +67,13 @@ void Lieutenant::RelieveUnit(sint4 type, uint4 index)
 {
 	if (type == MARINE)
 	{
-		if (index < marines.size());
-			//marines.erase(marines.begin()+(index-1));
+		if (index < marines.size())
+			marines.erase(marines.begin()+(index-1));
 	}
 	else if (type == TANK)
 	{
-		if (index < tanks.size());
-			//tanks.erase(tanks.begin()+(index-1));
+		if (index < tanks.size())
+			tanks.erase(tanks.begin()+(index-1));
 	}
 }
 
@@ -187,12 +187,12 @@ void Lieutenant::CheckFormation()
 		//if the unit fails to get to its location or it thinks it is at its location
 		//check its location to its goal, if its not there move it to its goal
 		//same for tank
-		if((*marines[i].GetTask()).getStatus() == Movement::Task::MOVE_FAILURE ||
-		   (*marines[i].GetTask()).getStatus() == Movement::Task::SUCCESS &&
-		   marines[i].IsAlive())
+		if(((*marines[i].GetTask()).getStatus() == Movement::Task::MOVE_FAILURE) ||
+		   (((*marines[i].GetTask()).getStatus() == Movement::Task::SUCCESS) &&
+		   (marines[i].IsAlive())))
 		{
-			if(!((int)marines[i].GetPosition().x == (int)marines[i].GetVector().x &&
-			     (int)marines[i].GetPosition().y == (int)marines[i].GetVector().y))
+			if(!(((int)marines[i].GetPosition().x == (int)marines[i].GetVector().x) &&
+			     ((int)marines[i].GetPosition().y == (int)marines[i].GetVector().y)))
 			{
 				(*marines[i].GetTask()).cancel();
 				marines[i].SetTask(mc->moveUnit(marines[i].GetGameObj(), marines[i].GetGoal()));
@@ -202,20 +202,18 @@ void Lieutenant::CheckFormation()
 
 	for (size_t i(0); i < tanks.size(); ++i)
 	{
-		if((*tanks[i].GetTask()).getStatus() == Movement::Task::MOVE_FAILURE ||
-		   (*tanks[i].GetTask()).getStatus() == Movement::Task::SUCCESS      &&
-		   tanks[i].IsAlive())
+		if(((*tanks[i].GetTask()).getStatus() == Movement::Task::MOVE_FAILURE) ||
+		   (((*tanks[i].GetTask()).getStatus() == Movement::Task::SUCCESS)      &&
+		   (tanks[i].IsAlive())))
 		{
-			if(!((int)tanks[i].GetPosition().x == (int)tanks[i].GetVector().x &&
-				 (int)tanks[i].GetPosition().y == (int)tanks[i].GetVector().y))
+			if(!(((int)tanks[i].GetPosition().x == (int)tanks[i].GetVector().x) &&
+				 ((int)tanks[i].GetPosition().y == (int)tanks[i].GetVector().y)))
 			{
 				(*tanks[i].GetTask()).cancel();
 				tanks[i].SetTask(mc->moveUnit(tanks[i].GetGameObj(), tanks[i].GetGoal()));
 			}
 		}
 	}
-
-
 }
 
 
@@ -427,14 +425,15 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 {
 	mc = &MC;
 	UpdateEngaged();
-	if (IsEngaged())
-	{
-		CasualtyCheck();
-	}
 	FireAtWill(enemies);
 
 	if(INIT_FLAG)
 		CheckFormation();
+
+	if (IsEngaged())
+		{
+			//CasualtyCheck();
+		}
 
 	/*
 	 *  if (orders):
