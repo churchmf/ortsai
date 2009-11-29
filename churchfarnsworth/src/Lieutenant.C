@@ -62,6 +62,7 @@ Lieutenant::Lieutenant()
 
 Lieutenant::~Lieutenant()
 {
+	delete mc;
 }
 
 void Lieutenant::AssignUnit(Unit unit)

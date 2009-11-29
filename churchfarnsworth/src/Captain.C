@@ -37,7 +37,8 @@ Captain::Captain(General& theGeneral)
 
 Captain::~Captain()
 {
-
+	delete general;
+	Lieutenants.clear();
 }
 
 void Captain::SetLieutenants(Vector<Lieutenant*> theLieutenants)
