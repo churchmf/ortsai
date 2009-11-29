@@ -140,7 +140,7 @@ vec2 Unit::DmgDirection() const
 	{
 		real8 x = cos(angle*PI/180);
 		real8 y = sin(angle*PI/180);
-		std::cout << angle << ": " << x << "," << y << std::endl;
+		//std::cout << angle << ": " << x << "," << y << std::endl;
 		directionVector = vec2(x,y);
 	}
 	return directionVector;

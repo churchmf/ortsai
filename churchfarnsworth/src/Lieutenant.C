@@ -65,18 +65,39 @@ void Lieutenant::AssignUnit(Unit unit)
 	}
 }
 
-void Lieutenant::RelieveUnit(sint4 type, uint4 index)
+void Lieutenant::RelieveUnit(sint4 type, sint4 index)
 {
+	std::cout << "INDEX: " << index << std::endl;
 	if (type == MARINE)
 	{
-		if (index < marines.size())
-			marines.erase(marines.begin()+(index-1));
+		std::cout << "MARINES:" << marines.size() << std::endl;
+		if (index < (sint4)marines.size())
+			marines.erase(marines.begin()+index);
 	}
 	else if (type == TANK)
 	{
-		if (index < tanks.size())
-			tanks.erase(tanks.begin()+(index-1));
+		std::cout << "TANKS: " << tanks.size() << std::endl;
+		if (index < (sint4)tanks.size())
+			tanks.erase(tanks.begin()+index);
 	}
+}
+
+Vector<Unit> Lieutenant::TransferSquad()
+{
+	Vector<Unit> units;
+	for (size_t i(0); i < marines.size(); ++i)
+		{
+			Unit & marine(marines[i]);
+			units.push_back(marine);
+		}
+	for (size_t j(0); j < tanks.size(); ++j)
+	{
+		Unit & tank(tanks[j]);
+		units.push_back(tank);
+	}
+	marines.clear();
+	tanks.clear();
+	return units;
 }
 
 sint4 Lieutenant::GetHealth()
@@ -135,7 +156,7 @@ void Lieutenant::SetAid(bool aid)
 
 void Lieutenant::CasualtyCheck()
 {
-	for (size_t i(0); i < marines.size(); ++i)
+	for (sint4 i = 0; i < (sint4)marines.size(); ++i)
 	{
 		const Unit & marine(marines[i]);
 		if (!marine.IsAlive())
@@ -144,7 +165,7 @@ void Lieutenant::CasualtyCheck()
 			break;
 		}
 	}
-	for (size_t j(0); j < tanks.size(); ++j)
+	for (sint4 j = 0; j < (sint4)tanks.size(); ++j)
 	{
 		const Unit & tank(tanks[j]);
 		if (!tank.IsAlive())
@@ -190,7 +211,8 @@ void Lieutenant::PullBackWounded()
 		{
 			//move the opposite way that the damage is coming
 			vec2 pullBack = vec2(-tank.DmgDirection().rX,-tank.DmgDirection().rY);
-			//create a goal, and pass it to the units movement, don't overide it's current goal as it will want to rejoin the formation later
+			//calculate where the unit should move and
+			//create a goal. Pass it to the units movement, don't overide it's current goal as it will want to rejoin formation after microing away
 			Movement::Goal::const_ptr goal = Movement::TouchPoint(Movement::Vec2D((sint4)(tank.GetPosition().x + pullBack.rX),(sint4)(tank.GetPosition().y + pullBack.rY)));
 			tank.SetTask(mc->moveUnit(tank.GetGameObj(), goal));
 		}
@@ -429,7 +451,7 @@ void Lieutenant::FireAtWill(Vector<Unit> enemies)
 
 Unit Lieutenant::AquireWeakestTarget(Vector<Unit> enemies)
 {
-	// Cache the unit's position and the range of its weapon
+	// Cache the squad's position and the max range of it's weapons
 	const vec2	position(GetCurrentPosition());
 	const sint4 range(MAX_RANGE);
 	const sint4 rangeSq(range*range);
@@ -478,7 +500,7 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 
 	if (IsEngaged())
 		{
-			//CasualtyCheck();
+			CasualtyCheck();
 			//PullBackWounded();	has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
 		}
 

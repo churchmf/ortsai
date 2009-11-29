@@ -15,7 +15,7 @@ public:
 	Lieutenant();
 	virtual ~Lieutenant();
 	void AssignUnit(Unit unit);										//Assign a Unit to the control of the Lieutenant
-	void RelieveUnit(sint4 type, uint4 index);						//Remove a Unit from the control of the Lieutenant
+	void RelieveUnit(sint4 type, sint4 index);						//Remove a Unit from the control of the Lieutenant
 	sint4 GetHealth();												//Returns the percentage of total Squad health
 	bool IsEngaged();												//Returns true if the Squad is in combat
 	void UpdateEngaged();											//Updates the engagement status of the squad
@@ -33,6 +33,7 @@ public:
 	vec2 GetGoal();													//get the goal location of the Lieutenant.
 	void CheckFormation();											//checks to see if the units of the Lieutenant are in their correct position
 	void PullBackWounded();											//micro-manages units in danger of dying in the squad.
+	Vector<Unit> TransferSquad();									//Transfers out the Lieutenant's squad, returning them as a vector and releaving control.
 
 	sint4 MarineSize(){return marines.size();}	//Returns the number of Marines under the Lieutenants command
 	sint4 TankSize(){return tanks.size();} 		//Returns the number of Tanks under the Lieutenants command
