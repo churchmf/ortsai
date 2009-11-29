@@ -38,7 +38,7 @@ public:
 	vec2 GetFallBackLocation(vec2 location);						//Returns tile location of nearest safe Tile from the location
 
 	Tile* ConvertToGridTile(vec2 location);							//Converts the given location on the map to the appropriate tile in the grid
-	vec2 ConvertToLocation(Tile& tile);								//Converts the given tile to the center location of the tile on the map
+	vec2 ConvertToLocation(Tile tile);								//Converts the given tile to the center location of the tile on the map
 
 
 private:

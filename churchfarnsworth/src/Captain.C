@@ -69,6 +69,7 @@ vec2 Captain::GetAidRequestLocation()
 	return vec2(-1,-1);
 }
 
+//THOUGHTS: I think we need to implement some kind of task/"orders" system with the lieut so we can skip lieutenants already performing an action
 void Captain::Loop()
 {
 	//SetLieutenants(theLieutenants);
@@ -85,18 +86,18 @@ void Captain::Loop()
 			if (lieutenant->NeedsAid())
 				lieutenant->SetAid(false);
 			//check for aid requests
-			//if (existsAidRequest())
-			//{
+			if (existsAidRequest())
+			{
 				//choose safe deployment location towards endangered squad
-				//vec2 aidLocation = GetAidRequestLocation();
+				vec2 aidLocation = GetAidRequestLocation();
 				//lieutenant->MoveTo(aidLocation);
-			//}
-			//else
-			//{
+			}
+			else
+			{
 				//choose safe deployment location towards nearest enemy location
-				//vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
+				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
 				//lieutenant->MoveTo(enemy);
-			//}
+			}
 		}
 		else
 		{
@@ -110,7 +111,8 @@ void Captain::Loop()
 			{
 				//fallback and request for aid
 				lieutenant->SetAid(true);
-				//vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
+				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
+				//std::cout << retreatLocation.x << "," << retreatLocation.y << std::endl;
 				//lieutenant->MoveTo(retreatLocation);
 			}
 		}

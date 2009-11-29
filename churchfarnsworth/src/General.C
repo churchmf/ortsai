@@ -177,15 +177,13 @@ General::Tile* General::ConvertToGridTile(vec2 location)
 	return tile;
 }
 
-vec2 General::ConvertToLocation(Tile& tile)
+vec2 General::ConvertToLocation(Tile tile)
 {
 	//convert to appropriate location (center of tile)
 	real8 x = ((real8)tile.x/(real8)xGrid)*width;
 	real8 y = ((real8)tile.y/(real8)yGrid)*height;
 
-	//std::cout << x << "," << y << std::endl;
-
-	vec2 location = vec2(x + (TILEWIDTH/2),y + (TILEHEIGHT/2));
+	vec2 location = vec2((sint4)(x + (TILEWIDTH/2)),(sint4)(y + (TILEHEIGHT/2)));
 	return location;
 }
 
@@ -222,12 +220,14 @@ vec2 General::GetFallBackLocation(vec2 location)
 			}
 		}
 	}
-	vec2 safeLocation = vec2(ConvertToLocation(*fallBack));
+	vec2 safeLocation = ConvertToLocation(*fallBack);
+	//std::cout << safeLocation.x << "," << safeLocation.y << std::endl;
 	return safeLocation;
 }
 
 //note the results of this assessment change drastically with the size of the risk grid
 //it is recommended to search a larger number of surrounding tiles as the grid gets denser to maintain desired functionality
+//good rule of thumb is surrounding tiles should encompass range of enemy tanks
 bool General::IsOutNumbered(vec2 location)
 {
 	Tile* centerTile = ConvertToGridTile(location);
@@ -280,7 +280,7 @@ vec2 General::GetClosestTarget(vec2 location)
 			}
 		}
 	}
-	vec2 target = vec2(ConvertToLocation(*closestTarget));
+	vec2 target = ConvertToLocation(*closestTarget);
 	return target;
 }
 
