@@ -44,6 +44,7 @@ private:
 	bool engaged;
 	bool requestsAid;
 	bool INIT_FLAG;		//flag used to test if the Lieutenant's variables have been initialized
+	bool MICRO_FLAG;
 	Movement::Context *mc;
 };
 
