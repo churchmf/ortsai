@@ -500,6 +500,9 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 
 	if (IsEngaged())
 		{
+			//Unit target = AquireWeakestTarget(enemies);	this works fine
+			//AttackTarget(target);							do we want units to move into range, then attack the weakest target?
+
 			//CasualtyCheck();		I've looked over it and I have no idea why we would get a floating point exception (usually around the last unit of type in squad)
 			//PullBackWounded();	has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
 		}
