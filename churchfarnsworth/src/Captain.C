@@ -57,7 +57,7 @@ bool Captain::existsAidRequest()
 	return false;
 }
 
-vec2 Captain::ProvideAid()
+vec2 Captain::GetAidRequestLocation()
 {
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
@@ -69,42 +69,49 @@ vec2 Captain::ProvideAid()
 	return vec2(-1,-1);
 }
 
-void Captain::Loop(Vector<Lieutenant*> theLieutenants)
+void Captain::Loop()
 {
-	SetLieutenants(theLieutenants);
+	//SetLieutenants(theLieutenants);
 
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
 		Lieutenant* lieutenant(Lieutenants[i]);
+		//std::cout << lieutenant->GetHealth() << std::endl;
 		//if (squad healthy and not engaged):
 		if(lieutenant->GetHealth() >= HEALTHY_VALUE && !lieutenant->IsEngaged())
 		{
+
 			//Sets the current lieutenants aidRequest to false since it is safe and healthy
 			if (lieutenant->NeedsAid())
 				lieutenant->SetAid(false);
 			//check for aid requests
-			if (existsAidRequest())
-			{
+			//if (existsAidRequest())
+			//{
 				//choose safe deployment location towards endangered squad
-				vec2 aidLocation = ProvideAid();
-				//lieutenant->MoveTo(aidLocation)
-			}
-			else
-			{
+				//vec2 aidLocation = GetAidRequestLocation();
+				//lieutenant->MoveTo(aidLocation);
+			//}
+			//else
+			//{
 				//choose safe deployment location towards nearest enemy location
-			}
+				//vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
+				//lieutenant->MoveTo(enemy);
+			//}
 		}
 		else
 		{
 			//if winning
-			if(!general->isOutNumbered(lieutenant->GetCurrentPosition()))
-				continue;
+			std::cout << general->IsOutNumbered(lieutenant->GetCurrentPosition()) << std::endl;
+			if(!general->IsOutNumbered(lieutenant->GetCurrentPosition()))
+			{
+
+			}
 			else
 			{
 				//fallback and request for aid
 				lieutenant->SetAid(true);
-				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
-				//lieutenant->MoveTo(retreatLocation)
+				//vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
+				//lieutenant->MoveTo(retreatLocation);
 			}
 		}
 	}

@@ -113,7 +113,7 @@ sint4 Lieutenant::GetHealth()
 		const Unit & tank(tanks[j]);
 		health += tank.GetHitpoints();
 	}
-	sint4 percent = 100*(health / (MAX_MARINES*80 + MAX_TANKS*150));
+	sint4 percent = 100*(real8)((real8)health / (real8)(MAX_MARINES*80 + MAX_TANKS*150));
 	return  percent;
 }
 

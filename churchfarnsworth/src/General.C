@@ -183,13 +183,13 @@ vec2 General::ConvertToLocation(Tile& tile)
 	real8 x = ((real8)tile.x/(real8)xGrid)*width;
 	real8 y = ((real8)tile.y/(real8)yGrid)*height;
 
-	std::cout << x << "," << y << std::endl;
+	//std::cout << x << "," << y << std::endl;
 
 	vec2 location = vec2(x + (TILEWIDTH/2),y + (TILEHEIGHT/2));
 	return location;
 }
 
-bool General::isLocationSafe(vec2 location)
+bool General::IsLocationSafe(vec2 location)
 {
 	Tile* tile = ConvertToGridTile(location);
 
@@ -226,7 +226,9 @@ vec2 General::GetFallBackLocation(vec2 location)
 	return safeLocation;
 }
 
-bool General::isOutNumbered(vec2 location)
+//note the results of this assessment change drastically with the size of the risk grid
+//it is recommended to search a larger number of surrounding tiles as the grid gets denser to maintain desired functionality
+bool General::IsOutNumbered(vec2 location)
 {
 	Tile* centerTile = ConvertToGridTile(location);
 	real8 currentTile = centerTile->risk;
@@ -241,9 +243,12 @@ bool General::isOutNumbered(vec2 location)
 	{
 		for (int j = -1; j < 2; ++j)
 		{
-			Tile* tile = &(grid[centerTile->x+j][centerTile->y+i]);
-			if (tile != 0)
+			//check tile boundries
+			if ((centerTile->x+j > 0 && centerTile->x+j < xGrid) && (centerTile->y+i > 0 && centerTile->y+i < yGrid))
+			{
+				Tile* tile = &(grid[centerTile->x+j][centerTile->y+i]);
 				surroundingTiles += tile->risk;
+			}
 		}
 	}
 
