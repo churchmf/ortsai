@@ -18,7 +18,7 @@ public:
 	void RelieveUnit(sint4 type, uint4 index);						//Remove a Unit from the control of the Lieutenant
 	sint4 GetHealth();												//Returns the percentage of total Squad health
 	bool IsEngaged();												//Returns true if the Squad is in combat
-	void UpdateEngaged();											//Updates the engagement Status of the squad
+	void UpdateEngaged();											//Updates the engagement status of the squad
 	void CasualtyCheck();											//Updates the Lieutenant's squad by removing dead units
 	bool NeedsAid();												//Returns true if the Squad requests aid
 	void SetAid(bool aid);											//Sets the Squad Aid status
@@ -31,7 +31,7 @@ public:
 	void FireAtWill(Vector<Unit> enemies);							//Orders the Lieutenant's Units to Fire at will
 	void SetGoal(vec2 g);											//sets goal position of the Lieutenant.
 	vec2 GetGoal();													//get the goal location of the Lieutenant.
-	void CheckFormation();											//checks to see if the units of the LT. are in their correct position
+	void CheckFormation();											//checks to see if the units of the Lieutenant are in their correct position
 	vec2 PullWounded();												//micro-manages units in danger of dying in the squad.
 
 	sint4 MarineSize(){return marines.size();}	//Returns the number of Marines under the Lieutenants command
@@ -43,7 +43,7 @@ private:
 	vec2 goal;
 	bool engaged;
 	bool requestsAid;
-	bool INIT_FLAG;		//flag used to test if the Lt.'s variables have been initialized
+	bool INIT_FLAG;		//flag used to test if the Lieutenant's variables have been initialized
 	Movement::Context *mc;
 };
 
