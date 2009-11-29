@@ -101,7 +101,7 @@ void Captain::Loop()
 		else
 		{
 			//if winning
-			std::cout << general->IsOutNumbered(lieutenant->GetCurrentPosition()) << std::endl;
+			//std::cout << general->IsOutNumbered(lieutenant->GetCurrentPosition()) << std::endl;
 			if(!general->IsOutNumbered(lieutenant->GetCurrentPosition()))
 			{
 
