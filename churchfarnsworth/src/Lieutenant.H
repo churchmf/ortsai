@@ -22,16 +22,17 @@ public:
 	void CasualtyCheck();											//Updates the Lieutenant's squad by removing dead units
 	bool NeedsAid();												//Returns true if the Squad requests aid
 	void SetAid(bool aid);											//Sets the Squad Aid status
-	vec2 GetCurrentPosition();										//gets lt position
+	vec2 GetCurrentPosition();										//gets Lieutenant's position
 	void DoFormation(vec2);											//Does the Squad formation
 	void MoveTo(vec2);												//Moves the Squad to target location
 	void Loop(Movement::Context&, Vector<Unit> enemies);			//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
 	Unit AquireWeakestTarget(Vector<Unit> enemies);					//Orders the Lieutenant to Find the weakest possible enemy
 	void AttackTarget(Unit& target);								//Orders the Lieutenant's Units to Attack the given Target
 	void FireAtWill(Vector<Unit> enemies);							//Orders the Lieutenant's Units to Fire at will
-	void SetGoal(vec2 g);											//sets goal position of the lt.
-	vec2 GetGoal();													//get the goal location of the lt.
+	void SetGoal(vec2 g);											//sets goal position of the Lieutenant.
+	vec2 GetGoal();													//get the goal location of the Lieutenant.
 	void CheckFormation();											//checks to see if the units of the LT. are in their correct position
+	vec2 PullWounded();												//micro-manages units in danger of dying in the squad.
 
 	sint4 MarineSize(){return marines.size();}	//Returns the number of Marines under the Lieutenants command
 	sint4 TankSize(){return tanks.size();} 		//Returns the number of Tanks under the Lieutenants command

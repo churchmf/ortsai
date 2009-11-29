@@ -35,6 +35,8 @@ const sint4 MAX_TANKS = 4;
 
 const sint4 MAX_RANGE = 112;
 
+//unit health percentage buffer for pulling back
+const real8 EXPECTED_DEATH = 30;
 //////////////////////////////////////////////////////////////
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
@@ -147,6 +149,34 @@ void Lieutenant::CasualtyCheck()
 		if (!tank.IsAlive())
 		{
 			RelieveUnit(TANK, j);
+		}
+	}
+}
+
+vec2 Lieutenant::PullWounded()
+{
+	for (size_t i(0); i < marines.size(); ++i)
+	{
+		const Unit & marine(marines[i]);
+		real8 hp = marine.GetHitpoints();
+		real8 maxHp = marine.GetMaxHitpoints();
+		real8 health = (hp/maxHp);
+		if (health < EXPECTED_DEATH && marine.InCombat())
+		{
+
+		}
+
+	}
+	for (size_t j(0); j < tanks.size(); ++j)
+	{
+		const Unit & tank(tanks[j]);
+		sumLocation = sumLocation + tank.GetPosition();
+		real8 hp = tank.GetHitpoints();
+		real8 maxHp = tank.GetMaxHitpoints();
+		real8 health = (hp/maxHp);
+		if (health < EXPECTED_DEATH && tank.InCombat())
+		{
+
 		}
 	}
 }
