@@ -296,8 +296,14 @@ void Lieutenant::DoFormation(vec2 dir)
 
 	ltDirection.x = ltDirection.x/sqrt(ltDirection.x*ltDirection.x + ltDirection.y*ltDirection.y);
 	ltDirection.y = ltDirection.y/sqrt(ltDirection.x*ltDirection.x + ltDirection.y*ltDirection.y);
+	ltDirection.rX = ltDirection.rX/sqrt(ltDirection.rX*ltDirection.rX + ltDirection.rY*ltDirection.rY);
+	ltDirection.rY = ltDirection.rY/sqrt(ltDirection.rX*ltDirection.rX + ltDirection.rY*ltDirection.rY);
 
-	vec2 rowDirection = vec2(-ltDirection.y, ltDirection.x);//direction of the rows
+	vec2 rowDirection; //direction of the rows
+	rowDirection.x = ltDirection.x;
+	rowDirection.y = -ltDirection.y;
+	rowDirection.rX = ltDirection.rX;
+	rowDirection.rY = -ltDirection.rY;
 
 	//if new units added just change these variables
 	sint4 unitDisplace = 0;//variable used to displace the rows evenly
@@ -321,18 +327,18 @@ void Lieutenant::DoFormation(vec2 dir)
 		//set first unit
 		if(i == 0 && marine.IsAlive())
 		{
-			initUnitPos = vec2((ltDirection.x * frontLine) + goal.x, (ltDirection.y * frontLine) + goal.y);
-			marines[i].SetGoal(Movement::Vec2D(initUnitPos.x, initUnitPos.y));
+			initUnitPos = vec2((ltDirection.rX * frontLine) + goal.rX, (ltDirection.rY * frontLine) + goal.rY);
+			marines[i].SetGoal(Movement::Vec2D(initUnitPos.rX, initUnitPos.rY));
 			marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
 
 		}
 		else if(i % 2 == 1 && i > 0 && marine.IsAlive())
 		{
 			//set the next marine at a distance based on the row direction, offset, and where the previous one is
-			unitPos = vec2((rowDirection.x * marineOffset * displace) + initUnitPos.x, (rowDirection.y * marineOffset * displace) + initUnitPos.y);
-			unitPos.x = unitPos.x - (unitDisplace * unitOffset);
-			unitPos.y = unitPos.y - (unitDisplace * unitOffset);
-			marines[i].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+			unitPos = vec2((rowDirection.rX * marineOffset * displace) + initUnitPos.rX, (rowDirection.rY * marineOffset * displace) + initUnitPos.y);
+			unitPos.rX = unitPos.rX - (unitDisplace * unitOffset);
+			unitPos.rY = unitPos.rY - (unitDisplace * unitOffset);
+			marines[i].SetGoal(Movement::Vec2D(unitPos.rX, unitPos.rY));
 			marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
 
 		}
@@ -340,10 +346,10 @@ void Lieutenant::DoFormation(vec2 dir)
 		else if(i % 2 == 0 && i > 0 && marine.IsAlive())
 		{
 			//set the next marine at a distance based on the row direction, offset, and where the previous one is
-			unitPos = vec2(((-rowDirection.x) * marineOffset * displace) + initUnitPos.x, ((-rowDirection.y) * marineOffset * displace) + initUnitPos.y);
-			unitPos.x = unitPos.x - (unitDisplace * unitOffset);
-			unitPos.y = unitPos.y - (unitDisplace * unitOffset);
-			marines[i].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+			unitPos = vec2(((-rowDirection.rX) * marineOffset * displace) + initUnitPos.rX, ((-rowDirection.rY) * marineOffset * displace) + initUnitPos.y);
+			unitPos.rX = unitPos.rX - (unitDisplace * unitOffset);
+			unitPos.rY = unitPos.rY - (unitDisplace * unitOffset);
+			marines[i].SetGoal(Movement::Vec2D(unitPos.rX, unitPos.rY));
 			marines[i].SetTask(mc->moveUnit(marine.GetGameObj(),  marines[i].GetGoal()));
 
 			displace++;
@@ -358,25 +364,25 @@ void Lieutenant::DoFormation(vec2 dir)
 		Unit & tank(tanks[j]);
 		if(j == 0 && tank.IsAlive())
 		{
-			initUnitPos = vec2(goal.x, goal.y);
-			tanks[j].SetGoal(Movement::Vec2D(initUnitPos.x, initUnitPos.y));
+			initUnitPos = vec2(goal.rX, goal.rY);
+			tanks[j].SetGoal(Movement::Vec2D(initUnitPos.rX, initUnitPos.rY));
 			tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
 		}
 		else if(j % 2 == 1 && j > 0 && tank.IsAlive())
 		{
 			//set the next marine at a distance based on the row direction, offset, and where the previous one is
-			unitPos = vec2((rowDirection.x * tankOffset * displace) + initUnitPos.x, (rowDirection.y * tankOffset * displace) + initUnitPos.y);
+			unitPos = vec2((rowDirection.rX * tankOffset * displace) + initUnitPos.x, (rowDirection.rY * tankOffset * displace) + initUnitPos.y);
 
-			tanks[j].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+			tanks[j].SetGoal(Movement::Vec2D(unitPos.rX, unitPos.rY));
 			tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
 		}
 		//set every second unit (ones on negative plane to LT) to negative
 		else if(j % 2 == 0 && j > 0 && tank.IsAlive())
 		{
 			//set the next tank at a distance based on the row direction, offset, and where the previous one is
-			unitPos = vec2((-rowDirection.x * tankOffset * displace) + initUnitPos.x, (-rowDirection.y * tankOffset * displace) + initUnitPos.y);
+			unitPos = vec2((-rowDirection.rX * tankOffset * displace) + initUnitPos.rX, (-rowDirection.rY * tankOffset * displace) + initUnitPos.rY);
 
-			tanks[j].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+			tanks[j].SetGoal(Movement::Vec2D(unitPos.rX, unitPos.rY));
 			tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
 			displace++;
 		}
@@ -408,47 +414,68 @@ void Lieutenant::FireAtWill(Vector<Unit> enemies)
 {
 	for(size_t i(0); i<marines.size(); ++i)
 	{
-		Unit & marine(marines[i]);
+		sint4 weakestHP = 150;	//tanks maxhealth
+		Unit& marine(marines[i]);
+		Unit& target = enemies[0];
 
 		// Cache the unit's position and the range of its weapon
 		const vec2	position(marine.GetPosition());
 		const sint4 range(marine.GetWeaponRange());
 		const sint4 rangeSq(range*range);
 
-		// Choose the first enemy unit we find in range
+		// Choose the weakest enemy unit we find in range
 		for(size_t j(0); j<enemies.size(); ++j)
 		{
 			const Unit & enemy(enemies[j]);
 			if(position.GetDistanceSqTo(enemy.GetPosition()) <= rangeSq)
 			{
-				marine.Attack(enemy);
-				break;
+				sint4 hp = enemy.GetHitpoints();
+				if (hp <= weakestHP && hp > 0)
+				{
+					weakestHP = hp;
+					target = enemy;
+				}
 			}
 		}
+		if(position.GetDistanceSqTo(target.GetPosition()) <= rangeSq)
+		{
+		marine.Attack(target);
+		}
 	}
+
 	for(size_t i(0); i<tanks.size(); ++i)
 	{
-		Unit & tank(tanks[i]);
-		tank.DmgDirection();
+		sint4 weakestHP = 150;	//tanks maxhealth
+		Unit& tank(tanks[i]);
+		Unit& target = enemies[0];
 
 		// Cache the unit's position and the range of its weapon
 		const vec2	position(tank.GetPosition());
 		const sint4 range(tank.GetWeaponRange());
 		const sint4 rangeSq(range*range);
 
-		// Choose the first enemy unit we find in range
+		// Choose the weakest enemy unit we find in range
 		for(size_t j(0); j<enemies.size(); ++j)
 		{
 			const Unit & enemy(enemies[j]);
 			if(position.GetDistanceSqTo(enemy.GetPosition()) <= rangeSq)
 			{
-				tank.Attack(enemy);
-				break;
+				sint4 hp = enemy.GetHitpoints();
+				if (hp <= weakestHP && hp > 0)
+				{
+					weakestHP = hp;
+					target = enemy;
+				}
 			}
+		}
+		if(position.GetDistanceSqTo(target.GetPosition()) <= rangeSq)
+		{
+		tank.Attack(target);
 		}
 	}
 }
 
+//we may not need this, it could be better just to have individual units target the weakest unit they can instead of the whole group
 Unit Lieutenant::AquireWeakestTarget(Vector<Unit> enemies)
 {
 	// Cache the squad's position and the max range of it's weapons
