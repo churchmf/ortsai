@@ -139,11 +139,11 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 	}
 
 	//INITIALIZE GENERAL
-	//general = new General(maxCoordX, maxCoordY);
+	general = new General(maxCoordX, maxCoordY);
 
 	//INITIALIZE CAPTAIN
-	//captain = new Captain(*general);
-	//captain->SetLieutenants(Lieutenants);
+	captain = new Captain(*general);
+	captain->SetLieutenants(Lieutenants);
 
 	//SETUP LIEUTENANT FORMATIONS
 	for(size_t i(0); i< Lieutenants.size(); ++i)
@@ -180,7 +180,9 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 }
 
 
-//MAIN GAME LOOP
+//////////////////////////////////////////////////////////////
+///////////////////      GAME LOOP       // /////////////////
+/////////////////////////////////////////////////////////////
 void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Context& mc)
 {
 	//////////////////////////////////////////////////////////////
@@ -196,8 +198,9 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	/////////////////   END INITIALIZATION      /////////////////
 	/////////////////////////////////////////////////////////////
 
-	// INFO: You can examine the Game class to determine everything about
-	// the state of the game according to the current view
+	//////////////////////////////////////////////////////////////
+	///////////////////    GAME UPDATES      // /////////////////
+	/////////////////////////////////////////////////////////////
 	const Game & game(gameState.get_game());
 
 	// Iterate through all teams and store the living units
@@ -229,6 +232,9 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 			}
 		}
 	}
+	//////////////////////////////////////////////////////////////
+	//////////////////   END GAME UPDATES     ///////////////////
+	/////////////////////////////////////////////////////////////
 
 	//////////////////////////////////////////////////////////////
 	//////////////////    COMMANDER LOOPS      //////////////////
@@ -236,6 +242,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 
 	//general->Loop(enemies, myUnits);
 	//general->Print();
+
+	//captain->Loop(Lieutenants);
 
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
@@ -246,7 +254,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	//////////////////////////////////////////////////////////////
 	////////////////     END COMMANDER LOOPS      ///////////////
 	/////////////////////////////////////////////////////////////
-
 
 	bool draw_flag = true;
 	// Lieutenant debugging circle
