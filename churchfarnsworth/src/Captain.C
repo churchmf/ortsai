@@ -69,11 +69,9 @@ vec2 Captain::GetAidRequestLocation()
 	return vec2(-1,-1);
 }
 
-//THOUGHTS: I think we need to implement some kind of task/"orders" system with the lieut so we can skip lieutenants already performing an action
+//THOUGHTS: I think we need to implement a queue of task/"orders" system with the lieut so he does not get confused when given multiple orders, he will execute them in order
 void Captain::Loop()
 {
-	//SetLieutenants(theLieutenants);
-
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
 		Lieutenant* lieutenant(Lieutenants[i]);
