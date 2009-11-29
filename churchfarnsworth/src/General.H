@@ -31,8 +31,10 @@ public:
 	void Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits);		//The General's game loop, all logic should be done here. Is called once every iteration of the game loop.
 	void SetUnits(Vector<Unit> theEnemies, Vector<Unit> theUnits);	//Set the list of enemies and friendly units
 	void Print();													//Prints a debugging view of the risk grid
+
 	bool IsLocationSafe(vec2 location);								//Returns true if risk value is less than safe value
 	bool IsOutNumbered(vec2 location);								//Returns true if the given location is potentially OutNumbered
+	vec2 FindSafeWaypoint(vec2 current, vec2 goal);					//Returns a neighbouring safe tile closer than the current Tile, if none exists it returns the current tile. *NOTE* this is not pathfinding.
 
 	vec2 GetClosestTarget(vec2 location);							//Returns tile location of nearest cluster of enemies from the location
 	vec2 GetFallBackLocation(vec2 location);						//Returns tile location of nearest safe Tile from the location

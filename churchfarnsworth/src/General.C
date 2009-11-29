@@ -198,6 +198,34 @@ bool General::IsLocationSafe(vec2 location)
 	return false;
 }
 
+vec2 General::FindSafeWaypoint(vec2 current, vec2 goal)
+{
+	Tile* goalTile = ConvertToGridTile(goal);
+	Tile* currentTile = ConvertToGridTile(current);
+	float shortestDistance = currentTile->GetDistanceTo(*goalTile);
+	Tile* shortestTile = currentTile;
+
+	//check in surrounding tiles
+	for(int i = -1; i < 2; ++i)
+	{
+		for (int j = -1; j < 2; ++j)
+		{
+			//check tile boundries
+			if ((currentTile->x+j > 0 && currentTile->x+j < xGrid) && (currentTile->y+i > 0 && currentTile->y+i < yGrid))
+			{
+				Tile* tile = &(grid[currentTile->x+j][currentTile->y+i]);
+				float distance = tile->GetDistanceTo(*goalTile);
+				if (tile->risk <= SAFE_VALUE && distance < shortestDistance)
+				{
+					shortestDistance = distance;
+					shortestTile = tile;
+				}
+			}
+		}
+	}
+	return ConvertToLocation(*shortestTile);
+}
+
 vec2 General::GetFallBackLocation(vec2 location)
 {
 	Tile* currentTile = ConvertToGridTile(location);
