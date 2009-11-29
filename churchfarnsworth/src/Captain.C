@@ -70,6 +70,37 @@ vec2 Captain::GetAidRequestLocation()
 	return vec2(-1,-1);
 }
 
+//currently static, but easy to modify
+void Captain::Deploy()
+{
+	for(size_t i(0); i< Lieutenants.size(); ++i)
+	{
+		switch(i)
+		{
+		case 0:
+			Lieutenants[i]->SetGoal(vec2(130, 100));
+			Lieutenants[i]->DoFormation(vec2(1, 0));
+			break;
+		case 1:
+			Lieutenants[i]->SetGoal(vec2(80, 220));
+			Lieutenants[i]->DoFormation(vec2(1,0));
+			break;
+		case 2:
+			Lieutenants[i]->SetGoal(vec2(80, 390));
+			Lieutenants[i]->DoFormation(vec2(1,0));
+			break;
+		case 3:
+			Lieutenants[i]->SetGoal(vec2(80, 560));
+			Lieutenants[i]->DoFormation(vec2(1,0));
+			break;
+		case 4:
+			Lieutenants[i]->SetGoal(vec2(130, 670));
+			Lieutenants[i]->DoFormation(vec2(1,0));
+			break;
+		}
+	}
+}
+
 //THOUGHTS: I think we need to implement a queue of task/"orders" system with the lieut so he does not get confused when given multiple orders, he will execute them in order
 void Captain::Loop()
 {

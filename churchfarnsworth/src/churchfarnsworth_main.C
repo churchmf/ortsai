@@ -108,6 +108,12 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 		Lieutenants.push_back(lieutenant);
 	}
 
+	//Pass initial MC into Lieutenants
+	for(size_t i(0); i< Lieutenants.size(); ++i)
+	{
+		Lieutenants[i]->Loop(mc,enemies);
+	}
+
 	//sort units by y positions
 	sort(myUnits.begin(), myUnits.end(), compUnits);
 
@@ -144,39 +150,7 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 	//INITIALIZE CAPTAIN
 	captain = new Captain(*general);
 	captain->SetLieutenants(Lieutenants);
-
-	//SETUP LIEUTENANT FORMATIONS
-	for(size_t i(0); i< Lieutenants.size(); ++i)
-	{
-		//Lieutenants[i]->MoveTo(vec2(20,maxCoordY/(i+1)));
-		Lieutenants[i]->Loop(mc,enemies);
-
-		//TODO*********CHANGE INITIAL SETUP TO DYNAMIC, CAPTAIN INPUT************
-		switch(i)
-		{
-		case 0:
-			Lieutenants[i]->SetGoal(vec2(130, 100));
-			Lieutenants[i]->DoFormation(vec2(1, 0));
-			break;
-		case 1:
-			Lieutenants[i]->SetGoal(vec2(80, 220));
-			Lieutenants[i]->DoFormation(vec2(1,0));
-			break;
-		case 2:
-			Lieutenants[i]->SetGoal(vec2(80, 390));
-			Lieutenants[i]->DoFormation(vec2(1,0));
-			break;
-		case 3:
-			Lieutenants[i]->SetGoal(vec2(80, 560));
-			Lieutenants[i]->DoFormation(vec2(1,0));
-			break;
-		case 4:
-			Lieutenants[i]->SetGoal(vec2(130, 670));
-			Lieutenants[i]->DoFormation(vec2(1,0));
-			break;
-		}
-	}
-
+	captain->Deploy();
 }
 
 
