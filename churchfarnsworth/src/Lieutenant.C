@@ -288,108 +288,103 @@ void Lieutenant::CheckFormation()
 //NOT OPTIMAL pattern
 void Lieutenant::DoFormation(vec2 dir)
 {
-	vec2 initUnitPos = goal;
-	vec2 unitPos = initUnitPos;
+        vec2 initUnitPos = goal;
+        vec2 unitPos = initUnitPos;
 
-	//TODO: make this dynamic to what direction you are pointing
-	vec2 ltDirection = dir;
+        //TODO: make this dynamic to what direction you are pointing
+        vec2 ltDirection = dir;
 
-	ltDirection.x = ltDirection.x/sqrt(ltDirection.x*ltDirection.x + ltDirection.y*ltDirection.y);
-	ltDirection.y = ltDirection.y/sqrt(ltDirection.x*ltDirection.x + ltDirection.y*ltDirection.y);
-	ltDirection.rX = ltDirection.rX/sqrt(ltDirection.rX*ltDirection.rX + ltDirection.rY*ltDirection.rY);
-	ltDirection.rY = ltDirection.rY/sqrt(ltDirection.rX*ltDirection.rX + ltDirection.rY*ltDirection.rY);
+        ltDirection.x = ltDirection.x/sqrt(ltDirection.x*ltDirection.x + ltDirection.y*ltDirection.y);
+        ltDirection.y = ltDirection.y/sqrt(ltDirection.x*ltDirection.x + ltDirection.y*ltDirection.y);
 
-	vec2 rowDirection; //direction of the rows
-	rowDirection.x = ltDirection.x;
-	rowDirection.y = -ltDirection.y;
-	rowDirection.rX = ltDirection.rX;
-	rowDirection.rY = -ltDirection.rY;
+        vec2 rowDirection = vec2(-ltDirection.y, ltDirection.x);//direction of the rows
 
-	//if new units added just change these variables
-	sint4 unitDisplace = 0;//variable used to displace the rows evenly
-	//NOTE: this variable is used do determine the distance of the row
-	//		from the LT. so if more units get added, this can just be
-	//		incremented for every for loop and each subsiquent row will
-	//		be 'unitOffset' closer to the LT for the previous row.
-	sint4 marineOffset = 16;//distance between each marine in the row
-	sint4 tankOffset = 25;//distance between the tanks in the row
-	sint4 unitOffset = 10;//space between rows
-	sint4 frontLine = 17;//distance of frontline from LT
+        //if new units added just change these variables
+        sint4 unitDisplace = 0;//variable used to displace the rows evenly
+        //NOTE: this variable is used do determine the distance of the row
+        //              from the LT. so if more units get added, this can just be
+        //              incremented for every for loop and each subsiquent row will
+        //              be 'unitOffset' closer to the LT for the previous row.
+        sint4 marineOffset = 16;//distance between each marine in the row
+        sint4 tankOffset = 25;//distance between the tanks in the row
+        sint4 unitOffset = 10;//space between rows
+        sint4 frontLine = 17;//distance of frontline from LT
 
-	sint4 displace = 1;
+        sint4 displace = 1;
 
 
 
-	for (size_t i(0); i < marines.size(); ++i)
-	{
-		Unit & marine(marines[i]);
-		//marine.MoveTo(location, marine.GetMaxSpeed());
-		//set first unit
-		if(i == 0 && marine.IsAlive())
-		{
-			initUnitPos = vec2((ltDirection.rX * frontLine) + goal.rX, (ltDirection.rY * frontLine) + goal.rY);
-			marines[i].SetGoal(Movement::Vec2D(initUnitPos.rX, initUnitPos.rY));
-			marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
+        for (size_t i(0); i < marines.size(); ++i)
+        {
+                Unit & marine(marines[i]);
+                //marine.MoveTo(location, marine.GetMaxSpeed());
+                //set first unit
+                if(i == 0 && marine.IsAlive())
+                {
+                        initUnitPos = vec2((ltDirection.x * frontLine) + goal.x, (ltDirection.y * frontLine) + goal.y);
+                        marines[i].SetGoal(Movement::Vec2D(initUnitPos.x, initUnitPos.y));
+                        marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
 
-		}
-		else if(i % 2 == 1 && i > 0 && marine.IsAlive())
-		{
-			//set the next marine at a distance based on the row direction, offset, and where the previous one is
-			unitPos = vec2((rowDirection.rX * marineOffset * displace) + initUnitPos.rX, (rowDirection.rY * marineOffset * displace) + initUnitPos.y);
-			unitPos.rX = unitPos.rX - (unitDisplace * unitOffset);
-			unitPos.rY = unitPos.rY - (unitDisplace * unitOffset);
-			marines[i].SetGoal(Movement::Vec2D(unitPos.rX, unitPos.rY));
-			marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
+                }
+                else if(i % 2 == 1 && i > 0 && marine.IsAlive())
+                {
+                        //set the next marine at a distance based on the row direction, offset, and where the previous one is
+                        unitPos = vec2((rowDirection.x * marineOffset * displace) + initUnitPos.x, (rowDirection.y * marineOffset * displace) + initUnitPos.y);
+                        unitPos.x = unitPos.x - (unitDisplace * unitOffset);
+                        unitPos.y = unitPos.y - (unitDisplace * unitOffset);
+                        marines[i].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+                        marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
 
-		}
-		//set every second unit (ones on negative plane to LT) to negative
-		else if(i % 2 == 0 && i > 0 && marine.IsAlive())
-		{
-			//set the next marine at a distance based on the row direction, offset, and where the previous one is
-			unitPos = vec2(((-rowDirection.rX) * marineOffset * displace) + initUnitPos.rX, ((-rowDirection.rY) * marineOffset * displace) + initUnitPos.y);
-			unitPos.rX = unitPos.rX - (unitDisplace * unitOffset);
-			unitPos.rY = unitPos.rY - (unitDisplace * unitOffset);
-			marines[i].SetGoal(Movement::Vec2D(unitPos.rX, unitPos.rY));
-			marines[i].SetTask(mc->moveUnit(marine.GetGameObj(),  marines[i].GetGoal()));
+                }
+                //set every second unit (ones on negative plane to LT) to negative
+                else if(i % 2 == 0 && i > 0 && marine.IsAlive())
+                {
+                        //set the next marine at a distance based on the row direction, offset, and where the previous one is
+                        unitPos = vec2(((-rowDirection.x) * marineOffset * displace) + initUnitPos.x, ((-rowDirection.y) * marineOffset * displace) + initUnitPos.y);
+                        unitPos.x = unitPos.x - (unitDisplace * unitOffset);
+                        unitPos.y = unitPos.y - (unitDisplace * unitOffset);
+                        marines[i].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+                        marines[i].SetTask(mc->moveUnit(marine.GetGameObj(),  marines[i].GetGoal()));
 
-			displace++;
-		}
-	}
+                        displace++;
+                }
+        }
 
-	unitDisplace = 1;
-	displace = 1;
+        unitDisplace = 1;
+        displace = 1;
 
-	for (size_t j(0); j < tanks.size(); ++j)
-	{
-		Unit & tank(tanks[j]);
-		if(j == 0 && tank.IsAlive())
-		{
-			initUnitPos = vec2(goal.rX, goal.rY);
-			tanks[j].SetGoal(Movement::Vec2D(initUnitPos.rX, initUnitPos.rY));
-			tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
-		}
-		else if(j % 2 == 1 && j > 0 && tank.IsAlive())
-		{
-			//set the next marine at a distance based on the row direction, offset, and where the previous one is
-			unitPos = vec2((rowDirection.rX * tankOffset * displace) + initUnitPos.x, (rowDirection.rY * tankOffset * displace) + initUnitPos.y);
+        for (size_t j(0); j < tanks.size(); ++j)
+        {
+                Unit & tank(tanks[j]);
+                if(j == 0 && tank.IsAlive())
+                {
+                        initUnitPos = vec2(goal.x, goal.y);
+                        tanks[j].SetGoal(Movement::Vec2D(initUnitPos.x, initUnitPos.y));
+                        tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
+                }
+                else if(j % 2 == 1 && j > 0 && tank.IsAlive())
+                {
+                        //set the next marine at a distance based on the row direction, offset, and where the previous one is
+                        unitPos = vec2((rowDirection.x * tankOffset * displace) + initUnitPos.x, (rowDirection.y * tankOffset * displace) + initUnitPos.y);
 
-			tanks[j].SetGoal(Movement::Vec2D(unitPos.rX, unitPos.rY));
-			tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
-		}
-		//set every second unit (ones on negative plane to LT) to negative
-		else if(j % 2 == 0 && j > 0 && tank.IsAlive())
-		{
-			//set the next tank at a distance based on the row direction, offset, and where the previous one is
-			unitPos = vec2((-rowDirection.rX * tankOffset * displace) + initUnitPos.rX, (-rowDirection.rY * tankOffset * displace) + initUnitPos.rY);
+                        tanks[j].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+                        tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
+                }
+                //set every second unit (ones on negative plane to LT) to negative
+                else if(j % 2 == 0 && j > 0 && tank.IsAlive())
+                {
+                        //set the next tank at a distance based on the row direction, offset, and where the previous one is
+                        unitPos = vec2((-rowDirection.x * tankOffset * displace) + initUnitPos.x, (-rowDirection.y * tankOffset * displace) + initUnitPos.y);
 
-			tanks[j].SetGoal(Movement::Vec2D(unitPos.rX, unitPos.rY));
-			tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
-			displace++;
-		}
-	}
+                        tanks[j].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+                        tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
+                        displace++;
+                }
+        }
 
-	INIT_FLAG = true;
+        INIT_FLAG = true;
 }
+
 
 //default, needs updating
 void Lieutenant::MoveTo(vec2 target)
