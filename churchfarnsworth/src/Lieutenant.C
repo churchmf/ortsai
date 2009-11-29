@@ -38,6 +38,7 @@ const sint4 MAX_RANGE = 112;
 
 //unit health percentage buffer for pulling back
 const real8 EXPECTED_DEATH = 30;
+const real8 PULL_BACK_BUFFER = 7;
 
 //USED WITH SQUAD FORMATION
 const sint4 UNIT_DISPLACE = 0;//variable used to displace the rows evenly
@@ -221,35 +222,38 @@ void Lieutenant::PullBackWounded()
 		if (health < EXPECTED_DEATH && marine.InCombat())
 		{
 			//move the opposite way that the damage is coming
-			vec2 pullBack = vec2(-marine.DmgDirection().rX,-marine.DmgDirection().rY);
+			vec2 pullBack = vec2(-PULL_BACK_BUFFER*marine.DmgDirection().rX,-PULL_BACK_BUFFER*marine.DmgDirection().rY);
 			//calculate where the unit should move and
-			//create a goal. Pass it to the units movement, don't overide it's current goal as it will want to rejoin formation after microing away
-			Movement::Goal::const_ptr goal = Movement::TouchPoint(Movement::Vec2D((sint4)(marine.GetPosition().x + pullBack.rX),(sint4)(marine.GetPosition().y + pullBack.rY)));
-			marine.SetTask(mc->moveUnit(marine.GetGameObj(), goal));
-			//std::cout << "MARINE PULLING BACK TO: "<< marine.GetPosition().x + pullBack.rX << "," << marine.GetPosition().y + pullBack.rY << std::endl;
+			//create a goal. Pass it to the units movement.
+			(*marine.GetTask()).cancel();
+			marine.SetGoal(Movement::Vec2D((marine.GetPosition().x + pullBack.rX),(marine.GetPosition().y + pullBack.rY)));
+			marine.SetTask(mc->moveUnit(marine.GetGameObj(), marine.GetGoal()));
+			std::cout << "MARINE PULLING BACK: "<< marine.GetVector().x - marine.GetPosition().x << "," << marine.GetVector().y - marine.GetPosition().y << std::endl;
 		}
 	}
-	for (size_t j(0); j < tanks.size(); ++j)
+	for (size_t i(0); i < tanks.size(); ++i)
 	{
-		Unit & tank(tanks[j]);
+		Unit & tank(tanks[i]);
 		real8 hp = tank.GetHitpoints();
 		real8 maxHp = tank.GetMaxHitpoints();
 		real8 health = (hp/maxHp);
 		if (health < EXPECTED_DEATH && tank.InCombat())
 		{
 			//move the opposite way that the damage is coming
-			vec2 pullBack = vec2(-tank.DmgDirection().rX,-tank.DmgDirection().rY);
+			vec2 pullBack = vec2(-PULL_BACK_BUFFER*tank.DmgDirection().rX,-PULL_BACK_BUFFER*tank.DmgDirection().rY);
 			//calculate where the unit should move and
-			//create a goal. Pass it to the units movement, don't overide it's current goal as it will want to rejoin formation after microing away
-			Movement::Goal::const_ptr goal = Movement::TouchPoint(Movement::Vec2D((sint4)(tank.GetPosition().x + pullBack.rX),(sint4)(tank.GetPosition().y + pullBack.rY)));
-			tank.SetTask(mc->moveUnit(tank.GetGameObj(), goal));
+			//create a goal. Pass it to the units movement
+			(*tank.GetTask()).cancel();
+			tank.SetGoal(Movement::Vec2D((sint4)(tank.GetPosition().x + pullBack.rX),(sint4)(tank.GetPosition().y + pullBack.rY)));
+			tank.SetTask(mc->moveUnit(tank.GetGameObj(), tank.GetGoal()));
+			std::cout << "TANK PULLING BACK : "<< tank.GetVector().x - tank.GetPosition().x << "," << tank.GetVector().y - tank.GetPosition().y << std::endl;
 		}
 	}
 }
 
 vec2 Lieutenant::GetCurrentPosition()
 {
-	vec2 sumLocation = vec2(0,0);
+	vec2 sumLocation = vec2(-1,-1);
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		const Unit & marine(marines[i]);
@@ -542,7 +546,7 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 
 	if (IsEngaged())
 	{
-		//PullBackWounded();	has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
+		PullBackWounded();	//has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
 
 		//Unit target = AquireWeakestTarget(enemies);	see comment above function
 		//AttackTarget(target);

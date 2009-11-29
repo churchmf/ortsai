@@ -234,7 +234,8 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
 		vec2 ltPos = Lieutenants[i]->GetCurrentPosition();
-		DrawDebugCircle(ltPos, 90, Color(1,1,0));
+		if (ltPos.x > 0 && ltPos.y > 0)
+			DrawDebugCircle(ltPos, 90, Color(1,1,0));
 	}
 	draw_flag = false;
 }

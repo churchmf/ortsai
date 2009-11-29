@@ -135,8 +135,8 @@ vec2 Unit::DmgDirection() const
 	//default directionVector (no direction)
 	vec2 directionVector = vec2(0,0);
 
-	//if there is infact an angle then calculate the directionVector
-	if (angle != 90)
+	//if there is infact dmg then calculate the directionVector
+	if (dmg != 0)
 	{
 		real8 x = cos(angle*PI/180);
 		real8 y = sin(angle*PI/180);
