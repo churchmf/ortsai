@@ -41,9 +41,9 @@ const real8 EXPECTED_DEATH = 30;
 //USED WITH SQUAD FORMATION
 const sint4 UNIT_DISPLACE = 0;//variable used to displace the rows evenly
 //NOTE: this variable is used do determine the distance of the row
-//              from the LT. so if more units get added, this can just be
-//              incremented for every for loop and each subsiquent row will
-//              be 'UNIT_OFFSET' closer to the LT for the previous row.
+//from the LT. so if more units get added, this can just be
+//incremented for every for loop and each subsiquent row will
+//be 'UNIT_OFFSET' closer to the LT for the previous row.
 const sint4 MARINE_OFFSET = 16;//distance between each marine in the row
 const sint4 TANK_OFFSET = 25;//distance between the tanks in the row
 const sint4 UNIT_OFFSET = 10;//space between rows
