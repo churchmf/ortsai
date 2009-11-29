@@ -90,6 +90,7 @@ void Captain::Loop()
 			{
 				//choose safe deployment location towards endangered squad
 				vec2 aidLocation = GetAidRequestLocation();
+				//std::cout << aidLocation.x << "," << aidLocation.y << std::endl;
 				//lieutenant->MoveTo(aidLocation);
 			}
 			else
