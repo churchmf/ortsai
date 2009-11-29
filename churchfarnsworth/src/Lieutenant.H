@@ -32,7 +32,7 @@ public:
 	void SetGoal(vec2 g);											//sets goal position of the Lieutenant.
 	vec2 GetGoal();													//get the goal location of the Lieutenant.
 	void CheckFormation();											//checks to see if the units of the Lieutenant are in their correct position
-	void PullWounded();												//micro-manages units in danger of dying in the squad.
+	void PullBackWounded();											//micro-manages units in danger of dying in the squad.
 
 	sint4 MarineSize(){return marines.size();}	//Returns the number of Marines under the Lieutenants command
 	sint4 TankSize(){return tanks.size();} 		//Returns the number of Tanks under the Lieutenants command

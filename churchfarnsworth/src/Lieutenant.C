@@ -141,6 +141,7 @@ void Lieutenant::CasualtyCheck()
 		if (!marine.IsAlive())
 		{
 			RelieveUnit(MARINE, i);
+			break;
 		}
 	}
 	for (size_t j(0); j < tanks.size(); ++j)
@@ -149,21 +150,34 @@ void Lieutenant::CasualtyCheck()
 		if (!tank.IsAlive())
 		{
 			RelieveUnit(TANK, j);
+			break;
 		}
 	}
 }
 
-void Lieutenant::PullWounded()
+/**
+ * Micromanages each unit in the squad, checking if they are at risk of dying and moving them away from danger
+ * This behavior is similar to unit dancing in standard RTS strategies, as it improves unit preservation
+ * and impedes enemy focus firing.
+ */
+void Lieutenant::PullBackWounded()
 {
 	for (size_t i(0); i < marines.size(); ++i)
 	{
-		const Unit & marine(marines[i]);
+		Unit & marine(marines[i]);
 		real8 hp = marine.GetHitpoints();
 		real8 maxHp = marine.GetMaxHitpoints();
 		real8 health = (hp/maxHp);
 		if (health < EXPECTED_DEATH && marine.InCombat())
 		{
-
+			//move the opposite way that the damage is coming
+			vec2 pullBack = vec2(-marine.DmgDirection().rX,-marine.DmgDirection().rY);
+			//calculate where the unit should move
+			Movement::Vec2D newPos = Vec2D((sint4)(marine.GetPosition().x + pullBack.rX),(sint4)(marine.GetPosition().y + pullBack.rY));
+			//create a goal, and pass it to the units movement, don't overide it's current goal as it will want to rejoin formation after microing away
+			Movement::Goal::const_ptr goal = Movement::TouchPoint(newPos);
+			marine.SetTask(mc->moveUnit(marine.GetGameObj(), goal));
+			//std::cout << "MARINE PULLING BACK TO: "<< marine.GetPosition().x + pullBack.rX << "," << marine.GetPosition().y + pullBack.rY << std::endl;
 		}
 
 	}
@@ -175,7 +189,13 @@ void Lieutenant::PullWounded()
 		real8 health = (hp/maxHp);
 		if (health < EXPECTED_DEATH && tank.InCombat())
 		{
-
+			//move the opposite way that the damage is coming
+			vec2 pullBack = vec2(-tank.DmgDirection().rX,-tank.DmgDirection().rY);
+			//calculate where the unit should move
+			Movement::Vec2D newPos = Vec2D((sint4)(tank.GetPosition().x + pullBack.rX),(sint4)(tank.GetPosition().y + pullBack.rY));
+			//create a goal, and pass it to the units movement, don't overide it's current goal as it will want to rejoin the formation later
+			Movement::Goal::const_ptr goal = Movement::TouchPoint(newPos);
+			marine.SetTask(mc->moveUnit(tank.GetGameObj(), goal));
 		}
 	}
 }
@@ -244,7 +264,6 @@ void Lieutenant::CheckFormation()
 		}
 	}
 }
-
 
 //default, needs updating
 //NOT OPTIMAL pattern
@@ -463,6 +482,7 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 	if (IsEngaged())
 		{
 			//CasualtyCheck();
+			//PullBackWounded();	has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
 		}
 
 	/*
