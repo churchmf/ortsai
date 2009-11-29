@@ -172,10 +172,9 @@ void Lieutenant::PullBackWounded()
 		{
 			//move the opposite way that the damage is coming
 			vec2 pullBack = vec2(-marine.DmgDirection().rX,-marine.DmgDirection().rY);
-			//calculate where the unit should move
-			Movement::Vec2D newPos = Vec2D((sint4)(marine.GetPosition().x + pullBack.rX),(sint4)(marine.GetPosition().y + pullBack.rY));
-			//create a goal, and pass it to the units movement, don't overide it's current goal as it will want to rejoin formation after microing away
-			Movement::Goal::const_ptr goal = Movement::TouchPoint(newPos);
+			//calculate where the unit should move and
+			//create a goal. Pass it to the units movement, don't overide it's current goal as it will want to rejoin formation after microing away
+			Movement::Goal::const_ptr goal = Movement::TouchPoint(Movement::Vec2D((sint4)(marine.GetPosition().x + pullBack.rX),(sint4)(marine.GetPosition().y + pullBack.rY)));
 			marine.SetTask(mc->moveUnit(marine.GetGameObj(), goal));
 			//std::cout << "MARINE PULLING BACK TO: "<< marine.GetPosition().x + pullBack.rX << "," << marine.GetPosition().y + pullBack.rY << std::endl;
 		}
@@ -183,7 +182,7 @@ void Lieutenant::PullBackWounded()
 	}
 	for (size_t j(0); j < tanks.size(); ++j)
 	{
-		const Unit & tank(tanks[j]);
+		Unit & tank(tanks[j]);
 		real8 hp = tank.GetHitpoints();
 		real8 maxHp = tank.GetMaxHitpoints();
 		real8 health = (hp/maxHp);
@@ -191,11 +190,9 @@ void Lieutenant::PullBackWounded()
 		{
 			//move the opposite way that the damage is coming
 			vec2 pullBack = vec2(-tank.DmgDirection().rX,-tank.DmgDirection().rY);
-			//calculate where the unit should move
-			Movement::Vec2D newPos = Vec2D((sint4)(tank.GetPosition().x + pullBack.rX),(sint4)(tank.GetPosition().y + pullBack.rY));
 			//create a goal, and pass it to the units movement, don't overide it's current goal as it will want to rejoin the formation later
-			Movement::Goal::const_ptr goal = Movement::TouchPoint(newPos);
-			marine.SetTask(mc->moveUnit(tank.GetGameObj(), goal));
+			Movement::Goal::const_ptr goal = Movement::TouchPoint(Movement::Vec2D((sint4)(tank.GetPosition().x + pullBack.rX),(sint4)(tank.GetPosition().y + pullBack.rY)));
+			tank.SetTask(mc->moveUnit(tank.GetGameObj(), goal));
 		}
 	}
 }
