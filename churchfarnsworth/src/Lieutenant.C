@@ -38,7 +38,7 @@ const sint4 MAX_RANGE = 112;
 //unit health percentage buffer for pulling back
 const real8 EXPECTED_DEATH = 30;
 
-//if new units added just change these variables
+//USED WITH SQUAD FORMATION
 const sint4 UNIT_DISPLACE = 0;//variable used to displace the rows evenly
 //NOTE: this variable is used do determine the distance of the row
 //              from the LT. so if more units get added, this can just be
