@@ -240,10 +240,9 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	//////////////////    COMMANDER LOOPS      //////////////////
 	/////////////////////////////////////////////////////////////
 
-	//general->Loop(enemies, myUnits);
-	//general->Print();
+	general->Loop(enemies, myUnits);
 
-	//captain->Loop(Lieutenants);
+	captain->Loop();
 
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
