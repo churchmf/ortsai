@@ -15,7 +15,7 @@ public:
 	Lieutenant();
 	virtual ~Lieutenant();
 	void AssignUnit(Unit unit);										//Assign a Unit to the control of the Lieutenant
-	void RelieveUnit(sint4 type, sint4 index);						//Remove a Unit from the control of the Lieutenant
+	void RelieveUnit(sint4 type, size_t index);						//Remove a Unit from the control of the Lieutenant
 	sint4 GetHealth();												//Returns the percentage of total Squad health
 	bool IsEngaged();												//Returns true if the Squad is in combat
 	void UpdateEngaged();											//Updates the engagement status of the squad

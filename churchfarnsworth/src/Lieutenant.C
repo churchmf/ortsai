@@ -78,23 +78,6 @@ void Lieutenant::AssignUnit(Unit unit)
 	}
 }
 
-void Lieutenant::RelieveUnit(sint4 type, sint4 index)
-{
-	std::cout << "INDEX: " << index << std::endl;
-	if (type == MARINE)
-	{
-		std::cout << "MARINES:" << marines.size() << std::endl;
-		if (index < (sint4)marines.size())
-			marines.erase(marines.begin()+index);
-	}
-	else if (type == TANK)
-	{
-		std::cout << "TANKS: " << tanks.size() << std::endl;
-		if (index < (sint4)tanks.size())
-			tanks.erase(tanks.begin()+index);
-	}
-}
-
 Vector<Unit> Lieutenant::TransferSquad()
 {
 	Vector<Unit> units;
@@ -119,12 +102,18 @@ sint4 Lieutenant::GetHealth()
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		const Unit & marine(marines[i]);
-		health += marine.GetHitpoints();
+		if (marine.IsAlive())
+		{
+			health += marine.GetHitpoints();
+		}
 	}
-	for (size_t j(0); j < tanks.size(); ++j)
+	for (size_t i(0); i < tanks.size(); ++i)
 	{
-		const Unit & tank(tanks[j]);
-		health += tank.GetHitpoints();
+		const Unit & tank(tanks[i]);
+		if (tank.IsAlive())
+		{
+			health += tank.GetHitpoints();
+		}
 	}
 	sint4 percent = 100*(real8)((real8)health / (real8)(MAX_MARINES*80 + MAX_TANKS*150));
 	return  percent;
@@ -137,19 +126,20 @@ bool Lieutenant::IsEngaged()
 
 void Lieutenant::UpdateEngaged()
 {
+	engaged = false;
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		const Unit & marine(marines[i]);
-		if (marine.InCombat())
+		if (marine.InCombat() && marine.IsAlive())
 		{
 			engaged = true;
 			return;
 		}
 	}
-	for (size_t j(0); j < tanks.size(); ++j)
+	for (size_t i(0); i < tanks.size(); ++i)
 	{
-		const Unit & tank(tanks[j]);
-		if (tank.InCombat())
+		const Unit & tank(tanks[i]);
+		if (tank.InCombat() && tank.IsAlive())
 		{
 			engaged = true;
 			return;
@@ -167,9 +157,30 @@ void Lieutenant::SetAid(bool aid)
 	requestsAid = aid;
 }
 
+void Lieutenant::RelieveUnit(sint4 type, size_t index)
+{
+	//std::cout << "INDEX: " << index << std::endl;
+	if (type == MARINE)
+	{
+		//std::cout << "MARINES:" << marines.size() << std::endl;
+		if (index < marines.size())
+		{
+			marines.erase(marines.begin()+index);
+		}
+	}
+	else if (type == TANK)
+	{
+		//std::cout << "TANKS: " << tanks.size() << std::endl;
+		if (index < tanks.size())
+		{
+			tanks.erase(tanks.begin()+index);
+		}
+	}
+}
+
 void Lieutenant::CasualtyCheck()
 {
-	for (sint4 i = 0; i < (sint4)marines.size(); ++i)
+	for (size_t i(0); i < marines.size(); ++i)
 	{
 		const Unit & marine(marines[i]);
 		if (!marine.IsAlive())
@@ -178,12 +189,12 @@ void Lieutenant::CasualtyCheck()
 			break;
 		}
 	}
-	for (sint4 j = 0; j < (sint4)tanks.size(); ++j)
+	for (size_t i(0); i < tanks.size(); ++i)
 	{
-		const Unit & tank(tanks[j]);
+		const Unit & tank(tanks[i]);
 		if (!tank.IsAlive())
 		{
-			RelieveUnit(TANK, j);
+			RelieveUnit(TANK, i);
 			break;
 		}
 	}
@@ -212,7 +223,6 @@ void Lieutenant::PullBackWounded()
 			marine.SetTask(mc->moveUnit(marine.GetGameObj(), goal));
 			//std::cout << "MARINE PULLING BACK TO: "<< marine.GetPosition().x + pullBack.rX << "," << marine.GetPosition().y + pullBack.rY << std::endl;
 		}
-
 	}
 	for (size_t j(0); j < tanks.size(); ++j)
 	{
@@ -516,17 +526,19 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 	FireAtWill(enemies);
 
 	if(INIT_FLAG)
+	{
 		CheckFormation();
+	}
 
 	if (IsEngaged())
-		{
-			//PullBackWounded();	has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
+	{
+		//PullBackWounded();	has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
 
-			//Unit target = AquireWeakestTarget(enemies);	see comment above function
-			//AttackTarget(target);
-		}
+		//Unit target = AquireWeakestTarget(enemies);	see comment above function
+		//AttackTarget(target);
+	}
 	UpdateEngaged();
-	//CasualtyCheck();		I've looked over it and I have no idea why we would get a floating point exception (usually around the last unit of type in squad)
+	CasualtyCheck();		//I've looked over it and I have no idea why we would get a floating point exception (usually around the last unit of type in squad)
 
 	/*
 	 *  if (orders):
