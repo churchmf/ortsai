@@ -225,10 +225,10 @@ void Lieutenant::PullBackWounded()
 			vec2 pullBack = vec2(-PULL_BACK_BUFFER*marine.DmgDirection().rX,-PULL_BACK_BUFFER*marine.DmgDirection().rY);
 			//calculate where the unit should move and
 			//create a goal. Pass it to the units movement.
-			(*marine.GetTask()).cancel();
+			(*(marine.GetTask())).cancel();
 			marine.SetGoal(Movement::Vec2D((marine.GetPosition().x + pullBack.rX),(marine.GetPosition().y + pullBack.rY)));
 			marine.SetTask(mc->moveUnit(marine.GetGameObj(), marine.GetGoal()));
-			std::cout << "MARINE PULLING BACK: "<< marine.GetVector().x - marine.GetPosition().x << "," << marine.GetVector().y - marine.GetPosition().y << std::endl;
+			//std::cout << "MARINE PULLING BACK: "<< marine.GetVector().x - marine.GetPosition().x << "," << marine.GetVector().y - marine.GetPosition().y << std::endl;
 		}
 	}
 	for (size_t i(0); i < tanks.size(); ++i)
@@ -243,10 +243,10 @@ void Lieutenant::PullBackWounded()
 			vec2 pullBack = vec2(-PULL_BACK_BUFFER*tank.DmgDirection().rX,-PULL_BACK_BUFFER*tank.DmgDirection().rY);
 			//calculate where the unit should move and
 			//create a goal. Pass it to the units movement
-			(*tank.GetTask()).cancel();
-			tank.SetGoal(Movement::Vec2D((sint4)(tank.GetPosition().x + pullBack.rX),(sint4)(tank.GetPosition().y + pullBack.rY)));
+			(*(tank.GetTask())).cancel();
+			tank.SetGoal(Movement::Vec2D((tank.GetPosition().x + pullBack.rX),(tank.GetPosition().y + pullBack.rY)));
 			tank.SetTask(mc->moveUnit(tank.GetGameObj(), tank.GetGoal()));
-			std::cout << "TANK PULLING BACK : "<< tank.GetVector().x - tank.GetPosition().x << "," << tank.GetVector().y - tank.GetPosition().y << std::endl;
+			//std::cout << "TANK PULLING BACK : "<< tank.GetVector().x - tank.GetPosition().x << "," << tank.GetVector().y - tank.GetPosition().y << std::endl;
 		}
 	}
 }
@@ -567,6 +567,5 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 			attack enemy unit
 		update squad status
 	 */
-
 }
 
