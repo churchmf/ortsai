@@ -110,6 +110,42 @@ bool Unit::InCombat() const
 	return dmg!=0;
 }
 
+/**
+ * Returns the direction of an enemy attacker into a vec2(x,y) where sqrt(x*x+y*y) is a direct line to the attacker.
+ */
+vec2 Unit::DmgDirection() const
+{
+	const real8 PI = 3.14159265;
+	//converts the dmg bit vector into a directional vector
+	uint4 dmg = unit->dir_dmg;
+	int digit = 0;
+	while (dmg > 32)
+	{
+		dmg = dmg/2;
+		digit++;
+	}
+	//(-360/32) = -11, thus every digit is an extra -11 degrees
+	sint4 angle = 90 + (-11*digit);
+	//bound angle to fit unit circle
+	if (angle < 0)
+	{
+		angle += 360;
+	}
+
+	//default directionVector (no direction)
+	vec2 directionVector = vec2(0,0);
+
+	//if there is infact an angle then calculate the directionVector
+	if (angle != 90)
+	{
+		real8 x = cos(angle*PI/180);
+		real8 y = sin(angle*PI/180);
+		std::cout << angle << ": " << x << "," << y << std::endl;
+		directionVector = vec2(x,y);
+	}
+	return directionVector;
+}
+
 // Actions are specified by calling set_action on a ScriptObj
 // Actions like movement are called on the GameObj itself (which is a subclass of ScriptObj)
 // Actions like attacking are called on a component of the GameObj, in this case, the weapon

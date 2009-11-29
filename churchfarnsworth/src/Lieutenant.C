@@ -153,7 +153,7 @@ void Lieutenant::CasualtyCheck()
 	}
 }
 
-vec2 Lieutenant::PullWounded()
+void Lieutenant::PullWounded()
 {
 	for (size_t i(0); i < marines.size(); ++i)
 	{
@@ -170,7 +170,6 @@ vec2 Lieutenant::PullWounded()
 	for (size_t j(0); j < tanks.size(); ++j)
 	{
 		const Unit & tank(tanks[j]);
-		sumLocation = sumLocation + tank.GetPosition();
 		real8 hp = tank.GetHitpoints();
 		real8 maxHp = tank.GetMaxHitpoints();
 		real8 health = (hp/maxHp);
@@ -392,6 +391,7 @@ void Lieutenant::FireAtWill(Vector<Unit> enemies)
 	for(size_t i(0); i<tanks.size(); ++i)
 	{
 		Unit & tank(tanks[i]);
+		tank.DmgDirection();
 
 		// Cache the unit's position and the range of its weapon
 		const vec2	position(tank.GetPosition());

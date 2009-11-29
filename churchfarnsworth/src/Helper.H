@@ -77,6 +77,7 @@ public:
 	sint4			GetHitpoints() const;		// Get the current hitpoints of the unit
 
 	bool			InCombat() const;			// Is the unit in combat?
+	vec2 			DmgDirection() const;	// returns a direction vector of where the unit is being attacked
 	sint4			GetType() const;			// Get the type of the unit (1=marine,2=tank)
 	sint4			GetMode() const;			// Get the mode of the unit (0=weapon, 2=siege)
 
