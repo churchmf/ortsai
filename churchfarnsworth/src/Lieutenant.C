@@ -19,6 +19,7 @@
 //constant values for marine and tanks used with unit.GetType()
 const sint4 MARINE = 1;
 const sint4 TANK = 2;
+
 const sint4 MARINE_RANGE = 64;
 const sint4 MARINE_HEALTH = 80;
 const sint4 MARINE_MIN_DMG = 5;
