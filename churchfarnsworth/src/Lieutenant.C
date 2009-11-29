@@ -115,8 +115,13 @@ sint4 Lieutenant::GetHealth()
 			health += tank.GetHitpoints();
 		}
 	}
-	sint4 percent = 100*(real8)((real8)health / (real8)(MAX_MARINES*80 + MAX_TANKS*150));
-	return  percent;
+	if (health == 0)
+		return 0;
+	else
+	{
+		sint4 percent = 100*(real8)((real8)health / (real8)(MAX_MARINES*80 + MAX_TANKS*150));
+		return  percent;
+	}
 }
 
 bool Lieutenant::IsEngaged()
@@ -256,8 +261,13 @@ vec2 Lieutenant::GetCurrentPosition()
 		sumLocation = sumLocation + tank.GetPosition();
 	}
 	sint4 squadSize = marines.size() + tanks.size();
-	vec2 position = vec2(sumLocation.x/squadSize, sumLocation.y/squadSize);
-	return position;
+	if (squadSize > 0)
+	{
+		vec2 position = vec2(sumLocation.x/squadSize, sumLocation.y/squadSize);
+		return position;
+	}
+	else
+		return sumLocation;
 }
 
 void Lieutenant::SetGoal(vec2 g)

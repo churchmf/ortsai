@@ -215,6 +215,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	/////////////////////////////////////////////////////////////
 
 	general->Loop(enemies, myUnits);
+	//general->Print();
 
 	captain->Loop();
 
