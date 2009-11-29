@@ -345,32 +345,32 @@ void Lieutenant::DoFormation(vec2 dir)
                 //set first unit
                 if(i == 0 && marine.IsAlive())
                 {
-                        initUnitPos = vec2((ltDirection.x * FRONT_LINE) + goal.x, (ltDirection.y * FRONT_LINE) + goal.y);
-                        marines[i].SetGoal(Movement::Vec2D(initUnitPos.x, initUnitPos.y));
-                        marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
+					initUnitPos = vec2((ltDirection.x * FRONT_LINE) + goal.x, (ltDirection.y * FRONT_LINE) + goal.y);
+					marines[i].SetGoal(Movement::Vec2D(initUnitPos.x, initUnitPos.y));
+					marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
 
                 }
                 else if(i % 2 == 1 && i > 0 && marine.IsAlive())
                 {
-                        //set the next marine at a distance based on the row direction, offset, and where the previous one is
-                        unitPos = vec2((rowDirection.x * MARINE_OFFSET * displace) + initUnitPos.x, (rowDirection.y * MARINE_OFFSET * displace) + initUnitPos.y);
-                        unitPos.x = unitPos.x - (UNIT_DISPLACE * UNIT_OFFSET);
-                        unitPos.y = unitPos.y - (UNIT_DISPLACE * UNIT_OFFSET);
-                        marines[i].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
-                        marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
+					//set the next marine at a distance based on the row direction, offset, and where the previous one is
+					unitPos = vec2((rowDirection.x * MARINE_OFFSET * displace) + initUnitPos.x, (rowDirection.y * MARINE_OFFSET * displace) + initUnitPos.y);
+					unitPos.x = unitPos.x - (UNIT_DISPLACE * UNIT_OFFSET);
+					unitPos.y = unitPos.y - (UNIT_DISPLACE * UNIT_OFFSET);
+					marines[i].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+					marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
 
                 }
                 //set every second unit (ones on negative plane to LT) to negative
                 else if(i % 2 == 0 && i > 0 && marine.IsAlive())
                 {
-                        //set the next marine at a distance based on the row direction, offset, and where the previous one is
-                        unitPos = vec2(((-rowDirection.x) * MARINE_OFFSET * displace) + initUnitPos.x, ((-rowDirection.y) * MARINE_OFFSET * displace) + initUnitPos.y);
-                        unitPos.x = unitPos.x - (UNIT_DISPLACE * UNIT_OFFSET);
-                        unitPos.y = unitPos.y - (UNIT_DISPLACE * UNIT_OFFSET);
-                        marines[i].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
-                        marines[i].SetTask(mc->moveUnit(marine.GetGameObj(),  marines[i].GetGoal()));
+					//set the next marine at a distance based on the row direction, offset, and where the previous one is
+					unitPos = vec2(((-rowDirection.x) * MARINE_OFFSET * displace) + initUnitPos.x, ((-rowDirection.y) * MARINE_OFFSET * displace) + initUnitPos.y);
+					unitPos.x = unitPos.x - (UNIT_DISPLACE * UNIT_OFFSET);
+					unitPos.y = unitPos.y - (UNIT_DISPLACE * UNIT_OFFSET);
+					marines[i].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+					marines[i].SetTask(mc->moveUnit(marine.GetGameObj(),  marines[i].GetGoal()));
 
-                        displace++;
+					displace++;
                 }
         }
 
@@ -381,33 +381,32 @@ void Lieutenant::DoFormation(vec2 dir)
                 Unit & tank(tanks[j]);
                 if(j == 0 && tank.IsAlive())
                 {
-                        initUnitPos = vec2(goal.x, goal.y);
-                        tanks[j].SetGoal(Movement::Vec2D(initUnitPos.x, initUnitPos.y));
-                        tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
+					initUnitPos = vec2(goal.x, goal.y);
+					tanks[j].SetGoal(Movement::Vec2D(initUnitPos.x, initUnitPos.y));
+					tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
                 }
                 else if(j % 2 == 1 && j > 0 && tank.IsAlive())
                 {
-                        //set the next marine at a distance based on the row direction, offset, and where the previous one is
-                        unitPos = vec2((rowDirection.x * TANK_OFFSET * displace) + initUnitPos.x, (rowDirection.y * TANK_OFFSET * displace) + initUnitPos.y);
+					//set the next marine at a distance based on the row direction, offset, and where the previous one is
+					unitPos = vec2((rowDirection.x * TANK_OFFSET * displace) + initUnitPos.x, (rowDirection.y * TANK_OFFSET * displace) + initUnitPos.y);
 
-                        tanks[j].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
-                        tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
+					tanks[j].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+					tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
                 }
                 //set every second unit (ones on negative plane to LT) to negative
                 else if(j % 2 == 0 && j > 0 && tank.IsAlive())
                 {
-                        //set the next tank at a distance based on the row direction, offset, and where the previous one is
-                        unitPos = vec2((-rowDirection.x * TANK_OFFSET * displace) + initUnitPos.x, (-rowDirection.y * TANK_OFFSET * displace) + initUnitPos.y);
+					//set the next tank at a distance based on the row direction, offset, and where the previous one is
+					unitPos = vec2((-rowDirection.x * TANK_OFFSET * displace) + initUnitPos.x, (-rowDirection.y * TANK_OFFSET * displace) + initUnitPos.y);
 
-                        tanks[j].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
-                        tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
-                        displace++;
+					tanks[j].SetGoal(Movement::Vec2D(unitPos.x, unitPos.y));
+					tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
+					displace++;
                 }
         }
 
         INIT_FLAG = true;
 }
-
 
 //default, needs updating
 void Lieutenant::MoveTo(vec2 target)
@@ -544,15 +543,10 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 		CheckFormation();
 	}
 
-	if (IsEngaged())
-	{
-		PullBackWounded();	//has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
+	PullBackWounded();	//has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
 
-		//Unit target = AquireWeakestTarget(enemies);	see comment above function
-		//AttackTarget(target);
-	}
 	UpdateEngaged();
-	CasualtyCheck();		//I've looked over it and I have no idea why we would get a floating point exception (usually around the last unit of type in squad)
+	CasualtyCheck();
 
 	/*
 	 *  if (orders):
