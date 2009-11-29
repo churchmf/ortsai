@@ -221,7 +221,6 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
-		//Lieutenant* lieutenant(Lieutenants[i]);
 		Lieutenants[i]->Loop(mc,enemies);
 	}
 
