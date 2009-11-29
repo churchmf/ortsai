@@ -45,7 +45,6 @@ Lieutenant::Lieutenant()
 {
 	engaged = 0;
 	requestsAid = 0;
-	health = 0;
 	INIT_FLAG = false;
 }
 
@@ -102,7 +101,7 @@ Vector<Unit> Lieutenant::TransferSquad()
 
 sint4 Lieutenant::GetHealth()
 {
-	health = 0;
+	sint4 health = 0;
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		const Unit & marine(marines[i]);
@@ -523,8 +522,8 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 		{
 			//PullBackWounded();	has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
 
-			//Unit target = AquireWeakestTarget(enemies);	this works fine
-			//AttackTarget(target);							do we want units to move into range, then attack the weakest target?
+			//Unit target = AquireWeakestTarget(enemies);	see comment above function
+			//AttackTarget(target);
 		}
 	UpdateEngaged();
 	//CasualtyCheck();		I've looked over it and I have no idea why we would get a floating point exception (usually around the last unit of type in squad)

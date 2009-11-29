@@ -40,7 +40,6 @@ public:
 
 private:
 	Vector <Unit> marines, tanks;
-	sint4 health;
 	vec2 goal;
 	bool engaged;
 	bool requestsAid;
