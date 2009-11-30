@@ -19,6 +19,7 @@
 //constant values for marine and tanks used with unit.GetType()
 const sint4 MARINE = 1;
 const sint4 TANK = 2;
+const sint4 MAX_ENEMY_DIST = 180;
 
 const sint4 MARINE_RANGE = 64;
 const sint4 MARINE_HEALTH = 80;
@@ -55,11 +56,13 @@ const sint4 FRONT_LINE = 17;//distance of FRONT_LINE from LT
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
 
+
 Lieutenant::Lieutenant()
 {
 	engaged = 0;
 	requestsAid = 0;
 	INIT_FLAG = false;
+	MICRO_FLAG = true;
 }
 
 Lieutenant::~Lieutenant()
@@ -78,6 +81,7 @@ void Lieutenant::AssignUnit(Unit unit)
 		tanks.push_back(unit);
 	}
 }
+
 
 Vector<Unit> Lieutenant::TransferSquad()
 {
@@ -268,6 +272,7 @@ vec2 Lieutenant::GetCurrentPosition()
 	if (squadSize > 0)
 	{
 		vec2 position = vec2(sumLocation.x/squadSize, sumLocation.y/squadSize);
+		ltPosition = position;
 		return position;
 	}
 	else
@@ -326,6 +331,7 @@ void Lieutenant::CheckFormation()
 void Lieutenant::DoFormation(vec2 dir)
 {
         vec2 initUnitPos = goal;
+        ltDir = dir;
         vec2 unitPos = initUnitPos;
 
         //TODO: make this dynamic to what direction you are pointing
@@ -333,8 +339,6 @@ void Lieutenant::DoFormation(vec2 dir)
 
         ltDirection.rX = dir.rX/sqrt(dir.rX*dir.rX + dir.rY*dir.rY);
         ltDirection.rY = dir.rY/sqrt(dir.rX*dir.rX + dir.rY*dir.rY);
-
-        std::cout << "rY: " << ltDirection.rY << std::endl;
 
 		vec2 rowDirection = vec2(-ltDirection.rY, ltDirection.rX);//direction of the rows
 
@@ -349,8 +353,6 @@ void Lieutenant::DoFormation(vec2 dir)
                 {
 
 					initUnitPos = vec2((ltDirection.rX * (real8)FRONT_LINE) + (real8)goal.x, (ltDirection.rY * (real8)FRONT_LINE) + (real8)goal.y);
-
-					std::cout << "initUnitPos: " << (sint4)initUnitPos.rX << ", " << (sint4)initUnitPos.rY << std::endl;
 
 					marines[i].SetGoal(Movement::Vec2D((sint4)initUnitPos.rX, (sint4)initUnitPos.rY));
 					marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
@@ -426,19 +428,8 @@ void Lieutenant::DoFormation(vec2 dir)
 void Lieutenant::MoveTo(vec2 target)
 {
 	goal = target;
-	for (size_t i(0); i < marines.size(); ++i)
-	{
-		Unit & marine(marines[i]);
-		marines[i].SetGoal(Movement::Vec2D(goal.x, goal.y));
-		marines[i].SetTask(mc->moveUnit(marine.GetGameObj(),  marines[i].GetGoal()));
-	}
-	for (size_t j(0); j < tanks.size(); ++j)
-	{
-		Unit & tank(tanks[j]);
-
-		tanks[j].SetGoal(Movement::Vec2D(goal.x, goal.y));
-		tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(),  tanks[j].GetGoal()));
-	}
+	//vec2 dir = vec2(target.x - goal.x, target.y - goal.y);
+	DoFormation(ltDir);
 }
 
 void Lieutenant::FireAtWill(Vector<Unit> enemies)
@@ -533,6 +524,70 @@ Unit Lieutenant::AquireWeakestTarget(Vector<Unit> enemies)
 	return target;
 }
 
+
+void Lieutenant::SetEnemies(Vector<Unit> enms)
+{
+	sint4 iDist;
+
+	enemies.clear();
+
+	for(size_t i(0); i< enms.size(); ++i)
+	{
+		iDist = (ltPosition.x - enms[i].GetPosition().x) * (ltPosition.x - enms[i].GetPosition().x) +
+				(ltPosition.y - enms[i].GetPosition().y) * (ltPosition.y - enms[i].GetPosition().y);
+
+		iDist = sqrt(iDist);
+
+		//if the enemy is close, and it is firing at someone, add it to the target enemies vector
+		if(iDist < MAX_ENEMY_DIST && enms[i].IsAlive() && enms[i].InCombat())
+			enemies.push_back(enms[i]);
+	}
+}
+
+
+void Lieutenant::AquireTargets(Vector<Unit> enms)
+{
+	if(engaged)
+	{
+		//sort all the enemies by there distance from the lt.
+		SetEnemies(enms);
+		if(enemies.size() <= 0)
+		{
+			return;
+		}
+
+		if(enemies.size() >= marines.size() + tanks.size())
+		{
+			for(size_t i(0); i< enms.size(); ++i)
+			{
+				if(i < marines.size())
+				{
+					marines[i].SetGoal(Movement::Vec2D(enemies[i].GetPosition().x, enemies[i].GetPosition().y));
+					marines[i].SetTask(mc->moveUnit(marines[i].GetGameObj(), marines[i].GetAttackGoal()));
+				}
+				if(i < tanks.size())
+				{
+					tanks[i].SetGoal(Movement::Vec2D(enemies[i].GetPosition().x, enemies[i].GetPosition().y));
+					tanks[i].SetTask(mc->moveUnit(tanks[i].GetGameObj(), tanks[i].GetAttackGoal()));
+				}
+			}
+		}
+		else
+		{
+			for (size_t i(0); i < marines.size(); ++i)
+			{
+				marines[i].SetGoal(Movement::Vec2D(enemies[i % enemies.size()].GetPosition().x, enemies[i % enemies.size()].GetPosition().y));
+				marines[i].SetTask(mc->moveUnit(marines[i].GetGameObj(), marines[i].GetAttackGoal()));
+			}
+			for (size_t j(0); j < tanks.size(); ++j)
+			{
+				tanks[j].SetGoal(Movement::Vec2D(enemies[j % enemies.size()].GetPosition().x, enemies[j % enemies.size()].GetPosition().y));
+				tanks[j].SetTask(mc->moveUnit(tanks[j].GetGameObj(), tanks[j].GetAttackGoal()));
+			}
+		}
+	}
+}
+
 void Lieutenant::AttackTarget(Unit& target)
 {
 	for (size_t i(0); i < marines.size(); ++i)
@@ -547,7 +602,7 @@ void Lieutenant::AttackTarget(Unit& target)
 	}
 }
 
-void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
+void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies, GameStateModule & gameState)
 {
 	mc = &MC;
 	FireAtWill(enemies);
@@ -556,11 +611,18 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 	{
 		CheckFormation();
 	}
+	if(gameState.get_game().get_action_frame() > 100 && MICRO_FLAG)
+	{
+		//MoveTo(vec2(400, 400));
+		MICRO_FLAG = false;
+	}
 
-	PullBackWounded();	//has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
+	//PullBackWounded();	//has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
 
-	UpdateEngaged();
 	CasualtyCheck();
+	UpdateEngaged();
+	AquireTargets(enemies);
+
 
 	/*
 	 *  if (orders):

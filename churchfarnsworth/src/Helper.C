@@ -185,6 +185,12 @@ Movement::Goal::const_ptr Unit::GetGoal()
 {
 	return Movement::TouchPoint(goal);
 }
+
+Movement::Goal::const_ptr Unit::GetAttackGoal()
+{
+	return Movement::AttackPoint(goal);
+}
+
 Movement::Vec2D Unit::GetVector()
 {
 	return goal;

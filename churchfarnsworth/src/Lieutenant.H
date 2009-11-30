@@ -22,11 +22,13 @@ public:
 	void CasualtyCheck();											//Updates the Lieutenant's squad by removing dead units
 	bool NeedsAid();												//Returns true if the Squad requests aid
 	void SetAid(bool aid);											//Sets the Squad Aid status
-	vec2 GetCurrentPosition();										//gets Lieutenant's position
+	vec2 GetCurrentPosition();										//gets Lieutenant's position based on the average location of its units
 	void DoFormation(vec2);											//Does the Squad formation
 	void MoveTo(vec2);												//Moves the Squad to target location
-	void Loop(Movement::Context&, Vector<Unit> enemies);			//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
+	void Loop(Movement::Context&, Vector<Unit> enemies, GameStateModule & gameState);//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
 	Unit AquireWeakestTarget(Vector<Unit> enemies);					//Orders the Lieutenant to Find the weakest possible enemy
+	void SetEnemies(Vector<Unit> enemies);							//set the enemy vector in the Lt
+	void AquireTargets(Vector<Unit> enms);							//if the squad is being attacked divy up the units to attack all the enemies that are engaged
 	void AttackTarget(Unit& target);								//Orders the Lieutenant's Units to Attack the given Target
 	void FireAtWill(Vector<Unit> enemies);							//Orders the Lieutenant's Units to Fire at will
 	void SetGoal(vec2 g);											//sets goal position of the Lieutenant.
@@ -38,14 +40,19 @@ public:
 	sint4 MarineSize(){return marines.size();}	//Returns the number of Marines under the Lieutenants command
 	sint4 TankSize(){return tanks.size();} 		//Returns the number of Tanks under the Lieutenants command
 
+
+
 private:
-	Vector <Unit> marines, tanks;
+	Vector <Unit> marines, tanks, enemies;
 	vec2 goal;
+	vec2 ltDir;
+	vec2 ltPosition;
 	bool engaged;
 	bool requestsAid;
 	bool INIT_FLAG;		//flag used to test if the Lieutenant's variables have been initialized
 	bool MICRO_FLAG;
 	Movement::Context *mc;
+
 };
 
 #endif /* LIEUTENANT_H_ */

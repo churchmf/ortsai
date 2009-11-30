@@ -86,6 +86,7 @@ public:
 
 	void 			SetGoal(Movement::Vec2D g);
 	Movement::Goal::const_ptr GetGoal();
+	Movement::Goal::const_ptr GetAttackGoal();
 	Movement::Vec2D GetVector();
 
 	//////////////

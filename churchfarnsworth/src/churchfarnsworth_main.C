@@ -57,6 +57,7 @@ public:
 	  bool operator() (Lieutenant i,Lieutenant j) { return (i.GetGoal().y < j.GetGoal().y);}
 	} compLieuts;
 
+
 private:
 	Vector<Lieutenant*> Lieutenants;		//Represents a Vector of Lieutenants
 	General* general;						//Represents a General
@@ -74,6 +75,7 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 
 	const sint4	myClient(game.get_client_player());
 	Vector<Unit> myUnits,enemies;
+
 
 
 	//AQUIRE AND SORT ALL OBJECTS
@@ -101,6 +103,7 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 			}
 		}
 	}
+
 	std::cout << "CREATE LIEUTS" << std::endl;
 	for (int i=0;i<5;++i)
 	{
@@ -111,7 +114,8 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 	//Pass initial MC into Lieutenants
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
-		Lieutenants[i]->Loop(mc,enemies);
+		Lieutenants[i]->Loop(mc,enemies, gameState);
+		Lieutenants[i]->SetEnemies(enemies);
 	}
 
 	//sort units by y positions
@@ -221,7 +225,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
-		Lieutenants[i]->Loop(mc,enemies);
+		Lieutenants[i]->Loop(mc,enemies, gameState);
 	}
 
 	//////////////////////////////////////////////////////////////
@@ -234,7 +238,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	{
 		vec2 ltPos = Lieutenants[i]->GetCurrentPosition();
 		if (ltPos.x > 0 && ltPos.y > 0)
-			DrawDebugCircle(ltPos, 90, Color(1,1,0));
+			DrawDebugCircle(ltPos, 160, Color(1,1,0));
 	}
 	draw_flag = false;
 }
