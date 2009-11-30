@@ -25,7 +25,7 @@ public:
 	vec2 GetCurrentPosition();										//gets Lieutenant's position based on the average location of its units
 	void DoFormation(vec2);											//Does the Squad formation
 	void MoveTo(vec2);												//Moves the Squad to target location
-	void Loop(Movement::Context&, Vector<Unit> enemies, GameStateModule & gameState);//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
+	void Loop(Movement::Context&, Vector<Unit> enemies);			//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
 	Unit AquireWeakestTarget(Vector<Unit> enemies);					//Orders the Lieutenant to Find the weakest possible enemy
 	void SetEnemies(Vector<Unit> enemies);							//set the enemy vector in the Lt
 	void AquireTargets(Vector<Unit> enms);							//if the squad is being attacked divy up the units to attack all the enemies that are engaged
@@ -50,7 +50,6 @@ private:
 	bool engaged;
 	bool requestsAid;
 	bool INIT_FLAG;		//flag used to test if the Lieutenant's variables have been initialized
-	bool MICRO_FLAG;
 	Movement::Context *mc;
 
 };

@@ -17,7 +17,7 @@ public:
 	Captain(General& theGeneral);
 	virtual ~Captain();
 
-	void Loop();												//The Captains game loop, all logic should be done here. Is called once every iteration of the game loop.
+	void Loop(const sint4 frame);								//The Captains game loop, all logic should be done here. Is called once every iteration of the game loop.
 	void SetLieutenants(Vector<Lieutenant*> theLieutenants);	//Sets the Lieutenants for the Captain to command
 	vec2 GetAidRequestLocation();								//Returns the first Lieutenant's position with an aid request
 	bool existsAidRequest();									//Checks for an aid requests in each Lieutenant

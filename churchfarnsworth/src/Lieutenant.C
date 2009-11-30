@@ -62,7 +62,6 @@ Lieutenant::Lieutenant()
 	engaged = 0;
 	requestsAid = 0;
 	INIT_FLAG = false;
-	MICRO_FLAG = true;
 }
 
 Lieutenant::~Lieutenant()
@@ -632,7 +631,7 @@ void Lieutenant::AttackTarget(Unit& target)
 	}
 }
 
-void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies, GameStateModule & gameState)
+void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 {
 	mc = &MC;
 	if((marines.empty() && tanks.empty()) ||enemies.empty())
@@ -644,11 +643,6 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies, GameStateModul
 	if(INIT_FLAG && !engaged)
 	{
 		CheckFormation();
-	}
-	if(gameState.get_game().get_action_frame() > 100 && MICRO_FLAG)
-	{
-		//MoveTo(vec2(400, 400));
-		MICRO_FLAG = false;
 	}
 
 	//PullBackWounded();	//has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()

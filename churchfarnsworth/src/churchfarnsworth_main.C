@@ -114,7 +114,7 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 	//Pass initial MC into Lieutenants
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
-		Lieutenants[i]->Loop(mc,enemies, gameState);
+		Lieutenants[i]->Loop(mc,enemies);
 		Lieutenants[i]->SetEnemies(enemies);
 	}
 
@@ -221,11 +221,11 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	general->Loop(enemies, myUnits);
 	//general->Print();
 
-	captain->Loop();
+	captain->Loop(game.get_view_frame());
 
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
-		Lieutenants[i]->Loop(mc,enemies, gameState);
+		Lieutenants[i]->Loop(mc,enemies);
 	}
 
 	//////////////////////////////////////////////////////////////

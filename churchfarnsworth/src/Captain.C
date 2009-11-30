@@ -25,6 +25,9 @@ const sint4 MAX_TANKS = 4;
 
 //Value to represent if a squad is healthy or not
 const sint4 HEALTHY_VALUE = 30;
+
+//The number of frames before executing the main Captain loop
+const sint4 DEPLOY_TIME = 100;
 //////////////////////////////////////////////////////////////
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
@@ -73,45 +76,80 @@ vec2 Captain::GetAidRequestLocation()
 //currently static, but easy to modify
 void Captain::Deploy()
 {
+	//determines which side of map we are spawned
+	vec2 position = Lieutenants[0]->GetCurrentPosition();
+	vec2 adjustment;//the side the lieutenant was spawned
+	vec2 facing;	//direction deployment should face
+	if (position.x < (general->width)/2)
+	{
+		adjustment = vec2(0,0);
+		facing = vec2(1.0,0.0);
+		std::cout << "LEFT SIDE" << std::endl;
+
+	}
+	else
+	{
+		adjustment = vec2((sint4)general->width,0);
+		facing = vec2(-1.0,0.0);
+		std::cout << "RIGHT SIDE" << std::endl;
+	}
+
+	//determine each lieutenants position relative to the side it was spawned
+	vec2 lieut1 = vec2(0,0);
+	lieut1.x = abs(adjustment.x - 130);
+	lieut1.y = abs(adjustment.y - 100);
+	vec2 lieut2 = vec2(0,0);
+	lieut2.x = abs(adjustment.x - 80);
+	lieut2.y = abs(adjustment.y - 220);
+	vec2 lieut3 = vec2(0,0);
+	lieut3.x = abs(adjustment.x - 80);
+	lieut3.y = abs(adjustment.y - 390);
+	vec2 lieut4 = vec2(0,0);
+	lieut4.x = abs(adjustment.x - 80);
+	lieut4.y = abs(adjustment.y - 560);
+	vec2 lieut5 = vec2(0,0);
+	lieut5.x = abs(adjustment.x - 130);
+	lieut5.y = abs(adjustment.y - 670);
+
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
 		switch(i)
 		{
 		case 0:
-			Lieutenants[i]->SetGoal(vec2(130, 100));
-			Lieutenants[i]->DoFormation(vec2(1.0, 0.0));
+			Lieutenants[i]->SetGoal(lieut1);
+			Lieutenants[i]->DoFormation(facing);
 			break;
 		case 1:
-			Lieutenants[i]->SetGoal(vec2(80, 220));
-			Lieutenants[i]->DoFormation(vec2(1.0,0.0));
+			Lieutenants[i]->SetGoal(lieut2);
+			Lieutenants[i]->DoFormation(facing);
 			break;
 		case 2:
-			Lieutenants[i]->SetGoal(vec2(80, 390));
-			Lieutenants[i]->DoFormation(vec2(1.0,0.0));
+			Lieutenants[i]->SetGoal(lieut3);
+			Lieutenants[i]->DoFormation(facing);
 			break;
 		case 3:
-			Lieutenants[i]->SetGoal(vec2(80, 560));
-			Lieutenants[i]->DoFormation(vec2(1.0,0.0));
+			Lieutenants[i]->SetGoal(lieut4);
+			Lieutenants[i]->DoFormation(facing);
 			break;
 		case 4:
-			Lieutenants[i]->SetGoal(vec2(130, 670));
-			Lieutenants[i]->DoFormation(vec2(1.0,0.0));
+			Lieutenants[i]->SetGoal(lieut5);
+			Lieutenants[i]->DoFormation(facing);
 			break;
 		}
 	}
 }
 
-//THOUGHTS: I think we need to implement a queue of task/"orders" system with the lieut so he does not get confused when given multiple orders, he will execute them in order
-void Captain::Loop()
+void Captain::Loop(const sint4 frame)
 {
+	//formation initalization time
+	if (frame < DEPLOY_TIME)
+		return;
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
 		Lieutenant* lieutenant(Lieutenants[i]);
-		//std::cout << lieutenant->GetHealth() << std::endl;
 		//if (squad healthy and not engaged):
 		if(lieutenant->GetHealth() >= HEALTHY_VALUE && !lieutenant->IsEngaged())
 		{
-
 			//Sets the current lieutenants aidRequest to false since it is safe and healthy
 			if (lieutenant->NeedsAid())
 				lieutenant->SetAid(false);
@@ -127,13 +165,12 @@ void Captain::Loop()
 			{
 				//choose safe deployment location towards nearest enemy location
 				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
-				//lieutenant->MoveTo(enemy);
+				lieutenant->MoveTo(enemy);
 			}
 		}
 		else
 		{
 			//if winning
-			//std::cout << general->IsOutNumbered(lieutenant->GetCurrentPosition()) << std::endl;
 			if(!general->IsOutNumbered(lieutenant->GetCurrentPosition()))
 			{
 

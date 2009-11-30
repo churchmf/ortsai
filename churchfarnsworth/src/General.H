@@ -42,10 +42,10 @@ public:
 	Tile* ConvertToGridTile(vec2 location);							//Converts the given location on the map to the appropriate tile in the grid
 	vec2 ConvertToLocation(Tile tile);								//Converts the given tile to the center location of the tile on the map
 
-
-private:
 	real8 width;			//width of map
 	real8 height;			//height of map
+
+private:
 	Vector<Unit> enemies;	//List of enemies
 	Vector<Unit> myUnits;	//List of the friendly Units
 
