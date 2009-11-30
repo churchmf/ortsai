@@ -19,6 +19,10 @@ struct vec2
 	vec2 operator + (const vec2 & v) const { return vec2(x+v.x,y+v.y); }
 	vec2 operator - (const vec2 & v) const { return vec2(x-v.x,y-v.y); }
 
+	bool operator == (const vec2 & v) const { return ((v.x == x) && (v.y == y)); }
+
+	bool IsNear(const vec2 & v) const {return (GetDistanceTo(v) < 20);}
+
 
 	float GetLength() const { return sqrtf(static_cast<float>(x*x+y*y)); }
 	sint4 GetLengthSq() const { return x*x+y*y; }

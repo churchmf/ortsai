@@ -22,7 +22,8 @@ public:
 	vec2 GetAidRequestLocation();								//Returns the first Lieutenant's position with an aid request
 	bool existsAidRequest();									//Checks for an aid requests in each Lieutenant
 	void Deploy();												//Deploys the Lieutenants into starting formation
-private:
+	void RemoveLieutenant(size_t index);							//Removes the Lieutenant at index i from the Captain's command
+	void DistributeUnits(Vector<Unit> units);					//Distributes the units across the Lieutenants
 	Vector<Lieutenant*> Lieutenants;							//Represents the Lieutenants under the Captains Command
 	General* general;											//Represents the Captain's General
 };

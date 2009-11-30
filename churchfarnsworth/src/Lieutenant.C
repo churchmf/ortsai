@@ -52,6 +52,9 @@ const sint4 TANK_OFFSET = 20;//distance between the tanks in the row
 const sint4 UNIT_OFFSET = 10;//space between rows
 const sint4 FRONT_LINE = 17;//distance of FRONT_LINE from LT
 
+//Value to determine if the Lieutenant is Healthy
+const sint4 HEALTHY_VALUE = 30;
+
 //////////////////////////////////////////////////////////////
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
@@ -61,12 +64,20 @@ Lieutenant::Lieutenant()
 {
 	engaged = 0;
 	requestsAid = 0;
-	INIT_FLAG = false;
 }
 
 Lieutenant::~Lieutenant()
 {
 	delete mc;
+}
+
+bool Lieutenant::IsHealthy()
+{
+	if (GetHealth() >= HEALTHY_VALUE)
+	{
+		return true;
+	}
+	return false;
 }
 
 void Lieutenant::AssignUnit(Unit unit)
@@ -119,6 +130,7 @@ sint4 Lieutenant::GetHealth()
 			health += tank.GetHitpoints();
 		}
 	}
+	//zero unit check
 	if (health == 0)
 		return 0;
 	else
@@ -133,7 +145,7 @@ bool Lieutenant::IsEngaged()
 	return engaged;
 }
 
-void Lieutenant::UpdateEngaged()
+void Lieutenant::CheckEngaged()
 {
 	engaged = false;
 	for (size_t i(0); i < marines.size(); ++i)
@@ -187,7 +199,7 @@ void Lieutenant::RelieveUnit(sint4 type, size_t index)
 	}
 }
 
-void Lieutenant::CasualtyCheck()
+void Lieutenant::CheckCasualties()
 {
 	if(marines.empty() && tanks.empty())
 	{
@@ -296,6 +308,16 @@ vec2 Lieutenant::GetGoal()
 	return goal;
 }
 
+bool Lieutenant::HasOrder()
+{
+	return hasOrder;
+}
+
+void Lieutenant::SetHasOrder(bool order)
+{
+	hasOrder = order;
+}
+
 //NOTE: VARIABLES MUST BE INITIALIZED BEFORE CALLING THIS FUNCTION
 void Lieutenant::CheckFormation()
 {
@@ -337,7 +359,6 @@ void Lieutenant::CheckFormation()
 	}
 }
 
-//default, needs updating
 //NOT OPTIMAL pattern
 void Lieutenant::DoFormation(vec2 dir)
 {
@@ -349,7 +370,6 @@ void Lieutenant::DoFormation(vec2 dir)
         ltDir = dir;
         vec2 unitPos = initUnitPos;
 
-        //TODO: make this dynamic to what direction you are pointing
         vec2 ltDirection = dir;
 
         ltDirection.rX = dir.rX/sqrt(dir.rX*dir.rX + dir.rY*dir.rY);
@@ -362,7 +382,6 @@ void Lieutenant::DoFormation(vec2 dir)
         for (size_t i(0); i < marines.size(); ++i)
         {
                 Unit & marine(marines[i]);
-                //marine.MoveTo(location, marine.GetMaxSpeed());
                 //set first unit
                 if(i == 0 && marine.IsAlive())
                 {
@@ -398,7 +417,6 @@ void Lieutenant::DoFormation(vec2 dir)
 					displace++;
                 }
         }
-
         displace = 1;
 
         for (size_t j(0); j < tanks.size(); ++j)
@@ -435,16 +453,14 @@ void Lieutenant::DoFormation(vec2 dir)
 
                 }
         }
-
-        INIT_FLAG = true;
 }
 
 //default, needs updating
 void Lieutenant::MoveTo(vec2 target)
 {
 	goal = target;
-	//vec2 dir = vec2(target.x - goal.x, target.y - goal.y);
 	DoFormation(ltDir);
+	hasOrder = true;
 }
 
 void Lieutenant::FireAtWill(Vector<Unit> enemies)
@@ -631,39 +647,49 @@ void Lieutenant::AttackTarget(Unit& target)
 	}
 }
 
+void Lieutenant::CheckObjective()
+{
+	if (hasOrder)
+	{
+		if  (GetCurrentPosition().IsNear(goal))
+		{
+			hasOrder = false;
+		}
+	}
+}
+
 void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 {
 	mc = &MC;
-	if((marines.empty() && tanks.empty()) ||enemies.empty())
-	{
-		return;
-	}
+
 	FireAtWill(enemies);
 
-	if(INIT_FLAG && !engaged)
+	if (engaged)
 	{
-		CheckFormation();
+		if (!hasOrder)
+		{
+			std::cout << "Lieutenant: Aquiring Targets" << std::endl;
+			AquireTargets(enemies);
+			//PullBackWounded();
+		}
+	}
+	else
+	{
+		if (GetHealth() >= HEALTHY_VALUE)
+		{
+			//Sets the current lieutenants aidRequest to false since it is safe and healthy
+			SetAid(false);
+		}
+		if (!hasOrder)
+		{
+				std::cout << "Lieutenant: Checking Formation" << std::endl;
+				CheckFormation();
+				hasOrder = false;
+		}
 	}
 
-	//PullBackWounded();	//has issues with your CheckFormation() since I'm passing the units a movement. See PullBackWounded()
-
-	CasualtyCheck();
-	UpdateEngaged();
-	AquireTargets(enemies);
-
-
-	/*
-	 *  if (orders):
-		   do order
-		else:
-		  if (engaged):
-			for each unit in squad:
-			  if expected death:
-				pull back
-		  else:
-			target weakest enemy unit in range
-			attack enemy unit
-		update squad status
-	 */
+	CheckCasualties();
+	CheckEngaged();
+	CheckObjective();
 }
 

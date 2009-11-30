@@ -121,39 +121,13 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 	//sort units by y positions
 	sort(myUnits.begin(), myUnits.end(), compUnits);
 
-
-	std::cout << "ALLOCATE UNITS" << std::endl;
-	uint4 m = 0;
-	uint4 t = 0;
-	for(size_t i(0); i< myUnits.size(); ++i)
-	{
-		Unit & unit(myUnits[i]);
-
-		if(unit.HasWeapon())
-		{
-			if(unit.GetType() == MARINE)
-			{
-				if (Lieutenants[m]->MarineSize() >= MAX_MARINES
-				&& m < Lieutenants.size())
-					m++;
-				Lieutenants[m]->AssignUnit(unit);
-			}
-			if(unit.GetType() == TANK)
-			{
-				if (Lieutenants[t]->TankSize() >= MAX_TANKS
-				&& t < Lieutenants.size())
-					t++;
-				Lieutenants[t]->AssignUnit(unit);
-			}
-		}
-	}
-
 	//INITIALIZE GENERAL
 	general = new General(maxCoordX, maxCoordY);
 
 	//INITIALIZE CAPTAIN
 	captain = new Captain(*general);
 	captain->SetLieutenants(Lieutenants);
+	captain->DistributeUnits(myUnits);
 	captain->Deploy();
 }
 
