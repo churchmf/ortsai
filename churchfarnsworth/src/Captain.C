@@ -79,7 +79,7 @@ void Captain::Deploy()
 		{
 		case 0:
 			Lieutenants[i]->SetGoal(vec2(130, 100));
-			Lieutenants[i]->DoFormation(vec2(0.5, 0.5));
+			Lieutenants[i]->DoFormation(vec2(1.0, 0.0));
 			break;
 		case 1:
 			Lieutenants[i]->SetGoal(vec2(80, 220));

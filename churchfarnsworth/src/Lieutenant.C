@@ -190,6 +190,10 @@ void Lieutenant::RelieveUnit(sint4 type, size_t index)
 
 void Lieutenant::CasualtyCheck()
 {
+	if(marines.empty() && tanks.empty())
+	{
+		return;
+	}
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		const Unit & marine(marines[i]);
@@ -217,6 +221,10 @@ void Lieutenant::CasualtyCheck()
  */
 void Lieutenant::PullBackWounded()
 {
+	if(marines.empty() && tanks.empty())
+	{
+		return;
+	}
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		Unit & marine(marines[i]);
@@ -292,6 +300,10 @@ vec2 Lieutenant::GetGoal()
 //NOTE: VARIABLES MUST BE INITIALIZED BEFORE CALLING THIS FUNCTION
 void Lieutenant::CheckFormation()
 {
+	if(marines.empty() && tanks.empty())
+	{
+		return;
+	}
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		//if the unit fails to get to its location or it thinks it is at its location
@@ -330,6 +342,10 @@ void Lieutenant::CheckFormation()
 //NOT OPTIMAL pattern
 void Lieutenant::DoFormation(vec2 dir)
 {
+		if(marines.empty() && tanks.empty())
+		{
+			return;
+		}
         vec2 initUnitPos = goal;
         ltDir = dir;
         vec2 unitPos = initUnitPos;
@@ -434,6 +450,10 @@ void Lieutenant::MoveTo(vec2 target)
 
 void Lieutenant::FireAtWill(Vector<Unit> enemies)
 {
+	if((marines.empty() && tanks.empty()) ||enemies.empty())
+	{
+		return;
+	}
 	for(size_t i(0); i<marines.size(); ++i)
 	{
 		sint4 weakestHP = 150;	//tanks maxhealth
@@ -527,6 +547,10 @@ Unit Lieutenant::AquireWeakestTarget(Vector<Unit> enemies)
 
 void Lieutenant::SetEnemies(Vector<Unit> enms)
 {
+	if((marines.empty() && tanks.empty()) ||enms.empty())
+	{
+		return;
+	}
 	sint4 iDist;
 
 	enemies.clear();
@@ -547,6 +571,12 @@ void Lieutenant::SetEnemies(Vector<Unit> enms)
 
 void Lieutenant::AquireTargets(Vector<Unit> enms)
 {
+	if((marines.empty() && tanks.empty()) ||enms.empty())
+	{
+		return;
+	}
+
+
 	if(engaged)
 	{
 		//sort all the enemies by there distance from the lt.
@@ -605,9 +635,13 @@ void Lieutenant::AttackTarget(Unit& target)
 void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies, GameStateModule & gameState)
 {
 	mc = &MC;
+	if((marines.empty() && tanks.empty()) ||enemies.empty())
+	{
+		return;
+	}
 	FireAtWill(enemies);
 
-	if(INIT_FLAG && engaged == 0)
+	if(INIT_FLAG && !engaged)
 	{
 		CheckFormation();
 	}
