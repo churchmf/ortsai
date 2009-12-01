@@ -247,8 +247,8 @@ void Captain::Loop(const sint4 frame)
 				{
 					std::cout << "REFORMING" << std::endl;
 					//if another unhealthy squad exists, merge with them
-					//Vector<Unit> transfers = lieutenant->TransferSquad();
-					//DistributeUnits(transfers);
+					Vector<Unit> transfers = lieutenant->TransferSquad();
+					DistributeUnits(transfers);
 					if (!(lieutenant->MarineSize()+lieutenant->TankSize() > 0))
 						RemoveLieutenant(i);
 				}
@@ -262,8 +262,9 @@ void Captain::Loop(const sint4 frame)
 				std::cout << "RETREATING" << std::endl;
 				//retreat and request for aid
 				lieutenant->SetAid(true);
-				vec2 friendly = GetClosestFriend(lieutenant->GetCurrentPosition());
-				vec2 retreatLocation = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), friendly);
+				//vec2 friendly = GetClosestFriend(lieutenant->GetCurrentPosition());
+				//vec2 retreatLocation = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), friendly);
+				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
 				//std::cout << retreatLocation.x << "," << retreatLocation.y << std::endl;
 				lieutenant->MoveTo(retreatLocation);
 			}

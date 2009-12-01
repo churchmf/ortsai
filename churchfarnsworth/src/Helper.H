@@ -21,7 +21,7 @@ struct vec2
 
 	bool operator == (const vec2 & v) const { return ((v.x == x) && (v.y == y)); }
 
-	bool IsNear(const vec2 & v) const {return (GetDistanceTo(v) < 50);}
+	bool IsNear(const vec2 & v) const {return (GetDistanceTo(v) < 30);}
 
 
 	float GetLength() const { return sqrtf(static_cast<float>(x*x+y*y)); }
