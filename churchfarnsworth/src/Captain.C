@@ -243,9 +243,9 @@ void Captain::Loop(const sint4 frame)
 				std::cout << "RETREATING" << std::endl;
 				//retreat and request for aid
 				lieutenant->SetAid(true);
-				//vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
+				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
 				//std::cout << retreatLocation.x << "," << retreatLocation.y << std::endl;
-				//lieutenant->MoveTo(retreatLocation);
+				lieutenant->MoveTo(retreatLocation);
 			}
 		}
 	}

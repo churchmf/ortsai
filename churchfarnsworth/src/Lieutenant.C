@@ -633,7 +633,7 @@ void Lieutenant::CheckObjective()
 {
 	if (hasOrder)
 	{
-		if  (GetCurrentPosition().IsNear(goal))
+		if  (GetCurrentPosition().IsNear(goal) )
 		{
 			hasOrder = false;
 		}
@@ -655,7 +655,7 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 		{
 				std::cout << "Lieutenant: Aquiring Targets" << std::endl;
 				AquireTargets(enemies);
-				//PullBackWounded();
+				PullBackWounded();
 		}
 		else
 		{
@@ -664,13 +664,8 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 				//Sets the current lieutenants aidRequest to false since it is safe and healthy
 				SetAid(false);
 			}
-			CheckFormation();
 		}
 	}
-	else
-	{
-		CheckFormation();
-	}
-
+	CheckFormation();
 }
 
