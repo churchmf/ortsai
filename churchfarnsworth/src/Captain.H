@@ -26,9 +26,10 @@ public:
 	vec2 GetClosestAidRequestLocation(vec2 lieutPos);			//Returns the closest Lieutenant's position with an aid request
 	bool existsAidRequest();									//Checks for an aid requests in each Lieutenant
 	void Deploy();												//Deploys the Lieutenants into starting formation
-	void RemoveLieutenant(size_t index);							//Removes the Lieutenant at index i from the Captain's command
+	void RemoveLieutenant(size_t index);						//Removes the Lieutenant at index i from the Captain's command
 	void DistributeUnits(Vector<Unit> units);					//Distributes the units across the Lieutenants
 	Vector<Lieutenant*> Lieutenants;							//Represents the Lieutenants under the Captains Command
+	vec2 GetClosestFriend(vec2 location);						//returns the location of the closest ally
 	General* general;											//Represents the Captain's General
 };
 #endif /* CAPTAIN_H_ */

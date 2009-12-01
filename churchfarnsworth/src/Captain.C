@@ -182,8 +182,29 @@ void Captain::DistributeUnits(Vector<Unit> units)
 	}
 }
 
+vec2 Captain::GetClosestFriend(vec2 location)
+{
+	float closestFriendPos = general->width;
+	Lieutenant* closestPosLieutenant = Lieutenants[0];
+
+	for(size_t i(0); i<Lieutenants.size(); ++i)
+	{
+		Lieutenant* lieutenant(Lieutenants[i]);
+		float distance = lieutenant->GetCurrentPosition().GetDistanceTo(location);
+		if (distance < closestFriendPos && distance > 30)
+		{
+			closestFriendPos = distance;
+			closestPosLieutenant = lieutenant;
+		}
+	}
+	return closestPosLieutenant->GetCurrentPosition();
+}
+
 void Captain::Loop(const sint4 frame)
 {
+	//sort Lieutenants by most units (used in reforming)
+	sort(Lieutenants.begin(), Lieutenants.end(), compLieuts);
+
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
 		Lieutenant* lieutenant(Lieutenants[i]);
@@ -226,10 +247,8 @@ void Captain::Loop(const sint4 frame)
 				{
 					std::cout << "REFORMING" << std::endl;
 					//if another unhealthy squad exists, merge with them
-					Vector<Unit> transfers = lieutenant->TransferSquad();
-					//sort Lieutenants by most units
-					sort(Lieutenants.begin(), Lieutenants.end(), compLieuts);
-					DistributeUnits(transfers);
+					//Vector<Unit> transfers = lieutenant->TransferSquad();
+					//DistributeUnits(transfers);
 					if (!(lieutenant->MarineSize()+lieutenant->TankSize() > 0))
 						RemoveLieutenant(i);
 				}
@@ -243,7 +262,8 @@ void Captain::Loop(const sint4 frame)
 				std::cout << "RETREATING" << std::endl;
 				//retreat and request for aid
 				lieutenant->SetAid(true);
-				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
+				vec2 friendly = GetClosestFriend(lieutenant->GetCurrentPosition());
+				vec2 retreatLocation = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), friendly);
 				//std::cout << retreatLocation.x << "," << retreatLocation.y << std::endl;
 				lieutenant->MoveTo(retreatLocation);
 			}

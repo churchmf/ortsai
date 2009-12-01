@@ -53,7 +53,7 @@ const sint4 UNIT_OFFSET = 10;//space between rows
 const sint4 FRONT_LINE = 17;//distance of FRONT_LINE from LT
 
 //Value to determine if the Lieutenant is Healthy
-const sint4 HEALTHY_VALUE = 30;
+const sint4 HEALTHY_VALUE = 20;
 
 //////////////////////////////////////////////////////////////
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
@@ -655,7 +655,7 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 		{
 				std::cout << "Lieutenant: Aquiring Targets" << std::endl;
 				AquireTargets(enemies);
-				PullBackWounded();
+				//PullBackWounded();
 		}
 		else
 		{
