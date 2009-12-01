@@ -51,13 +51,6 @@ public:
 	  bool operator() (Unit i,Unit j) { return (i.GetPosition().y < j.GetPosition().y);}
 	} compUnits;
 
-
-	struct LtCompare
-	{
-	  bool operator() (Lieutenant i,Lieutenant j) { return (i.GetGoal().y < j.GetGoal().y);}
-	} compLieuts;
-
-
 private:
 	Vector<Lieutenant*> Lieutenants;		//Represents a Vector of Lieutenants
 	General* general;						//Represents a General
@@ -75,8 +68,6 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 
 	const sint4	myClient(game.get_client_player());
 	Vector<Unit> myUnits,enemies;
-
-
 
 	//AQUIRE AND SORT ALL OBJECTS
 	for(int team(0); team<game.get_player_num(); ++team)
@@ -104,7 +95,6 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 		}
 	}
 
-	std::cout << "CREATE LIEUTS" << std::endl;
 	for (int i=0;i<5;++i)
 	{
 		Lieutenant* lieutenant = new Lieutenant();

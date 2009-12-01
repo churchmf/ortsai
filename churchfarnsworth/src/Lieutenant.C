@@ -321,10 +321,6 @@ void Lieutenant::SetHasOrder(bool order)
 //NOTE: VARIABLES MUST BE INITIALIZED BEFORE CALLING THIS FUNCTION
 void Lieutenant::CheckFormation()
 {
-	if(marines.empty() && tanks.empty())
-	{
-		return;
-	}
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		//if the unit fails to get to its location or it thinks it is at its location
@@ -362,10 +358,6 @@ void Lieutenant::CheckFormation()
 //NOT OPTIMAL pattern
 void Lieutenant::DoFormation(vec2 dir)
 {
-		if(marines.empty() && tanks.empty())
-		{
-			return;
-		}
         vec2 initUnitPos = goal;
         ltDir = dir;
         vec2 unitPos = initUnitPos;
@@ -450,7 +442,6 @@ void Lieutenant::DoFormation(vec2 dir)
 
 					tanks[j].SetGoal(Movement::Vec2D((sint4)unitPos.rX, (sint4)unitPos.rY));
 					tanks[j].SetTask(mc->moveUnit(tank.GetGameObj(), tanks[j].GetGoal()));
-
                 }
         }
 }
@@ -586,49 +577,40 @@ void Lieutenant::SetEnemies(Vector<Unit> enms)
 
 void Lieutenant::AquireTargets(Vector<Unit> enms)
 {
-	if((marines.empty() && tanks.empty()) ||enms.empty())
+	//sort all the enemies by there distance from the lt.
+	SetEnemies(enms);
+	if(enemies.size() <= 0)
 	{
 		return;
 	}
 
-
-	if(engaged)
+	if(enemies.size() >= marines.size() + tanks.size())
 	{
-		//sort all the enemies by there distance from the lt.
-		SetEnemies(enms);
-		if(enemies.size() <= 0)
+		for(size_t i(0); i< enms.size(); ++i)
 		{
-			return;
-		}
-
-		if(enemies.size() >= marines.size() + tanks.size())
-		{
-			for(size_t i(0); i< enms.size(); ++i)
+			if(i < marines.size())
 			{
-				if(i < marines.size())
-				{
-					marines[i].SetGoal(Movement::Vec2D(enemies[i].GetPosition().x, enemies[i].GetPosition().y));
-					marines[i].SetTask(mc->moveUnit(marines[i].GetGameObj(), marines[i].GetAttackGoal()));
-				}
-				if(i < tanks.size())
-				{
-					tanks[i].SetGoal(Movement::Vec2D(enemies[i].GetPosition().x, enemies[i].GetPosition().y));
-					tanks[i].SetTask(mc->moveUnit(tanks[i].GetGameObj(), tanks[i].GetAttackGoal()));
-				}
-			}
-		}
-		else
-		{
-			for (size_t i(0); i < marines.size(); ++i)
-			{
-				marines[i].SetGoal(Movement::Vec2D(enemies[i % enemies.size()].GetPosition().x, enemies[i % enemies.size()].GetPosition().y));
+				marines[i].SetGoal(Movement::Vec2D(enemies[i].GetPosition().x, enemies[i].GetPosition().y));
 				marines[i].SetTask(mc->moveUnit(marines[i].GetGameObj(), marines[i].GetAttackGoal()));
 			}
-			for (size_t j(0); j < tanks.size(); ++j)
+			if(i < tanks.size())
 			{
-				tanks[j].SetGoal(Movement::Vec2D(enemies[j % enemies.size()].GetPosition().x, enemies[j % enemies.size()].GetPosition().y));
-				tanks[j].SetTask(mc->moveUnit(tanks[j].GetGameObj(), tanks[j].GetAttackGoal()));
+				tanks[i].SetGoal(Movement::Vec2D(enemies[i].GetPosition().x, enemies[i].GetPosition().y));
+				tanks[i].SetTask(mc->moveUnit(tanks[i].GetGameObj(), tanks[i].GetAttackGoal()));
 			}
+		}
+	}
+	else
+	{
+		for (size_t i(0); i < marines.size(); ++i)
+		{
+			marines[i].SetGoal(Movement::Vec2D(enemies[i % enemies.size()].GetPosition().x, enemies[i % enemies.size()].GetPosition().y));
+			marines[i].SetTask(mc->moveUnit(marines[i].GetGameObj(), marines[i].GetAttackGoal()));
+		}
+		for (size_t j(0); j < tanks.size(); ++j)
+		{
+			tanks[j].SetGoal(Movement::Vec2D(enemies[j % enemies.size()].GetPosition().x, enemies[j % enemies.size()].GetPosition().y));
+			tanks[j].SetTask(mc->moveUnit(tanks[j].GetGameObj(), tanks[j].GetAttackGoal()));
 		}
 	}
 }
@@ -663,33 +645,32 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 	mc = &MC;
 
 	FireAtWill(enemies);
+	CheckCasualties();
+	CheckEngaged();
+	CheckObjective();
 
-	if (engaged)
+	if (!hasOrder)
 	{
-		if (!hasOrder)
+		if (engaged)
 		{
-			std::cout << "Lieutenant: Aquiring Targets" << std::endl;
-			AquireTargets(enemies);
-			//PullBackWounded();
+				std::cout << "Lieutenant: Aquiring Targets" << std::endl;
+				AquireTargets(enemies);
+				//PullBackWounded();
+		}
+		else
+		{
+			if (GetHealth() >= HEALTHY_VALUE)
+			{
+				//Sets the current lieutenants aidRequest to false since it is safe and healthy
+				SetAid(false);
+			}
+			CheckFormation();
 		}
 	}
 	else
 	{
-		if (GetHealth() >= HEALTHY_VALUE)
-		{
-			//Sets the current lieutenants aidRequest to false since it is safe and healthy
-			SetAid(false);
-		}
-		if (!hasOrder)
-		{
-				std::cout << "Lieutenant: Checking Formation" << std::endl;
-				CheckFormation();
-				hasOrder = false;
-		}
+		CheckFormation();
 	}
 
-	CheckCasualties();
-	CheckEngaged();
-	CheckObjective();
 }
 

@@ -11,6 +11,7 @@
 #include "Game.H"
 #include "GameObj.H"
 #include "GameStateModule.H"
+#include <algorithm>
 
 //////////////////////////////////////////////////////////////
 ////////////    CONSTANTS AND GAME VARIABLES      ///////////
@@ -64,16 +65,26 @@ bool Captain::existsAidRequest()
 	return false;
 }
 
-vec2 Captain::GetAidRequestLocation()
+vec2 Captain::GetClosestAidRequestLocation(vec2 lieutPos)
 {
+	float closestAidRequest = general->width;
+	Lieutenant* closestPosLieutenant = Lieutenants[0];
+
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
-		if (Lieutenants[i]->NeedsAid())
+		Lieutenant* lieutenant(Lieutenants[i]);
+		if (lieutenant->NeedsAid())
 		{
-			return Lieutenants[i]->GetCurrentPosition();
+			float distance = lieutenant->GetCurrentPosition().GetDistanceTo(lieutPos);
+			if (distance < closestAidRequest && distance > 30)
+			{
+				closestAidRequest = distance;
+				closestPosLieutenant = lieutenant;
+			}
 		}
 	}
-	return vec2(-1,-1);
+	closestPosLieutenant->SetAid(false);
+	return closestPosLieutenant->GetCurrentPosition();
 }
 
 //currently static, but easy to modify
@@ -146,6 +157,7 @@ void Captain::DistributeUnits(Vector<Unit> units)
 {
 	uint4 m = 0;
 	uint4 t = 0;
+
 	for(size_t i(0); i< units.size(); ++i)
 	{
 		Unit & unit(units[i]);
@@ -179,52 +191,48 @@ void Captain::Loop(const sint4 frame)
 		//formation initalization time
 		if (frame < DEPLOY_TIME)
 		{
-			lieutenant->CheckFormation();
 			return;
 		}
 
 		//if the squad is not engaged
 		if(!lieutenant->IsEngaged())
 		{
-			std::cout << "NOT ENGAGED" << std::endl;
-			//if the squad is healthy
-			if (lieutenant->IsHealthy())
+			//if the squad is current not executing an order
+			if (!lieutenant->HasOrder())
 			{
-				std::cout << "HEALTHY" << std::endl;
-				//if the squad is current not executing an order
-				if (!lieutenant->HasOrder())
+				//check for aid requests
+				if (existsAidRequest())
 				{
-					//check for aid requests
-					if (existsAidRequest())
-					{
-						std::cout << "HELPING" << std::endl;
-						//choose safe deployment location towards endangered squad
-						vec2 aidLocation = GetAidRequestLocation();
-						//find a safe waypoint towards aidLocation
-						vec2 safeMove = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), aidLocation);
-						//move towards aid call, if a safe path exists
-						lieutenant->MoveTo(safeMove);
-					}
-					else
-					{
-						std::cout << "ATTACK" << std::endl;
-						//choose safe deployment location towards nearest enemy location
-						vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
-						//find a safe waypoint towards enemy
-						vec2 safeMove = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), enemy);
-						//move towards enemy if a safe path exists
-						lieutenant->MoveTo(safeMove);
-					}
+					std::cout << "HELPING" << std::endl;
+					//choose safe deployment location towards endangered squad
+					vec2 aidLocation = GetClosestAidRequestLocation(lieutenant->GetCurrentPosition());
+					//find a safe waypoint towards aidLocation
+					vec2 safeMove = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), aidLocation);
+					//move towards aid call, if a safe path exists
+					lieutenant->MoveTo(safeMove);
 				}
-			}
-			else
-			{
-				std::cout << "REFORMING" << std::endl;
-				//if another unhealthy squad exists, merge with them
-				Vector<Unit> transfers = lieutenant->TransferSquad();
-				RemoveLieutenant(i);
-				DistributeUnits(transfers);
-
+				else
+				{
+					std::cout << "ATTACK" << std::endl;
+					//choose safe deployment location towards nearest enemy location
+					vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
+					//find a safe waypoint towards enemy
+					vec2 safeMove = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), enemy);
+					//move towards enemy if a safe path exists
+					lieutenant->MoveTo(safeMove);
+				}
+				// if the squad is unhealthy, transfer units to healthiest squad
+				if (!lieutenant->IsHealthy() && Lieutenants.size() > 1)
+				{
+					std::cout << "REFORMING" << std::endl;
+					//if another unhealthy squad exists, merge with them
+					Vector<Unit> transfers = lieutenant->TransferSquad();
+					//sort Lieutenants by most units
+					sort(Lieutenants.begin(), Lieutenants.end(), compLieuts);
+					DistributeUnits(transfers);
+					if (!(lieutenant->MarineSize()+lieutenant->TankSize() > 0))
+						RemoveLieutenant(i);
+				}
 			}
 		}
 		else	//Lieutenant is in combat
@@ -235,9 +243,9 @@ void Captain::Loop(const sint4 frame)
 				std::cout << "RETREATING" << std::endl;
 				//retreat and request for aid
 				lieutenant->SetAid(true);
-				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
-				std::cout << retreatLocation.x << "," << retreatLocation.y << std::endl;
-				lieutenant->MoveTo(retreatLocation);
+				//vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
+				//std::cout << retreatLocation.x << "," << retreatLocation.y << std::endl;
+				//lieutenant->MoveTo(retreatLocation);
 			}
 		}
 	}
