@@ -321,7 +321,7 @@ vec2 General::FindEmptyWaypoint(vec2 location, vec2 target)
 vec2 General::GetClosestTarget(vec2 location)
 {
 	Tile* currentTile = ConvertToGridTile(location);
-	float minDist = 100;
+	real8 minDist = xGrid;
 	Tile* closestTarget = currentTile;
 
 	for (int i = 0; i < yGrid; ++i)
@@ -331,7 +331,7 @@ vec2 General::GetClosestTarget(vec2 location)
 			Tile* tile = &(grid[j][i]);
 			if (tile->risk > 0)
 			{
-				float dist = tile->GetDistanceTo(*currentTile);
+				real8 dist = tile->GetDistanceTo(*currentTile);
 				if (dist < minDist)
 				{
 					minDist = dist;
