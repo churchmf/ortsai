@@ -268,7 +268,7 @@ void Captain::Loop(const sint4 frame)
 				lieutenant->SetAid(true);
 				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
 				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition(), enemy);
-				std::cout << retreatLocation.x-lieutenant->GetCurrentPosition().x << "," << retreatLocation.y-lieutenant->GetCurrentPosition().y << std::endl;
+				//std::cout << retreatLocation.x-lieutenant->GetCurrentPosition().x << "," << retreatLocation.y-lieutenant->GetCurrentPosition().y << std::endl;
 				lieutenant->MoveTo(retreatLocation, lieutenant->FaceTarget(enemy));
 			}
 		}
