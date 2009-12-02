@@ -48,6 +48,7 @@ public:
 	void PullBackWounded();											//micro-manages units in danger of dying in the squad.
 	Vector<Unit> TransferSquad();									//Transfers out the Lieutenant's squad, returning them as a vector and releaving control.
 	vec2 FaceTarget(vec2 targetLocation);							//Returns the directional vector of the difference between the Lieutenant's position and it's target
+	void ClearSquadOrders();
 
 private:
 	Vector <Unit> marines, tanks, enemies;

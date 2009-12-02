@@ -207,13 +207,17 @@ void Captain::Loop(const sint4 frame)
 
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
-		Lieutenant* lieutenant(Lieutenants[i]);
-
 		//formation initalization time
 		if (frame < DEPLOY_TIME)
 		{
 			return;
 		}
+
+		//dead lieutenant check
+		Lieutenant* lieutenant(Lieutenants[i]);
+		if (lieutenant->TankSize()+lieutenant->MarineSize() == 0)
+			continue;
+
 
 		//if the squad is not engaged
 		if(!lieutenant->IsEngaged())
@@ -251,8 +255,6 @@ void Captain::Loop(const sint4 frame)
 					//if another unhealthy squad exists, merge with them
 					Vector<Unit> transfers = lieutenant->TransferSquad();
 					DistributeUnits(transfers);
-					if (lieutenant->MarineSize()+lieutenant->TankSize() == 0)
-						RemoveLieutenant(i);
 				}
 			}
 		}
@@ -264,11 +266,9 @@ void Captain::Loop(const sint4 frame)
 				std::cout << "RETREATING" << std::endl; //works for everything except tanks don't retreat?
 				//retreat and request for aid
 				lieutenant->SetAid(true);
-				//vec2 friendly = GetClosestFriend(lieutenant->GetCurrentPosition());
-				//vec2 retreatLocation = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), friendly);
-				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
 				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
-				//std::cout << retreatLocation.x << "," << retreatLocation.y << std::endl;
+				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition(), enemy);
+				std::cout << retreatLocation.x-lieutenant->GetCurrentPosition().x << "," << retreatLocation.y-lieutenant->GetCurrentPosition().y << std::endl;
 				lieutenant->MoveTo(retreatLocation, lieutenant->FaceTarget(enemy));
 			}
 		}

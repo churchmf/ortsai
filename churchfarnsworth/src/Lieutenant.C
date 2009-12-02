@@ -277,7 +277,7 @@ void Lieutenant::PullBackWounded()
 
 vec2 Lieutenant::GetCurrentPosition()
 {
-	vec2 sumLocation = vec2(-1,-1);
+	vec2 sumLocation = vec2(0,0);
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		const Unit & marine(marines[i]);
@@ -362,7 +362,6 @@ void Lieutenant::DoFormation(vec2 dir)
         vec2 initUnitPos = goal;
         ltDir = dir;
         vec2 unitPos = initUnitPos;
-
         vec2 ltDirection = dir;
 
         ltDirection.rX = dir.rX/sqrt(dir.rX*dir.rX + dir.rY*dir.rY);
@@ -451,16 +450,25 @@ void Lieutenant::DoFormation(vec2 dir)
 void Lieutenant::MoveTo(vec2 target, vec2 direction)
 {
 	goal = target;
+	//ClearSquadOrders(); doesn't fix the tank not retreating problem
 	DoFormation(direction);
 	hasOrder = true;
 }
 
+void Lieutenant::ClearSquadOrders()
+{
+	for(size_t i(0); i<marines.size(); ++i)
+	{
+		(*marines[i].GetTask()).cancel();
+	}
+	for(size_t i(0); i<tanks.size(); ++i)
+	{
+		(*tanks[i].GetTask()).cancel();
+	}
+}
+
 void Lieutenant::FireAtWill(Vector<Unit> enemies)
 {
-	if((marines.empty() && tanks.empty()) ||enemies.empty())
-	{
-		return;
-	}
 	for(size_t i(0); i<marines.size(); ++i)
 	{
 		sint4 weakestHP = 150;	//tanks maxhealth
@@ -634,10 +642,10 @@ void Lieutenant::AttackTarget(Unit& target)
 //TODO:isn't working properly
 vec2 Lieutenant::FaceTarget(vec2 targetLocation)
 {
-	std::cout << "target: " << targetLocation.x << "," << targetLocation.y << std::endl;
-	std::cout << "current: " << GetCurrentPosition().x << "," << GetCurrentPosition().y << std::endl;
+	//std::cout << "target: " << targetLocation.x << "," << targetLocation.y << std::endl;
+	//std::cout << "current: " << GetCurrentPosition().x << "," << GetCurrentPosition().y << std::endl;
 	vec2 facing = targetLocation-GetCurrentPosition();
-	std::cout << "facing: " << facing.x << "," << facing.y << std::endl;
+	//std::cout << "facing: " << facing.x << "," << facing.y << std::endl;
 	return ltDir; //need to fix facing so it returns something DoFormation can handle properly
 }
 
@@ -650,20 +658,29 @@ void Lieutenant::CheckObjective()
 			hasOrder = false;
 		}
 	}
+	//std::cout << hasOrder << ":" << GetCurrentPosition().x << "," << GetCurrentPosition().y <<   " vs " << goal.x  << "," << goal.y << std::endl;
 }
 
 void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 {
 	mc = &MC;
-	CheckEngaged();
 	CheckCasualties();
+	//dead lieutenant check
+	if (tanks.empty() && marines.empty())
+	{
+		hasOrder = false;
+		goal = vec2(0,0);
+		engaged = false;
+		requestsAid = false;
+		return;
+	}
+	CheckEngaged();
 	CheckObjective();
 	CheckFormation();
-	FireAtWill(enemies);
-
 
 	if (!hasOrder)
 	{
+		FireAtWill(enemies);
 		if (engaged)
 		{
 				std::cout << "Lieutenant: Aquiring Targets" << std::endl;

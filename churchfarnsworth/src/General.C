@@ -215,7 +215,7 @@ vec2 General::FindSafeWaypoint(vec2 current, vec2 goal)
 			{
 				Tile* tile = &(grid[currentTile->x+j][currentTile->y+i]);
 				real8 distance = tile->GetDistanceTo(*goalTile);
-				if (tile->risk <= 0 && distance < shortestDistance)
+				if (tile->risk <= SAFE_VALUE && distance < shortestDistance)
 				{
 					shortestDistance = distance;
 					shortestTile = tile;
@@ -226,31 +226,32 @@ vec2 General::FindSafeWaypoint(vec2 current, vec2 goal)
 	return ConvertToLocation(*shortestTile);
 }
 
-vec2 General::GetFallBackLocation(vec2 location)
+vec2 General::GetFallBackLocation(vec2 current, vec2 enemy)
 {
-	Tile* currentTile = ConvertToGridTile(location);
-	float minDist = 2;
-	Tile* fallBack = currentTile;
+	Tile* enemyTile = ConvertToGridTile(enemy);
+	Tile* currentTile = ConvertToGridTile(current);
+	real8 furthestDistance = currentTile->GetDistanceTo(*enemyTile);
+	Tile* furthestTile = currentTile;
 
-	for (int i = 0; i < yGrid; ++i)
+	//check in surrounding tiles
+	for(int i = -1; i < 2; ++i)
 	{
-		for (int j = 0; j < xGrid; ++j)
+		for (int j = -1; j < 2; ++j)
 		{
-			Tile* tile = &(grid[j][i]);
-			if (tile->risk <= 0)
+			//check tile boundries
+			if ((currentTile->x+j > 0 && currentTile->x+j < xGrid) && (currentTile->y+i > 0 && currentTile->y+i < yGrid))
 			{
-				float dist = tile->GetDistanceTo(*currentTile);
-				if (dist < minDist && dist > 0)
+				Tile* tile = &(grid[currentTile->x+j][currentTile->y+i]);
+				real8 distance = tile->GetDistanceTo(*enemyTile);
+				if (tile->risk <= SAFE_VALUE && distance > furthestDistance)
 				{
-					minDist = dist;
-					fallBack = tile;
+					furthestDistance = distance;
+					furthestTile = tile;
 				}
 			}
 		}
 	}
-	vec2 safeLocation = ConvertToLocation(*fallBack);
-	//std::cout << safeLocation.x << "," << safeLocation.y << std::endl;
-	return safeLocation;
+	return ConvertToLocation(*furthestTile);
 }
 
 //NOTE: the results of this assessment change drastically with the size of the risk grid
