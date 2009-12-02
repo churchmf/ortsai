@@ -19,7 +19,7 @@ const sint4 MARINE = 1;
 const sint4 TANK = 2;
 
 //default 10x10 risk grid
-const sint4 xGrid = 9;
+const sint4 xGrid = 10;
 const sint4 yGrid = 10;
 
 //cut off value to determine if a risk value is safe
