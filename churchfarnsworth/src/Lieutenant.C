@@ -38,7 +38,8 @@ const sint4 MAX_TANKS = 4;
 const sint4 MAX_RANGE = 112;
 
 //unit health percentage buffer for pulling back
-const real8 EXPECTED_DEATH = 30;
+const real8 EXPECTED_DEATH = 50;
+//buffer distance to pull back the unit
 const real8 PULL_BACK_BUFFER = 5;
 
 //USED WITH SQUAD FORMATION
@@ -447,10 +448,10 @@ void Lieutenant::DoFormation(vec2 dir)
 }
 
 //default, needs updating
-void Lieutenant::MoveTo(vec2 target)
+void Lieutenant::MoveTo(vec2 target, vec2 direction)
 {
 	goal = target;
-	DoFormation(ltDir);
+	DoFormation(direction);
 	hasOrder = true;
 }
 
@@ -488,6 +489,7 @@ void Lieutenant::FireAtWill(Vector<Unit> enemies)
 		if(position.GetDistanceSqTo(target.GetPosition()) <= rangeSq)
 		{
 		marine.Attack(target);
+		engaged = true;
 		}
 	}
 
@@ -519,6 +521,7 @@ void Lieutenant::FireAtWill(Vector<Unit> enemies)
 		if(position.GetDistanceSqTo(target.GetPosition()) <= rangeSq)
 		{
 		tank.Attack(target);
+		engaged = true;
 		}
 	}
 }
@@ -629,6 +632,11 @@ void Lieutenant::AttackTarget(Unit& target)
 	}
 }
 
+vec2 Lieutenant::FaceTarget(vec2 targetLocation)
+{
+	return targetLocation-GetCurrentPosition();
+}
+
 void Lieutenant::CheckObjective()
 {
 	if (hasOrder)
@@ -643,11 +651,12 @@ void Lieutenant::CheckObjective()
 void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 {
 	mc = &MC;
-
-	FireAtWill(enemies);
-	CheckCasualties();
 	CheckEngaged();
+	CheckCasualties();
 	CheckObjective();
+	CheckFormation();
+	FireAtWill(enemies);
+
 
 	if (!hasOrder)
 	{
@@ -655,7 +664,7 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 		{
 				std::cout << "Lieutenant: Aquiring Targets" << std::endl;
 				AquireTargets(enemies);
-				//PullBackWounded();
+				//PullBackWounded(); has mixed results atm
 		}
 		else
 		{
@@ -666,6 +675,5 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 			}
 		}
 	}
-	CheckFormation();
 }
 

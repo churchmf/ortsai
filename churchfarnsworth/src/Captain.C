@@ -76,7 +76,7 @@ vec2 Captain::GetClosestAidRequestLocation(vec2 lieutPos)
 		if (lieutenant->NeedsAid())
 		{
 			float distance = lieutenant->GetCurrentPosition().GetDistanceTo(lieutPos);
-			if (distance < closestAidRequest && distance > 30)
+			if (distance < closestAidRequest && distance > 0)
 			{
 				closestAidRequest = distance;
 				closestPosLieutenant = lieutenant;
@@ -230,7 +230,7 @@ void Captain::Loop(const sint4 frame)
 					//find a safe waypoint towards aidLocation
 					vec2 safeMove = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), aidLocation);
 					//move towards aid call, if a safe path exists
-					lieutenant->MoveTo(safeMove);
+					lieutenant->MoveTo(safeMove, lieutenant->GetDirection());
 				}
 				else
 				{
@@ -238,9 +238,9 @@ void Captain::Loop(const sint4 frame)
 					//choose safe deployment location towards nearest enemy location
 					vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
 					//find a safe waypoint towards enemy
-					vec2 safeMove = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), enemy);
+					vec2 safeMove = general->FindEmptyWaypoint(lieutenant->GetCurrentPosition(), enemy);
 					//move towards enemy if a safe path exists
-					lieutenant->MoveTo(safeMove);
+					lieutenant->MoveTo(safeMove, lieutenant->FaceTarget(enemy));
 				}
 				// if the squad is unhealthy, transfer units to healthiest squad
 				if (!lieutenant->IsHealthy() && Lieutenants.size() > 1)
@@ -265,8 +265,9 @@ void Captain::Loop(const sint4 frame)
 				//vec2 friendly = GetClosestFriend(lieutenant->GetCurrentPosition());
 				//vec2 retreatLocation = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), friendly);
 				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition());
+				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
 				//std::cout << retreatLocation.x << "," << retreatLocation.y << std::endl;
-				lieutenant->MoveTo(retreatLocation);
+				lieutenant->MoveTo(retreatLocation, lieutenant->FaceTarget(enemy));
 			}
 		}
 	}

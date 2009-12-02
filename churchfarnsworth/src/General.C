@@ -23,7 +23,7 @@ const sint4 xGrid = 10;
 const sint4 yGrid = 10;
 
 //cut off value to determine if a risk value is safe
-const sint4 SAFE_VALUE = 10;
+const sint4 SAFE_VALUE = 5;
 
 //deals with grid values
 const sint4 MARINE_RISK = 1;
@@ -202,7 +202,7 @@ vec2 General::FindSafeWaypoint(vec2 current, vec2 goal)
 {
 	Tile* goalTile = ConvertToGridTile(goal);
 	Tile* currentTile = ConvertToGridTile(current);
-	float shortestDistance = currentTile->GetDistanceTo(*goalTile);
+	real8 shortestDistance = currentTile->GetDistanceTo(*goalTile);
 	Tile* shortestTile = currentTile;
 
 	//check in surrounding tiles
@@ -214,8 +214,8 @@ vec2 General::FindSafeWaypoint(vec2 current, vec2 goal)
 			if ((currentTile->x+j > 0 && currentTile->x+j < xGrid) && (currentTile->y+i > 0 && currentTile->y+i < yGrid))
 			{
 				Tile* tile = &(grid[currentTile->x+j][currentTile->y+i]);
-				float distance = tile->GetDistanceTo(*goalTile);
-				if (tile->risk <= SAFE_VALUE && distance < shortestDistance)
+				real8 distance = tile->GetDistanceTo(*goalTile);
+				if (tile->risk <= 0 && distance < shortestDistance)
 				{
 					shortestDistance = distance;
 					shortestTile = tile;
@@ -253,7 +253,7 @@ vec2 General::GetFallBackLocation(vec2 location)
 	return safeLocation;
 }
 
-//note the results of this assessment change drastically with the size of the risk grid
+//NOTE: the results of this assessment change drastically with the size of the risk grid
 //it is recommended to search a larger number of surrounding tiles as the grid gets denser to maintain desired functionality
 //good rule of thumb is surrounding tiles should encompass range of enemy tanks
 bool General::IsOutNumbered(vec2 location)
@@ -284,6 +284,37 @@ bool General::IsOutNumbered(vec2 location)
 	if (surroundingTiles > abs(currentTile))
 		return true;
 	return false;
+}
+
+vec2 General::FindEmptyWaypoint(vec2 location, vec2 target)
+{
+	//determine how crowded an area is based on its risk value
+	//dangerous because it may see combat zones as potentially empty areas
+	Tile* currentTile = ConvertToGridTile(location);
+	Tile* targetTile = ConvertToGridTile(target);
+
+	Tile* shortestTile = currentTile;
+	real8 shortestDistance = currentTile->GetDistanceTo(*targetTile);
+
+	//check in surrounding tiles
+	for(int i = -1; i < 2; ++i)
+	{
+		for (int j = -1; j < 2; ++j)
+		{
+			//check tile boundries
+			if ((currentTile->x+j > 0 && currentTile->x+j < xGrid) && (currentTile->y+i > 0 && currentTile->y+i < yGrid))
+			{
+				Tile* tile = &(grid[currentTile->x+j][currentTile->y+i]);
+				real8 distance = tile->GetDistanceTo(*targetTile);
+				if ((tile->risk < SAFE_VALUE) && (tile->risk > -SAFE_VALUE) && (distance < shortestDistance))
+				{
+					shortestDistance = distance;
+					shortestTile = tile;
+				}
+			}
+		}
+	}
+	return ConvertToLocation(*shortestTile);
 }
 
 vec2 General::GetClosestTarget(vec2 location)

@@ -36,16 +36,18 @@ public:
 	sint4 GetHealth();												//Returns the percentage of total Squad health
 	sint4 MarineSize(){return marines.size();}						//Returns the number of Marines under the Lieutenants command
 	sint4 TankSize(){return tanks.size();} 							//Returns the number of Tanks under the Lieutenants command
+	vec2 GetDirection(){return ltDir;}								//Returns the facing direction of the Lieutenant's formation
 
 	void Loop(Movement::Context&, Vector<Unit> enemies);			//The Lieutenant's game loop, all logic should be done here. Is called once every iteration of the game loop.
 	void DoFormation(vec2);											//Does the Squad formation
-	void MoveTo(vec2);												//Moves the Squad to target location
+	void MoveTo(vec2 location, vec2 facing);						//Moves the Squad to target location, doing a formation facing the direction
 	Unit AquireWeakestTarget(Vector<Unit> enemies);					//Orders the Lieutenant to Find the weakest possible enemy
 	void AquireTargets(Vector<Unit> enms);							//if the squad is being attacked divy up the units to attack all the enemies that are engaged
 	void AttackTarget(Unit& target);								//Orders the Lieutenant's Units to Attack the given Target
 	void FireAtWill(Vector<Unit> enemies);							//Orders the Lieutenant's Units to Fire at will
 	void PullBackWounded();											//micro-manages units in danger of dying in the squad.
 	Vector<Unit> TransferSquad();									//Transfers out the Lieutenant's squad, returning them as a vector and releaving control.
+	vec2 FaceTarget(vec2 targetLocation);							//Returns the directional vector of the difference between the Lieutenant's position and it's target
 
 private:
 	Vector <Unit> marines, tanks, enemies;
