@@ -19,11 +19,11 @@ const sint4 MARINE = 1;
 const sint4 TANK = 2;
 
 //default 10x10 risk grid
-const sint4 xGrid = 10;
+const sint4 xGrid = 9;
 const sint4 yGrid = 10;
 
 //cut off value to determine if a risk value is safe
-const sint4 SAFE_VALUE = 5;
+const sint4 SAFE_VALUE = 10;
 
 //deals with grid values
 const sint4 MARINE_RISK = 1;
@@ -307,7 +307,7 @@ vec2 General::FindEmptyWaypoint(vec2 location, vec2 target)
 			{
 				Tile* tile = &(grid[currentTile->x+j][currentTile->y+i]);
 				real8 distance = tile->GetDistanceTo(*targetTile);
-				if ((tile->risk < SAFE_VALUE) && (tile->risk > -SAFE_VALUE) && (distance < shortestDistance))
+				if ((tile->risk < SAFE_VALUE) && (tile->risk > -2*SAFE_VALUE) && (distance < shortestDistance))
 				{
 					shortestDistance = distance;
 					shortestTile = tile;
@@ -329,7 +329,7 @@ vec2 General::GetClosestTarget(vec2 location)
 		for (int j = 0; j < xGrid; ++j)
 		{
 			Tile* tile = &(grid[j][i]);
-			if (tile->risk > SAFE_VALUE)
+			if (tile->risk > 0)
 			{
 				float dist = tile->GetDistanceTo(*currentTile);
 				if (dist < minDist)

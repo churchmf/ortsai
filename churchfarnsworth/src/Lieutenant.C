@@ -233,10 +233,6 @@ void Lieutenant::CheckCasualties()
  */
 void Lieutenant::PullBackWounded()
 {
-	if(marines.empty() && tanks.empty())
-	{
-		return;
-	}
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		Unit & marine(marines[i]);

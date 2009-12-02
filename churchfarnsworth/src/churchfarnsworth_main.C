@@ -183,7 +183,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	/////////////////////////////////////////////////////////////
 
 	general->Loop(enemies, myUnits);
-	//general->Print();
+	general->Print();
 
 	captain->Loop(game.get_view_frame());
 
