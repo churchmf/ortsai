@@ -229,7 +229,7 @@ vec2 General::FindSafeWaypoint(vec2 current, vec2 goal)
 vec2 General::GetFallBackLocation(vec2 location)
 {
 	Tile* currentTile = ConvertToGridTile(location);
-	float minDist = 3;
+	float minDist = 2;
 	Tile* fallBack = currentTile;
 
 	for (int i = 0; i < yGrid; ++i)
@@ -237,10 +237,10 @@ vec2 General::GetFallBackLocation(vec2 location)
 		for (int j = 0; j < xGrid; ++j)
 		{
 			Tile* tile = &(grid[j][i]);
-			if (tile->risk <= SAFE_VALUE)
+			if (tile->risk <= 0)
 			{
 				float dist = tile->GetDistanceTo(*currentTile);
-				if (dist < minDist)
+				if (dist < minDist && dist > 0)
 				{
 					minDist = dist;
 					fallBack = tile;

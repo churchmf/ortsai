@@ -221,6 +221,10 @@ void Captain::Loop(const sint4 frame)
 			//if the squad is current not executing an order
 			if (!lieutenant->HasOrder())
 			{
+				//do formation towards nearest enemy
+				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
+				lieutenant->DoFormation(lieutenant->FaceTarget(enemy));
+
 				//check for aid requests
 				if (existsAidRequest())
 				{
@@ -230,14 +234,12 @@ void Captain::Loop(const sint4 frame)
 					//find a safe waypoint towards aidLocation
 					vec2 safeMove = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), aidLocation);
 					//move towards aid call, if a safe path exists
-					lieutenant->MoveTo(safeMove, lieutenant->GetDirection());
+					lieutenant->MoveTo(safeMove, lieutenant->FaceTarget(enemy));
 				}
 				else
 				{
 					std::cout << "ATTACK" << std::endl;
 					//choose safe deployment location towards nearest enemy location
-					vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
-					//find a safe waypoint towards enemy
 					vec2 safeMove = general->FindEmptyWaypoint(lieutenant->GetCurrentPosition(), enemy);
 					//move towards enemy if a safe path exists
 					lieutenant->MoveTo(safeMove, lieutenant->FaceTarget(enemy));
@@ -249,7 +251,7 @@ void Captain::Loop(const sint4 frame)
 					//if another unhealthy squad exists, merge with them
 					Vector<Unit> transfers = lieutenant->TransferSquad();
 					DistributeUnits(transfers);
-					if (!(lieutenant->MarineSize()+lieutenant->TankSize() > 0))
+					if (lieutenant->MarineSize()+lieutenant->TankSize() == 0)
 						RemoveLieutenant(i);
 				}
 			}
@@ -259,7 +261,7 @@ void Captain::Loop(const sint4 frame)
 			// Lieutenant is loosing
 			if(general->IsOutNumbered(lieutenant->GetCurrentPosition()))
 			{
-				std::cout << "RETREATING" << std::endl;
+				std::cout << "RETREATING" << std::endl; //works for everything except tanks don't retreat?
 				//retreat and request for aid
 				lieutenant->SetAid(true);
 				//vec2 friendly = GetClosestFriend(lieutenant->GetCurrentPosition());

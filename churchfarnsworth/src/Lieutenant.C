@@ -631,10 +631,14 @@ void Lieutenant::AttackTarget(Unit& target)
 		tank.Attack(target);
 	}
 }
-
+//TODO:isn't working properly
 vec2 Lieutenant::FaceTarget(vec2 targetLocation)
 {
-	return targetLocation-GetCurrentPosition();
+	std::cout << "target: " << targetLocation.x << "," << targetLocation.y << std::endl;
+	std::cout << "current: " << GetCurrentPosition().x << "," << GetCurrentPosition().y << std::endl;
+	vec2 facing = targetLocation-GetCurrentPosition();
+	std::cout << "facing: " << facing.x << "," << facing.y << std::endl;
+	return ltDir; //need to fix facing so it returns something DoFormation can handle properly
 }
 
 void Lieutenant::CheckObjective()
