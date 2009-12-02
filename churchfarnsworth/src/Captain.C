@@ -218,9 +218,7 @@ void Captain::Loop(const sint4 frame)
 		if (lieutenant->TankSize()+lieutenant->MarineSize() == 0)
 			continue;
 
-		std::cout << "LIEUT: " << i << std::endl;
-		if (frame % 100 == 0)
-			lieutenant->Resume();
+		//std::cout << "LIEUT: " << i << std::endl;
 
 		//if the squad is not engaged
 		if(!lieutenant->IsEngaged())
@@ -246,7 +244,7 @@ void Captain::Loop(const sint4 frame)
 				{
 					std::cout << "ATTACK" << std::endl;
 					//choose safe deployment location towards nearest enemy location
-					vec2 safeMove = general->FindEmptyWaypoint(lieutenant->GetCurrentPosition(), enemy);
+					vec2 safeMove = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), enemy);
 					//move towards enemy if a safe path exists
 					lieutenant->MoveTo(safeMove, lieutenant->FaceTarget(enemy));
 				}
