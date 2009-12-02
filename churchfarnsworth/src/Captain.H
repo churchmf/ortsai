@@ -16,8 +16,9 @@ class Captain {
 public:
 	struct LtCompare
 	{
-	  bool operator() (Lieutenant* i,Lieutenant* j) { return (i->MarineSize()+i->TankSize() < j->MarineSize()+j->TankSize());}
+	  bool operator() (Lieutenant* i,Lieutenant* j) { return ((i->MarineSize()+i->TankSize()) > (j->MarineSize()+j->TankSize()));}
 	} compLieuts;
+
 	Captain(General& theGeneral);
 	virtual ~Captain();
 

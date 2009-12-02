@@ -152,19 +152,48 @@ void Lieutenant::CheckEngaged()
 	for (size_t i(0); i < marines.size(); ++i)
 	{
 		const Unit & marine(marines[i]);
+		// Cache the unit's position and the range of its weapon
+		const vec2	position(marine.GetPosition());
+		const sint4 range(marine.GetWeaponRange());
+		const sint4 rangeSq(range*range);
+		//Quick Check
 		if (marine.InCombat() && marine.IsAlive())
 		{
 			engaged = true;
 			return;
 		}
+		for(size_t j(0); j<enemies.size(); ++j)
+		{
+			const Unit & enemy(enemies[j]);
+			if(position.GetDistanceSqTo(enemy.GetPosition()) <= rangeSq)
+			{
+				engaged = true;
+				return;
+			}
+		}
 	}
+
 	for (size_t i(0); i < tanks.size(); ++i)
 	{
 		const Unit & tank(tanks[i]);
+		// Cache the unit's position and the range of its weapon
+		const vec2	position(tank.GetPosition());
+		const sint4 range(tank.GetWeaponRange());
+		const sint4 rangeSq(range*range);
+		//Quick Check
 		if (tank.InCombat() && tank.IsAlive())
 		{
 			engaged = true;
 			return;
+		}
+		for(size_t j(0); j<enemies.size(); ++j)
+		{
+			const Unit & enemy(enemies[j]);
+			if(position.GetDistanceSqTo(enemy.GetPosition()) <= rangeSq)
+			{
+				engaged = true;
+				return;
+			}
 		}
 	}
 }
@@ -635,14 +664,24 @@ void Lieutenant::AttackTarget(Unit& target)
 		tank.Attack(target);
 	}
 }
-//TODO:isn't working properly
+//should work now
 vec2 Lieutenant::FaceTarget(vec2 targetLocation)
 {
+	const real8 PI = 3.14159265;
 	//std::cout << "target: " << targetLocation.x << "," << targetLocation.y << std::endl;
 	//std::cout << "current: " << GetCurrentPosition().x << "," << GetCurrentPosition().y << std::endl;
+	vec2 directionalVector = vec2(0,0);
 	vec2 facing = targetLocation-GetCurrentPosition();
+	real8 angle = atan2(facing.y,facing.x) * 180.0 / PI;
+
+	real8 rX = cos(angle*(PI/180));
+	real8 rY = sin(angle*(PI/180));
+	directionalVector = vec2(rX,rY);
+
 	//std::cout << "facing: " << facing.x << "," << facing.y << std::endl;
-	return ltDir; //need to fix facing so it returns something DoFormation can handle properly
+	//std::cout << "angle: " << angle << std::endl;
+	//std::cout << "directionalVector: " << directionalVector.x << "," << directionalVector.y << std::endl;
+	return directionalVector;
 }
 
 void Lieutenant::CheckObjective()
@@ -655,6 +694,16 @@ void Lieutenant::CheckObjective()
 		}
 	}
 	//std::cout << hasOrder << ":" << GetCurrentPosition().x << "," << GetCurrentPosition().y <<   " vs " << goal.x  << "," << goal.y << std::endl;
+}
+
+void Lieutenant::Wait()
+{
+	hasOrder = true;
+}
+
+void Lieutenant::Resume()
+{
+	hasOrder = false;
 }
 
 void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
@@ -679,7 +728,6 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 		FireAtWill(enemies);
 		if (engaged)
 		{
-				std::cout << "Lieutenant: Aquiring Targets" << std::endl;
 				AquireTargets(enemies);
 				//PullBackWounded(); //has mixed results atm
 		}

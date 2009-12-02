@@ -218,6 +218,9 @@ void Captain::Loop(const sint4 frame)
 		if (lieutenant->TankSize()+lieutenant->MarineSize() == 0)
 			continue;
 
+		std::cout << "LIEUT: " << i << std::endl;
+		if (frame % 100 == 0)
+			lieutenant->Resume();
 
 		//if the squad is not engaged
 		if(!lieutenant->IsEngaged())
@@ -227,7 +230,6 @@ void Captain::Loop(const sint4 frame)
 			{
 				//do formation towards nearest enemy
 				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
-				lieutenant->DoFormation(lieutenant->FaceTarget(enemy));
 
 				//check for aid requests
 				if (existsAidRequest())
@@ -255,6 +257,8 @@ void Captain::Loop(const sint4 frame)
 					//if another unhealthy squad exists, merge with them
 					Vector<Unit> transfers = lieutenant->TransferSquad();
 					DistributeUnits(transfers);
+					if (lieutenant->MarineSize() + lieutenant->TankSize() == 0)
+						RemoveLieutenant(i);
 				}
 			}
 		}
