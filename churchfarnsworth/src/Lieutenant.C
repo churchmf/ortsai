@@ -681,7 +681,7 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 		{
 				std::cout << "Lieutenant: Aquiring Targets" << std::endl;
 				AquireTargets(enemies);
-				PullBackWounded(); //has mixed results atm
+				//PullBackWounded(); //has mixed results atm
 		}
 		else
 		{

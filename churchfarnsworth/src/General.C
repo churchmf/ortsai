@@ -18,7 +18,7 @@
 const sint4 MARINE = 1;
 const sint4 TANK = 2;
 
-//default 10x10 risk grid
+//default 16x10 risk grid
 const sint4 xGrid = 10;
 const sint4 yGrid = 10;
 
