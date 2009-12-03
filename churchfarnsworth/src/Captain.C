@@ -170,6 +170,7 @@ void Captain::DistributeUnits(Vector<Unit> units)
 				&& m < Lieutenants.size())
 					m++;
 				Lieutenants[m]->AssignUnit(unit);
+				Lieutenants[m]->SetHasOrder(false);
 			}
 			if(unit.GetType() == TANK)
 			{
@@ -177,6 +178,7 @@ void Captain::DistributeUnits(Vector<Unit> units)
 				&& t < Lieutenants.size())
 					t++;
 				Lieutenants[t]->AssignUnit(unit);
+				Lieutenants[t]->SetHasOrder(false);
 			}
 		}
 	}
@@ -191,7 +193,8 @@ vec2 Captain::GetClosestFriend(vec2 location)
 	{
 		Lieutenant* lieutenant(Lieutenants[i]);
 		float distance = lieutenant->GetCurrentPosition().GetDistanceTo(location);
-		if (distance < closestFriendPos && distance > 30)
+		//distance > 0 check means it will not return the Lieutenant at the given location, instead the next closest
+		if (distance < closestFriendPos && distance > 0)
 		{
 			closestFriendPos = distance;
 			closestPosLieutenant = lieutenant;
