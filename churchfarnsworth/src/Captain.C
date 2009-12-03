@@ -216,7 +216,7 @@ vec2 Captain::GetClosestFriend(vec2 location)
 ////////////////   USER IMPLEMENTED STRATEGY  //////////////
 void Captain::Loop(const sint4 frame)
 {
-	//sort Lieutenants by most units (used in reforming)
+	//sort Lieutenants by most units (makes for more effective reforming)
 	sort(Lieutenants.begin(), Lieutenants.end(), compLieuts);
 
 	for(size_t i(0); i<Lieutenants.size(); ++i)
@@ -231,8 +231,6 @@ void Captain::Loop(const sint4 frame)
 		Lieutenant* lieutenant(Lieutenants[i]);
 		if (lieutenant->TankSize()+lieutenant->MarineSize() == 0)
 			continue;
-
-		//std::cout << "LIEUT: " << i << std::endl;
 
 		//if the squad is not engaged
 		if(!lieutenant->IsEngaged())
@@ -279,7 +277,7 @@ void Captain::Loop(const sint4 frame)
 			// Lieutenant is loosing
 			if(general->IsOutNumbered(lieutenant->GetCurrentPosition()))
 			{
-				std::cout << "RETREATING" << std::endl; //works for everything except tanks don't retreat?
+				std::cout << "RETREATING" << std::endl;
 				//retreat and request for aid
 				lieutenant->SetAid(true);
 				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
