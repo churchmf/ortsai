@@ -21,6 +21,7 @@ const sint4 MARINE = 1;
 const sint4 TANK = 2;
 
 //maximum number of marines and tanks per lieutenant squad
+//should match same-named constants in Lieutenant.C
 const sint4 MAX_MARINES = 10;
 const sint4 MAX_TANKS = 4;
 
@@ -87,7 +88,10 @@ vec2 Captain::GetClosestAidRequestLocation(vec2 lieutPos)
 	return closestPosLieutenant->GetCurrentPosition();
 }
 
-//currently static, but easy to modify
+//////////////////////////////////////////////////////////////
+//////////////////   INITIAL FORMATION    ///////////////////
+/////////////////////////////////////////////////////////////
+/////   CURRENTLY STATIC: BUT EASY TO REPLACE/MODIFY  //////
 void Captain::Deploy()
 {
 	//determines which side of map we are spawned
@@ -152,6 +156,9 @@ void Captain::Deploy()
 		}
 	}
 }
+//////////////////////////////////////////////////////////////
+////////////////   END INITIAL FORMATION     /////////////////
+/////////////////////////////////////////////////////////////
 
 void Captain::DistributeUnits(Vector<Unit> units)
 {
@@ -203,6 +210,10 @@ vec2 Captain::GetClosestFriend(vec2 location)
 	return closestPosLieutenant->GetCurrentPosition();
 }
 
+//////////////////////////////////////////////////////////////
+////////////////////    CAPTAIN LOOP      ////////////////////
+/////////////////////////////////////////////////////////////
+////////////////   USER IMPLEMENTED STRATEGY  //////////////
 void Captain::Loop(const sint4 frame)
 {
 	//sort Lieutenants by most units (used in reforming)

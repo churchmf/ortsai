@@ -30,18 +30,12 @@ using namespace std;
 /////////////////////////////////////////////////////////////
 //Number of Lieutenants, Captain will dynamically know this based on the size of it's Vector
 const sint4 NUM_LIEUTENANTS = 5;
-//constant values for marine and tanks used with unit.GetType()
-const sint4 MARINE = 1;
-const sint4 TANK = 2;
-
-//maximum number of marines and tanks per lieutenant squad
-const sint4 MAX_MARINES = 10;
-const sint4 MAX_TANKS = 4;
 //////////////////////////////////////////////////////////////
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
 
-
+//TO IMPLEMENT USER STRATEGY SEE CAPTAIN LOOP FOR HIGH LEVEL BEHAVIOURS
+//TO IMPLEMENT USER STRATEGY SEE LIEUTENANT LOOP FOR LOW LEVEL BEHAVIOURS
 class MyApplication : public Application
 {
 public:
@@ -196,7 +190,7 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 		/////////////////////////////////////////////////////////////
 
 		general->Loop(enemies, myUnits);
-		//general->Print();
+		//general->Print();	//DEBUGGING PRINT FOR GENERAL: USE TO VIEW GRID
 
 		captain->Loop(game.get_view_frame());
 
@@ -208,8 +202,9 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 		//////////////////////////////////////////////////////////////
 		////////////////     END COMMANDER LOOPS      ///////////////
 		/////////////////////////////////////////////////////////////
+
+		//DEBUGGING CIRCLES
 		bool draw_flag = true;
-		// Lieutenant debugging circle
 		for(size_t i(0); i< Lieutenants.size(); ++i)
 		{
 			vec2 ltPos = Lieutenants[i]->GetCurrentPosition();

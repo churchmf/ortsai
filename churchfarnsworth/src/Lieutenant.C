@@ -19,30 +19,37 @@
 //constant values for marine and tanks used with unit.GetType()
 const sint4 MARINE = 1;
 const sint4 TANK = 2;
-const sint4 MAX_ENEMY_DIST = 180;
 
+//marine values, should match actual values
 const sint4 MARINE_RANGE = 64;
 const sint4 MARINE_HEALTH = 80;
 const sint4 MARINE_MIN_DMG = 5;
 const sint4 MARINE_MAX_DMG = 7;
 
+//tanks values, should match actual values
 const sint4 TANK_RANGE = 112;
 const sint4 TANK_HEALTH = 150;
 const sint4 TANK_MIN_DMG = 26;
 const sint4 TANK_MAX_DMG = 34;
 
+//should be longest unit range in squad, in this case tank range
+const sint4 MAX_RANGE = 112;
+//
+const sint4 MAX_ENEMY_DIST = 180;
+
 //maximum number of marines and tanks per lieutenant squad
+//should match same-named constants in Captain.C
 const sint4 MAX_MARINES = 10;
 const sint4 MAX_TANKS = 4;
 
-const sint4 MAX_RANGE = 112;
 
+//UNIT MICROMANAGEMENT
 //unit health percentage buffer for pulling back
 const real8 EXPECTED_DEATH = 50;
-//buffer distance to pull back the unit
+//distance to pull back the unit
 const real8 PULL_BACK_BUFFER = 5;
 
-//USED WITH SQUAD FORMATION
+//SQUAD FORMATION
 const sint4 UNIT_DISPLACE = 0;//variable used to displace the rows evenly
 //NOTE: this variable is used do determine the distance of the row
 //from the LT. so if more units get added, this can just be
@@ -53,8 +60,8 @@ const sint4 TANK_OFFSET = 20;//distance between the tanks in the row
 const sint4 UNIT_OFFSET = 10;//space between rows
 const sint4 FRONT_LINE = 17;//distance of FRONT_LINE from LT
 
-//Value to determine if the Lieutenant is Healthy
-const sint4 HEALTHY_VALUE = 20;
+//Value to determine if the Lieutenant is Healthy (percentage)
+const sint4 HEALTHY_VALUE = 30;
 
 //////////////////////////////////////////////////////////////
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
