@@ -18,7 +18,7 @@
 const sint4 MARINE = 1;
 const sint4 TANK = 2;
 
-//default 16x10 risk grid
+//default 10x10 risk grid
 const sint4 xGrid = 10;
 const sint4 yGrid = 10;
 
@@ -158,8 +158,15 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 		for (int j = 0; j < xGrid; ++j)
 		{
 			Tile* tile = &(grid[j][i]);
+			//round off weak risk tiles
+			if (abs(tile->risk) < 1)
+			{
+				tile->risk = 0;
+			}
+			//depreciate the risk of the tile
 			if (tile->risk != 0)
 				tile->risk *= RISK_DEPRECIATION;
+
 		}
 	}
 }
@@ -321,7 +328,7 @@ vec2 General::FindEmptyWaypoint(vec2 location, vec2 target)
 vec2 General::GetClosestTarget(vec2 location)
 {
 	Tile* currentTile = ConvertToGridTile(location);
-	real8 minDist = xGrid;
+	real8 minDist = 100;
 	Tile* closestTarget = currentTile;
 
 	for (int i = 0; i < yGrid; ++i)
@@ -332,8 +339,10 @@ vec2 General::GetClosestTarget(vec2 location)
 			if (tile->risk > 0)
 			{
 				real8 dist = tile->GetDistanceTo(*currentTile);
+				std::cout << dist << std::endl;
 				if (dist < minDist)
 				{
+					std::cout << j << "," << i << std::endl;
 					minDist = dist;
 					closestTarget = tile;
 				}
