@@ -178,24 +178,26 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	//////////////////   END GAME UPDATES     ///////////////////
 	/////////////////////////////////////////////////////////////
 
+	if (!enemies.empty() && !myUnits.empty())
+	{
 	//////////////////////////////////////////////////////////////
 	//////////////////    COMMANDER LOOPS      //////////////////
 	/////////////////////////////////////////////////////////////
 
-	general->Loop(enemies, myUnits);
-	//general->Print();
+		general->Loop(enemies, myUnits);
+		//general->Print();
 
-	captain->Loop(game.get_view_frame());
+		captain->Loop(game.get_view_frame());
 
-	for(size_t i(0); i< Lieutenants.size(); ++i)
-	{
-		Lieutenants[i]->Loop(mc,enemies);
-	}
+		for(size_t i(0); i< Lieutenants.size(); ++i)
+		{
+			Lieutenants[i]->Loop(mc,enemies);
+		}
 
 	//////////////////////////////////////////////////////////////
 	////////////////     END COMMANDER LOOPS      ///////////////
 	/////////////////////////////////////////////////////////////
-
+	}
 	bool draw_flag = true;
 	// Lieutenant debugging circle
 	for(size_t i(0); i< Lieutenants.size(); ++i)
