@@ -28,6 +28,8 @@ using namespace std;
 //////////////////////////////////////////////////////////////
 ////////////    CONSTANTS AND GAME VARIABLES      ///////////
 /////////////////////////////////////////////////////////////
+//Number of Lieutenants, Captain will dynamically know this based on the size of it's Vector
+const sint4 NUM_LIEUTENANTS = 5;
 //constant values for marine and tanks used with unit.GetType()
 const sint4 MARINE = 1;
 const sint4 TANK = 2;
@@ -58,7 +60,9 @@ private:
 
 };
 
-//INITIALIZATION (called in first frame of main game loop)
+//////////////////////////////////////////////////////////////
+///////////////////   INITIALIZATION      ///////////////////
+/////////////////////////////////////////////////////////////
 void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& mc)
 {
 	const Game & game(gameState.get_game());
@@ -95,20 +99,21 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 		}
 	}
 
-	for (int i=0;i<5;++i)
+	//CREATE LIEUTENANTS
+	for (int i=0;i<NUM_LIEUTENANTS;++i)
 	{
 		Lieutenant* lieutenant = new Lieutenant();
 		Lieutenants.push_back(lieutenant);
 	}
 
-	//Pass initial MC into Lieutenants
+	//Pass initial Movement Context into Lieutenants
 	for(size_t i(0); i< Lieutenants.size(); ++i)
 	{
 		Lieutenants[i]->Loop(mc,enemies);
 		Lieutenants[i]->SetEnemies(enemies);
 	}
 
-	//sort units by y positions
+	//sort units by y positions, good idea for initial formations
 	sort(myUnits.begin(), myUnits.end(), compUnits);
 
 	//INITIALIZE GENERAL
@@ -118,8 +123,13 @@ void MyApplication::Initialize(GameStateModule & gameState,  Movement::Context& 
 	captain = new Captain(*general);
 	captain->SetLieutenants(Lieutenants);
 	captain->DistributeUnits(myUnits);
+
+	//INITIAL FORMATION
 	captain->Deploy();
 }
+//////////////////////////////////////////////////////////////
+/////////////////   END INITIALIZATION      /////////////////
+/////////////////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////////////////
@@ -181,9 +191,9 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 	//check if there are any units remaining
 	if (!enemies.empty() && !myUnits.empty())
 	{
-	//////////////////////////////////////////////////////////////
-	//////////////////    COMMANDER LOOPS      //////////////////
-	/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////
+		//////////////////    COMMANDER LOOPS      //////////////////
+		/////////////////////////////////////////////////////////////
 
 		general->Loop(enemies, myUnits);
 		//general->Print();
@@ -195,19 +205,19 @@ void MyApplication::OnReceivedView(GameStateModule & gameState, Movement::Contex
 			Lieutenants[i]->Loop(mc,enemies);
 		}
 
-	//////////////////////////////////////////////////////////////
-	////////////////     END COMMANDER LOOPS      ///////////////
-	/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////
+		////////////////     END COMMANDER LOOPS      ///////////////
+		/////////////////////////////////////////////////////////////
+		bool draw_flag = true;
+		// Lieutenant debugging circle
+		for(size_t i(0); i< Lieutenants.size(); ++i)
+		{
+			vec2 ltPos = Lieutenants[i]->GetCurrentPosition();
+			if (ltPos.x > 0 && ltPos.y > 0)
+				DrawDebugCircle(ltPos, 160, Color(1,1,0));
+		}
+		draw_flag = false;
 	}
-	bool draw_flag = true;
-	// Lieutenant debugging circle
-	for(size_t i(0); i< Lieutenants.size(); ++i)
-	{
-		vec2 ltPos = Lieutenants[i]->GetCurrentPosition();
-		if (ltPos.x > 0 && ltPos.y > 0)
-			DrawDebugCircle(ltPos, 160, Color(1,1,0));
-	}
-	draw_flag = false;
 }
 
 int main(int argc, char * argv[])
