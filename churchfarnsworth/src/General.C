@@ -339,10 +339,10 @@ vec2 General::GetClosestTarget(vec2 location)
 			if (tile->risk > 0)
 			{
 				real8 dist = tile->GetDistanceTo(*currentTile);
-				std::cout << dist << std::endl;
+				//std::cout << dist << std::endl;
 				if (dist < minDist)
 				{
-					std::cout << j << "," << i << std::endl;
+					//std::cout << j << "," << i << std::endl;
 					minDist = dist;
 					closestTarget = tile;
 				}
