@@ -227,7 +227,7 @@ void Captain::Loop(const sint4 frame)
 			return;
 		}
 
-		//dead lieutenant check
+		//Dead lieutenant check
 		Lieutenant* lieutenant(Lieutenants[i]);
 		if (lieutenant->TankSize()+lieutenant->MarineSize() == 0)
 			continue;
@@ -282,12 +282,11 @@ void Captain::Loop(const sint4 frame)
 				lieutenant->SetAid(true);
 				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
 				vec2 retreatLocation = general->GetFallBackLocation(lieutenant->GetCurrentPosition(), enemy);
-				//std::cout << retreatLocation.x-lieutenant->GetCurrentPosition().x << "," << retreatLocation.y-lieutenant->GetCurrentPosition().y << std::endl;
 				lieutenant->MoveTo(retreatLocation, lieutenant->FaceTarget(enemy));
 			}
 		}
 	}
-	//////////////////////////////////////////////////////////////
-	//////////////////    END CAPTAIN LOOP      //////////////////
-	/////////////////////////////////////////////////////////////
 }
+//////////////////////////////////////////////////////////////
+//////////////////    END CAPTAIN LOOP      //////////////////
+/////////////////////////////////////////////////////////////

@@ -713,11 +713,15 @@ void Lieutenant::Resume()
 	hasOrder = false;
 }
 
+///////////////////////////////////////////////////////////////
+///////////////////   LIEUTENANT LOOP     ////////////////////
+/////////////////////////////////////////////////////////////
+////////////////////   LOW LEVEL STRATEGY  /////////////////
 void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 {
 	mc = &MC;
 	CheckCasualties();
-	//dead lieutenant check
+	//Dead lieutenant check
 	if (tanks.empty() && marines.empty())
 	{
 		hasOrder = false;
@@ -730,22 +734,28 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 	CheckObjective();
 	CheckFormation();
 
+	//If the lieutenant doesn't have an order
 	if (!hasOrder)
 	{
 		FireAtWill(enemies);
+		//If the lieutenant is in combat
 		if (engaged)
 		{
 				AquireTargets(enemies);
-				//PullBackWounded(); //has mixed results atm
+				//PullBackWounded(); //has mixed results, recommended testing before implementation
 		}
 		else
 		{
+			//If the lieutenant is safe and healthy (maybe after reforming?)
 			if (GetHealth() >= HEALTHY_VALUE)
 			{
-				//Sets the current lieutenants aidRequest to false since it is safe and healthy
+				//Sets the lieutenants aidRequest to false
 				SetAid(false);
 			}
 		}
 	}
 }
+///////////////////////////////////////////////////////////////
+/////////////////   END LIEUTENANT LOOP   ////////////////////
+/////////////////////////////////////////////////////////////
 
