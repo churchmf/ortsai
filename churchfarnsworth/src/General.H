@@ -37,8 +37,9 @@ public:
 	vec2 FindSafeWaypoint(vec2 current, vec2 goal);					//Returns a neighbouring safe tile closer than the current Tile, if none exists it returns the current tile. *NOTE* this is not pathfinding.
 	vec2 FindEmptyWaypoint(vec2 location, vec2 target);				//Returns a neighbouring empty tile closer than the current Tile, if none exists it returns the current tile. *NOTE* this can be dangerous to use
 
-	vec2 GetClosestTarget(vec2 location);							//Returns tile location of nearest cluster of enemies from the location
-	vec2 GetWeakestTarget(vec2 location);							//Returns the weakest location in the enemy's formation, otherwise return the current position
+	vec2 GetClosestTarget(vec2 location);							//Returns tile location of nearest cluster of enemies to the provided location
+	vec2 GetStrongestTarget();										//Returns the strongest location in the enemy's formation
+	vec2 GetWeakestTarget();										//Returns the weakest location in the enemy's formation
 	vec2 GetFallBackLocation(vec2 location, vec2 enemy);			//Returns tile location of furthest neighbouring tile from enemy
 
 	Tile* ConvertToGridTile(vec2 location);							//Converts the given location on the map to the appropriate tile in the grid

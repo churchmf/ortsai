@@ -353,10 +353,9 @@ vec2 General::GetClosestTarget(vec2 location)
 	return target;
 }
 
-vec2 General::GetWeakestTarget(vec2 location)
+vec2 General::GetWeakestTarget()
 {
-	Tile* currentTile = ConvertToGridTile(location);
-	Tile* weakestTile = currentTile;
+	Tile* weakestTile = &(grid[0][0]);
 	real8 weakestRisk = MAX_RISK;
 
 	for (int i = 0; i < yGrid; ++i)
@@ -374,6 +373,27 @@ vec2 General::GetWeakestTarget(vec2 location)
 	vec2 target = ConvertToLocation(*weakestTile);
 	return target;
 
+}
+
+vec2 General::GetStrongestTarget()
+{
+	Tile* strongestTile = &(grid[0][0]);
+	real8 strongestRisk = 0;
+
+	for (int i = 0; i < yGrid; ++i)
+	{
+		for (int j = 0; j < xGrid; ++j)
+		{
+			Tile* tile = &(grid[j][i]);
+			if (tile->risk > strongestRisk)
+			{
+				strongestRisk = tile->risk;
+				strongestTile = tile;
+			}
+		}
+	}
+	vec2 target = ConvertToLocation(*strongestTile);
+	return target;
 }
 
 void General::Print()
