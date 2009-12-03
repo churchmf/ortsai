@@ -226,9 +226,8 @@ void Captain::Loop(const sint4 frame)
 			//if the squad is current not executing an order
 			if (!lieutenant->HasOrder())
 			{
-				//do formation towards nearest enemy
+				//get the nearest enemy
 				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
-				std::cout << enemy.x << "," << enemy.y << std::endl;
 
 				//check for aid requests
 				if (existsAidRequest())
@@ -254,8 +253,8 @@ void Captain::Loop(const sint4 frame)
 				{
 					std::cout << "REFORMING" << std::endl;
 					//if another unhealthy squad exists, merge with them
-					//Vector<Unit> transfers = lieutenant->TransferSquad();
-					//DistributeUnits(transfers);
+					Vector<Unit> transfers = lieutenant->TransferSquad();
+					DistributeUnits(transfers);
 					if (lieutenant->MarineSize() + lieutenant->TankSize() == 0)
 						RemoveLieutenant(i);
 				}

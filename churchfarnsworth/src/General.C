@@ -250,7 +250,7 @@ vec2 General::GetFallBackLocation(vec2 current, vec2 enemy)
 			{
 				Tile* tile = &(grid[currentTile->x+j][currentTile->y+i]);
 				real8 distance = tile->GetDistanceTo(*enemyTile);
-				if (tile->risk <= SAFE_VALUE && distance > furthestDistance)
+				if (tile->risk <= SAFE_VALUE && distance > furthestDistance && !IsOutNumbered(ConvertToLocation(*tile)))
 				{
 					furthestDistance = distance;
 					furthestTile = tile;
@@ -297,7 +297,7 @@ bool General::IsOutNumbered(vec2 location)
 vec2 General::FindEmptyWaypoint(vec2 location, vec2 target)
 {
 	//determine how crowded an area is based on its risk value
-	//dangerous because it may see combat zones as potentially empty areas
+	//dangerous because it may see dead man's land as potentially empty areas
 	Tile* currentTile = ConvertToGridTile(location);
 	Tile* targetTile = ConvertToGridTile(target);
 
@@ -314,7 +314,7 @@ vec2 General::FindEmptyWaypoint(vec2 location, vec2 target)
 			{
 				Tile* tile = &(grid[currentTile->x+j][currentTile->y+i]);
 				real8 distance = tile->GetDistanceTo(*targetTile);
-				if ((tile->risk < SAFE_VALUE) && (tile->risk > -2*SAFE_VALUE) && (distance < shortestDistance))
+				if ((tile->risk < SAFE_VALUE) && (tile->risk > -SAFE_VALUE) && (distance < shortestDistance))
 				{
 					shortestDistance = distance;
 					shortestTile = tile;
@@ -351,6 +351,29 @@ vec2 General::GetClosestTarget(vec2 location)
 	}
 	vec2 target = ConvertToLocation(*closestTarget);
 	return target;
+}
+
+vec2 General::GetWeakestTarget(vec2 location)
+{
+	Tile* currentTile = ConvertToGridTile(location);
+	Tile* weakestTile = currentTile;
+	real8 weakestRisk = MAX_RISK;
+
+	for (int i = 0; i < yGrid; ++i)
+	{
+		for (int j = 0; j < xGrid; ++j)
+		{
+			Tile* tile = &(grid[j][i]);
+			if (tile->risk < weakestRisk && tile->risk > 0)
+			{
+				weakestRisk = tile->risk;
+				weakestTile = tile;
+			}
+		}
+	}
+	vec2 target = ConvertToLocation(*weakestTile);
+	return target;
+
 }
 
 void General::Print()
