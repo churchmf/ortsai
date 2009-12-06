@@ -25,6 +25,12 @@ For instance, in the case of "lab2.template", we need a "src/template_main.C", w
 #include <algorithm>
 using namespace std;
 
+/*
+ *	ORTS GAME 4 TEMPLATE:
+ *	This class is part of the Lieutenant-Captain-General template.
+ *	The user strategy implementation should be done in Captain and Lieutenant Class.
+ */
+
 //////////////////////////////////////////////////////////////
 ////////////    CONSTANTS AND GAME VARIABLES      ///////////
 /////////////////////////////////////////////////////////////
