@@ -417,12 +417,10 @@ void Lieutenant::DoFormation(vec2 dir)
                 //set first unit
                 if(i == 0 && marine.IsAlive())
                 {
-
 					initUnitPos = vec2((ltDirection.rX * (real8)FRONT_LINE) + (real8)goal.x, (ltDirection.rY * (real8)FRONT_LINE) + (real8)goal.y);
 
 					marines[i].SetGoal(Movement::Vec2D((sint4)initUnitPos.rX, (sint4)initUnitPos.rY));
 					marines[i].SetTask(mc->moveUnit(marine.GetGameObj(), marines[i].GetGoal()));
-
                 }
                 else if(i % 2 == 1 && i > 0 && marine.IsAlive())
                 {
@@ -465,7 +463,7 @@ void Lieutenant::DoFormation(vec2 dir)
                 }
                 else if(j % 2 == 1 && j > 0 && tank.IsAlive())
                 {
-					//set the next marine at a distance based on the row direction, offset, and where the previous one is
+					//set the next tank at a distance based on the row direction, offset, and where the previous one is
 					unitPos = vec2((rowDirection.rX * (real8)TANK_OFFSET * (real8)displace) + initUnitPos.rX,
 								   (rowDirection.rY * (real8)TANK_OFFSET * (real8)displace) + initUnitPos.rY);
 
