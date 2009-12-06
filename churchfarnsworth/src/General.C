@@ -40,7 +40,9 @@ const real8 RISK_DEPRECIATION = 0.8;
  *	This class provides detailed information about the current placement
  *	of friendly and enemy units. The above constants, can greatly affect
  *	the usage and results of this class. It is recommended that if any
- *	modifications are made, they be gradual and tested often.
+ *	modifications are made, that they be gradual and tested often.
+ *	Future work can be made in this class regarding saving the risk grid
+ *	so the enemy positions can be predicted over multiple games.
  */
 General::General(sint4 mapWidth, sint4 mapHeight)
 {
@@ -59,6 +61,7 @@ General::~General()
 	delete grid;
 }
 
+//Initializes the General's Risk Grid
 void General::CreateGrid()
 {
 	grid = new Tile*[xGrid];
@@ -74,12 +77,15 @@ void General::CreateGrid()
 	}
 }
 
+//Sets the General's known units to the given vectors
 void General::SetUnits(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 {
 	enemies = theEnemies;
 	myUnits = theUnits;
 }
 
+//The General's Loop which populates the Risk Grid, providing detailed information
+//about enemy and friendly unit formations
 void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 {
 	SetUnits(theEnemies,theUnits);
@@ -178,6 +184,7 @@ void General::Loop(Vector<Unit> theEnemies,Vector<Unit> theUnits)
 	}
 }
 
+//Converts the given location to a valid tile in the grid
 General::Tile* General::ConvertToGridTile(vec2 location)
 {
 	//convert to appropriate grid tile
@@ -191,6 +198,7 @@ General::Tile* General::ConvertToGridTile(vec2 location)
 	return tile;
 }
 
+//Converts the given tile to a valid location on the map
 vec2 General::ConvertToLocation(Tile tile)
 {
 	//convert to appropriate location (center of tile)
@@ -201,6 +209,7 @@ vec2 General::ConvertToLocation(Tile tile)
 	return location;
 }
 
+//Checks if the given location on the map is less than or equal to the SAFE_VALUE
 bool General::IsLocationSafe(vec2 location)
 {
 	Tile* tile = ConvertToGridTile(location);
@@ -212,6 +221,8 @@ bool General::IsLocationSafe(vec2 location)
 	return false;
 }
 
+//Returns a safe waypoint between the current and goal locations on the map
+//*NOTE* this is not pathfinding
 vec2 General::FindSafeWaypoint(vec2 current, vec2 goal)
 {
 	Tile* goalTile = ConvertToGridTile(goal);
@@ -240,6 +251,7 @@ vec2 General::FindSafeWaypoint(vec2 current, vec2 goal)
 	return ConvertToLocation(*shortestTile);
 }
 
+//Returns a safe location further away from the given enemy location than your current location
 vec2 General::GetFallBackLocation(vec2 current, vec2 enemy)
 {
 	Tile* enemyTile = ConvertToGridTile(enemy);
@@ -268,9 +280,10 @@ vec2 General::GetFallBackLocation(vec2 current, vec2 enemy)
 	return ConvertToLocation(*furthestTile);
 }
 
+//Returns true if the sum of risk in neighbouring tiles is larger than zero, implying that there are more enemies than friends
 //NOTE: the results of this assessment change drastically with the size of the risk grid
 //it is recommended to search a larger number of surrounding tiles as the grid gets denser to maintain desired functionality
-//good rule of thumb is surrounding tiles should encompass range of enemy tanks
+//good rule of thumb is surrounding tiles should encompass maximum range of enemy tanks
 bool General::IsOutNumbered(vec2 location)
 {
 	Tile* centerTile = ConvertToGridTile(location);
@@ -301,6 +314,7 @@ bool General::IsOutNumbered(vec2 location)
 	return false;
 }
 
+//Returns a safe and relatively empty location between the current and target vectors
 vec2 General::FindEmptyWaypoint(vec2 location, vec2 target)
 {
 	//determine how crowded an area is based on its risk value
@@ -332,6 +346,7 @@ vec2 General::FindEmptyWaypoint(vec2 location, vec2 target)
 	return ConvertToLocation(*shortestTile);
 }
 
+//Returns the closest location where the risk value is greater than zero from the current location
 vec2 General::GetClosestTarget(vec2 location)
 {
 	Tile* currentTile = ConvertToGridTile(location);
@@ -360,6 +375,7 @@ vec2 General::GetClosestTarget(vec2 location)
 	return target;
 }
 
+//Returns the weakest location of the Enemy on the map
 vec2 General::GetWeakestTarget()
 {
 	Tile* weakestTile = &(grid[0][0]);
@@ -382,6 +398,7 @@ vec2 General::GetWeakestTarget()
 
 }
 
+//Returns the strongest location of the Enemy of the map
 vec2 General::GetStrongestTarget()
 {
 	Tile* strongestTile = &(grid[0][0]);
@@ -403,6 +420,8 @@ vec2 General::GetStrongestTarget()
 	return target;
 }
 
+//Debugging information for the General Class
+//suggested usage when tweaking constant values
 void General::Print()
 {
 	for (int i = 0; i < yGrid; ++i)
