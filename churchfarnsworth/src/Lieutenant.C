@@ -67,7 +67,15 @@ const sint4 HEALTHY_VALUE = 30;
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
 
-
+/**
+ * LIEUTENANT CLASS
+ * This class is designed to be a template for controlling small squads of units
+ * It has all the functions for attacking, moving, formations, and targeting
+ * These methods are used to avoid single unit commands. Each lieutenant object
+ * will contain vectors of its marines and tanks. and these units that are provided
+ * through AssignUnit will be the ones that the methods perform upon. A call on one
+ * Lieutenant will have no effect to the units of the other lieutenants.
+ */
 Lieutenant::Lieutenant()
 {
 	engaged = 0;
