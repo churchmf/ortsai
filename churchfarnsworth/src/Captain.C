@@ -259,7 +259,7 @@ void Captain::Loop(const sint4 frame)
 				//check for aid requests
 				if (existsAidRequest())
 				{
-					std::cout << "HELPING" << std::endl;
+					//std::cout << "HELPING" << std::endl;
 					//choose safe deployment location towards endangered squad
 					vec2 aidLocation = GetClosestAidRequestLocation(lieutenant->GetCurrentPosition());
 					//find a safe waypoint towards aidLocation
@@ -269,7 +269,7 @@ void Captain::Loop(const sint4 frame)
 				}
 				else
 				{
-					std::cout << "ATTACK" << std::endl;
+					//std::cout << "ATTACK" << std::endl;
 					//choose safe deployment location towards nearest enemy location
 					vec2 safeMove = general->FindSafeWaypoint(lieutenant->GetCurrentPosition(), enemy);
 					//move towards enemy if a safe path exists
@@ -278,7 +278,7 @@ void Captain::Loop(const sint4 frame)
 				// if the squad is unhealthy, transfer units to healthiest squad
 				if (!lieutenant->IsHealthy() && Lieutenants.size() > 1)
 				{
-					std::cout << "REFORMING" << std::endl;
+					//std::cout << "REFORMING" << std::endl;
 					//if another unhealthy squad exists, merge with them
 					Vector<Unit> transfers = lieutenant->TransferSquad();
 					DistributeUnits(transfers);
@@ -292,7 +292,7 @@ void Captain::Loop(const sint4 frame)
 			// Lieutenant is loosing
 			if(general->IsOutNumbered(lieutenant->GetCurrentPosition()))
 			{
-				std::cout << "RETREATING" << std::endl;
+				//std::cout << "RETREATING" << std::endl;
 				//retreat and request for aid
 				lieutenant->SetAid(true);
 				vec2 enemy = general->GetClosestTarget(lieutenant->GetCurrentPosition());
