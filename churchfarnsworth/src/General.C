@@ -35,6 +35,13 @@ const real8 RISK_DEPRECIATION = 0.8;
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
 
+/*
+ *	GENERAL CLASS:
+ *	This class provides detailed information about the current placement
+ *	of friendly and enemy units. The above constants, can greatly affect
+ *	the usage and results of this class. It is recommended that if any
+ *	modifications are made, they be gradual and tested often.
+ */
 General::General(sint4 mapWidth, sint4 mapHeight)
 {
 	width = mapWidth;
