@@ -31,7 +31,14 @@ const sint4 DEPLOY_TIME = 120;
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
 
-
+/*
+ *	CAPTAIN CLASS:
+ *	The Class provides an interface for implementing the user's strategy.
+ *	It hooks into the General Class allowing the user to access high level
+ *	information such as closest enemy position. It is recommended the user
+ *	examine the methods provided to fully utilise the available functionality.
+ *	The user should implement their strategy in the Captain Loop.
+ */
 Captain::Captain(General& theGeneral)
 {
 	general = &theGeneral;
@@ -43,17 +50,20 @@ Captain::~Captain()
 	Lieutenants.clear();
 }
 
+//Sets the Captains Lieutenants to the given vector of Lieutenants.
 void Captain::SetLieutenants(Vector<Lieutenant*> theLieutenants)
 {
 	Lieutenants = theLieutenants;
 }
 
+//Removes a Lieutenant at the given index in the Captain's Lieutenant Vector
 void Captain::RemoveLieutenant(size_t index)
 {
 	if (index < Lieutenants.size())
 		Lieutenants.erase(Lieutenants.begin()+index);
 }
 
+//Returns true if any of the Captain's Lieutenant's have an Aid Request
 bool Captain::existsAidRequest()
 {
 	for(size_t i(0); i<Lieutenants.size(); ++i)
@@ -66,10 +76,12 @@ bool Captain::existsAidRequest()
 	return false;
 }
 
+//Returns the location of the closests aid request to a given location
+//Recommended checking of aid requests before hand
 vec2 Captain::GetClosestAidRequestLocation(vec2 lieutPos)
 {
 	float closestAidRequest = general->width;
-	Lieutenant* closestPosLieutenant = Lieutenants[0];
+	Lieutenant* closestPosLieutenant = Lieutenants[Lieutenants.size()-1];
 
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
@@ -92,6 +104,7 @@ vec2 Captain::GetClosestAidRequestLocation(vec2 lieutPos)
 //////////////////   INITIAL FORMATION    ///////////////////
 /////////////////////////////////////////////////////////////
 /////   CURRENTLY STATIC: BUT EASY TO REPLACE/MODIFY  //////
+//This is where the user implement's their initialization formations
 void Captain::Deploy()
 {
 	//determines which side of map we are spawned
@@ -160,6 +173,7 @@ void Captain::Deploy()
 ////////////////   END INITIAL FORMATION     /////////////////
 /////////////////////////////////////////////////////////////
 
+//Distributes the given vector of units across the Captain's Lieutenants
 void Captain::DistributeUnits(Vector<Unit> units)
 {
 	uint4 m = 0;
@@ -191,10 +205,11 @@ void Captain::DistributeUnits(Vector<Unit> units)
 	}
 }
 
+//Returns the location of the closest Lieutenant to a location
 vec2 Captain::GetClosestFriend(vec2 location)
 {
 	float closestFriendPos = general->width;
-	Lieutenant* closestPosLieutenant = Lieutenants[0];
+	Lieutenant* closestPosLieutenant = Lieutenants[Lieutenants.size()-1];
 
 	for(size_t i(0); i<Lieutenants.size(); ++i)
 	{
