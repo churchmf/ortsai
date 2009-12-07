@@ -67,15 +67,7 @@ const sint4 HEALTHY_VALUE = 30;
 //////////    END CONSTANTS AND GAME VARIABLES      /////////
 /////////////////////////////////////////////////////////////
 
-/**
- * LIEUTENANT CLASS
- * This class is designed to be a template for controlling small squads of units
- * It has all the functions for attacking, moving, formations, and targeting
- * These methods are used to avoid single unit commands. Each lieutenant object
- * will contain vectors of its marines and tanks. and these units that are provided
- * through AssignUnit will be the ones that the methods perform upon. A call on one
- * Lieutenant will have no effect to the units of the other lieutenants.
- */
+
 Lieutenant::Lieutenant()
 {
 	engaged = 0;
@@ -677,7 +669,7 @@ void Lieutenant::AttackTarget(Unit& target)
 		tank.Attack(target);
 	}
 }
-//should work now
+
 vec2 Lieutenant::FaceTarget(vec2 targetLocation)
 {
 	const real8 PI = 3.14159265;
@@ -743,12 +735,12 @@ void Lieutenant::Loop(Movement::Context& MC,Vector<Unit> enemies)
 	//If the lieutenant doesn't have an order
 	if (!hasOrder)
 	{
+		//PullBackWounded(); //has mixed results, recommended testing before implementation
 		FireAtWill(enemies);
 		//If the lieutenant is in combat
 		if (engaged)
 		{
 				AquireTargets(enemies);
-				//PullBackWounded(); //has mixed results, recommended testing before implementation
 		}
 		else
 		{
