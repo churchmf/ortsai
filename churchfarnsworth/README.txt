@@ -9,8 +9,6 @@ Evan Farnsworth
 Check out the Team Wiki at http://code.google.com/p/orts3cf/w/list
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-This is all based off the tutorial in CMPUT396 Newsgroup Lab 2.
-
 How to run application:
 
 1) make sure the "churchfarnsworth" folder is in "orts/trunk/apps" directory.
